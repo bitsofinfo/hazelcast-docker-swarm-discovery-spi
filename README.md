@@ -113,7 +113,17 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 Note this example command assumes an entrypoint script exists that execs the `java` command
 
 ```
-docker service create --network [mynet] --name myHzService1 -e "DOCKER_HOST=http://swarmmgrnode:2376" [yourappimage] java -DdockerNetworkNames=[mynet] -DdockerServiceNames=myHzService1 -DhazelcastPeerPort=5701 -DhazelcastInterface=10.0.5.* -jar /test.jar
+docker service create \
+    --network [mynet] \
+    --name myHzService1 \
+    -e "DOCKER_HOST=http://swarmmgrnode:2376" \
+    [yourappimage] \
+    java \
+    -DdockerNetworkNames=[mynet] \
+    -DdockerServiceNames=myHzService1 \
+    -DhazelcastPeerPort=5701 \
+    -DhazelcastInterface=10.0.5.* \
+    -jar /test.jar
 ```
 
 ```
