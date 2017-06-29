@@ -5,6 +5,15 @@ import com.spotify.docker.client.messages.swarm.NetworkAttachment;
 import com.spotify.docker.client.messages.swarm.Service;
 import com.spotify.docker.client.messages.swarm.Task;
 
+/**
+ * Contains information about a discovered container 
+ * within a docker swarm service that is on a particular network
+ * 
+ * The Container's VIP on the related network is it's unique id
+ * 
+ * @author bitsofinfo
+ *
+ */
 public class DiscoveredContainer {
 	
 	private Network network;

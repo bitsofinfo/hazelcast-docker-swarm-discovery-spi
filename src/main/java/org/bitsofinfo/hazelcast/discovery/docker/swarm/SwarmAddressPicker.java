@@ -1,108 +1,86 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
 import java.nio.channels.ServerSocketChannel;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import com.hazelcast.core.HazelcastException;
 import com.hazelcast.instance.AddressPicker;
+import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
 
+/**
+ * Custom AddressPicker that works for hazelcast
+ * instances running in swarm service instances
+ * 
+ * There are four JVM System properties to be defined:
+ * 
+ * - dockerNetworkNames = required, min one network: comma delimited list of relevant docker network names
+ *                        that matching services must have a VIP on
+ *                        
+ * - hazelcastPeerPort = optional, default 5701, the hazelcast port all service members are listening on
+ *  
+ * ONE or BOTH of the following can be defined:
+ * 
+ * - dockerServiceLabels = zero or more comma delimited service 'label=value' pairs to match. 
+ *       If ANY match, that services' containers will be included in list of discovered containers
+ * 
+ * - dockerServiceNames = zero or more comma delimited service "names" to match. 
+ *        If ANY match, that services' containers will be included in list of discovered containers
+ * 
+ * @see https://github.com/hazelcast/hazelcast/issues/10801
+ * @author bitsofinfo
+ *
+ */
 public class SwarmAddressPicker implements AddressPicker {
-	
-	// from: https://github.com/hazelcast/hazelcast/blob/210475c806328c6655ea551f6fc59ef8220b601d/hazelcast/src/main/java/com/hazelcast/instance/DefaultAddressPicker.java
-	private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
-	private static final int SOCKET_BACKLOG_LENGTH = 100;
-	
-	private SwarmDiscoveryConfig swarmDiscoveryConfig = null;
-	
-	private DiscoveredContainer myContainer = null;
-	private Address myAddress = null;
-	private ServerSocketChannel serverSocketChannel = null;
-	
-	public SwarmAddressPicker() {
+
+	private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
+	private ILogger logger = null;
+
+	/**
+	 * Constructor
+	 */
+	public SwarmAddressPicker(ILogger iLogger) {
+		
+		this.logger = iLogger;
 		
 		String rawDockerNetworkNames = System.getProperty("dockerNetworkNames");
 		String rawDockerServiceLabels = System.getProperty("dockerServiceLabels");
 		String rawDockerServiceNames = System.getProperty("dockerServiceNames");
-		Integer hazelcastPeerPort = Integer.valueOf(System.getProperty("hazelcastPeerPort"));
 		
-		this.swarmDiscoveryConfig = new SwarmDiscoveryConfig(rawDockerNetworkNames,
+		Integer hazelcastPeerPort = 5701;
+		if (System.getProperty("hazelcastPeerPort") != null) {
+			hazelcastPeerPort = Integer.valueOf(System.getProperty("hazelcastPeerPort"));
+		}
+		
+		try {
+			this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(iLogger,
+															 rawDockerNetworkNames,
 															 rawDockerServiceLabels,
 															 rawDockerServiceNames,
-															 hazelcastPeerPort);
+															 hazelcastPeerPort,
+															 true);
+		} catch(Exception e) {
+			throw new RuntimeException("SwarmAddressPicker: Error constructing SwarmDiscoveryUtil: " + e.getMessage(),e);
+		}
 		
 	}
 
 	@Override
 	public void pickAddress() throws Exception {
-		Set<DiscoveredContainer> discoveredContainers = this.swarmDiscoveryConfig.discoverContainers();
-		
-		Map<String,DiscoveredContainer> ip2ContainerMap = new HashMap<String,DiscoveredContainer>();
-		for (DiscoveredContainer dc : discoveredContainers) {
-			ip2ContainerMap.put(dc.getIp(), dc);
-		}
-		
-		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-        while (networkInterfaces.hasMoreElements()) {
-            NetworkInterface ni = networkInterfaces.nextElement();
-            Enumeration<InetAddress> e = ni.getInetAddresses();
-            while (e.hasMoreElements()) {
-                InetAddress inetAddress = e.nextElement();
-                
-                DiscoveredContainer dc = ip2ContainerMap.get(inetAddress.getHostAddress());
-                
-                if (dc != null) {
-                	this.myContainer = dc;
-                	this.myAddress = new Address(myContainer.getIp(), this.swarmDiscoveryConfig.getHazelcastPeerPort());
-                	
-                	
-                	this.serverSocketChannel = ServerSocketChannel.open();
-                    ServerSocket serverSocket = serverSocketChannel.socket();
-                    serverSocket.setReuseAddress(true);
-                    serverSocket.setSoTimeout(SOCKET_TIMEOUT_MILLIS);
-                    
-                    
-                    try {
-                    	InetSocketAddress inetSocketAddress = new InetSocketAddress(this.myAddress.getHost(), this.swarmDiscoveryConfig.getHazelcastPeerPort());
-                        System.out.println("Trying to bind inet socket address: " + inetSocketAddress);
-                        serverSocket.bind(inetSocketAddress, SOCKET_BACKLOG_LENGTH);
-                        System.out.println("Bind successful to inet socket address: " + serverSocket.getLocalSocketAddress());
-                        this.serverSocketChannel.configureBlocking(false);
-                        
-                    } catch (Exception e2) {
-                        serverSocket.close();
-                        serverSocketChannel.close();
-                        throw new HazelcastException(e2.getMessage(), e2);
-                    }
-
-                	break;
-                }
-            }
-        }
-		
+		// nothing to do, done in SwarmDiscoveryUtil above
 	}
 
 	@Override
 	public Address getBindAddress() {
-		return this.myAddress;	
+		return this.swarmDiscoveryUtil.getMyAddress();
 	}
 
 	@Override
 	public Address getPublicAddress() {
-		return this.myAddress;
+		return this.swarmDiscoveryUtil.getMyAddress();
 	}
 
 	@Override
 	public ServerSocketChannel getServerSocketChannel() {
-		return this.serverSocketChannel;
+		return this.swarmDiscoveryUtil.getServerSocketChannel();
 	}
 
 }

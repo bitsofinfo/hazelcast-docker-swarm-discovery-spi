@@ -10,7 +10,7 @@
 
     <properties>
         <property name="hazelcast.discovery.enabled">true</property>
-        <property name="hazelcast.shutdownhook.enabled">false</property> 
+        <property name="hazelcast.shutdownhook.enabled">true</property> 
         <property name="hazelcast.socket.bind.any">false</property>
     </properties>
 
@@ -27,11 +27,11 @@
              <aws enabled="false"/>
              <tcp-ip enabled="false" />
               
-              <!-- Enable a Docker Swarm based discovery strategy -->
+             <!-- Enable a Docker Swarm based discovery strategy -->
              <discovery-strategies>
         
                <discovery-strategy enabled="true"
-                   class="org.bitsofinfo.hazelcast.discovery.docker.swarm.DockerSwarmDiscoveryStrategy">
+                   class="org.bitsofinfo.hazelcast.discovery.docker.swarm.test.DockerSwarmDiscoveryStrategy">
         
                  <properties>
                       <!-- Comma delimited list of Docker network names to discover matching services on -->

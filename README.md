@@ -196,6 +196,30 @@ compile group: 'com.spotify', name: 'docker-client', version: '8.7.3'
 
 TBD
 
+```
+./gradlew clean
+
+./gradlew shadowJar
+
+docker build -t hazelcast-docker-swarm-discovery-spi-test -f Test.Dockerfile .
+
+docker network create -d overlay hazelcast-docker-swarm-discovery-spi-test
+
+docker service create \
+    --network hazelcast-docker-swarm-discovery-spi-test \
+    --name hazelcast-docker-swarm-discovery-spi-test \
+    -e "DOCKER_HOST=http://192.168.0.148:2376" \
+    hazelcast-docker-swarm-discovery-spi-test \
+    java \
+    -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test \
+    -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test \
+    -DhazelcastPeerPort=5701 \
+    -jar /test.jar
+
+
+
+```
+
 
 ## <a id="related"></a>Related info
 

@@ -1,17 +1,25 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
+import com.hazelcast.core.HazelcastException;
+import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
 import com.hazelcast.spi.discovery.DiscoveryNode;
-import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListNetworksParam;
@@ -19,10 +27,22 @@ import com.spotify.docker.client.messages.Network;
 import com.spotify.docker.client.messages.swarm.EndpointVirtualIp;
 import com.spotify.docker.client.messages.swarm.NetworkAttachment;
 import com.spotify.docker.client.messages.swarm.Service;
-import com.spotify.docker.client.messages.swarm.Task;
 import com.spotify.docker.client.messages.swarm.Service.Criteria;
+import com.spotify.docker.client.messages.swarm.Task;
 
-public class SwarmDiscoveryConfig {
+/**
+ * SwarmDiscoveryUtil is the workhorse of this discovery SPI implementation
+ * 
+ * 
+ * 
+ * @author bitsofinfo
+ *
+ */
+public class SwarmDiscoveryUtil {
+	
+	// from: https://github.com/hazelcast/hazelcast/blob/210475c806328c6655ea551f6fc59ef8220b601d/hazelcast/src/main/java/com/hazelcast/instance/DefaultAddressPicker.java
+	private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
+	private static final int SOCKET_BACKLOG_LENGTH = 100;
 	
 	private Set<String> dockerNetworkNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
 	private Map<String,String> dockerServiceLabels = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
@@ -33,18 +53,31 @@ public class SwarmDiscoveryConfig {
 	private String rawDockerServiceNames = null;
 	
 	private Integer hazelcastPeerPort = 5701;
+	
+	private DiscoveredContainer myContainer = null;
+	private Address myAddress = null;
+	
+	private boolean bindSocketChannel = true;
+	private ServerSocketChannel serverSocketChannel = null;
+	
+	private ILogger logger = null;
 
 
-	public SwarmDiscoveryConfig(String rawDockerNetworkNames, 
-								String rawDockerServiceLabels,
-								String rawDockerServiceNames, 
-								Integer hazelcastPeerPort) {
+	public SwarmDiscoveryUtil(ILogger logger,
+							  String rawDockerNetworkNames, 
+						      String rawDockerServiceLabels,
+							  String rawDockerServiceNames, 
+							  Integer hazelcastPeerPort,
+							  boolean bindSocketChannel) throws Exception {
 		
+		this.logger = logger;
+		
+		this.bindSocketChannel = bindSocketChannel;
 		this.rawDockerNetworkNames = rawDockerNetworkNames;
 		this.rawDockerServiceLabels = rawDockerServiceLabels;
 		this.rawDockerServiceNames = rawDockerServiceNames;
 		this.hazelcastPeerPort = hazelcastPeerPort;
-		
+
 		if (rawDockerNetworkNames != null && !rawDockerNetworkNames.trim().isEmpty()) {
 			for (String rawElement : rawDockerNetworkNames.split(",")) {
 				if (!rawElement.trim().isEmpty()) {
@@ -52,9 +85,9 @@ public class SwarmDiscoveryConfig {
 				}
 			}
 		} else {
-			String msg = "You must specify at least one value for 'docker-network-names' in the swarm discovery SPI config";
-			System.out.println(msg);
-			throw new RuntimeException(msg);
+			String msg = "SwarmDiscoveryUtil() You must specify at least one value for 'docker-network-names'";
+			logger.severe("SwarmDiscoveryUtil: " + msg);
+			throw new Exception(msg);
 		}
 
 		if (rawDockerServiceLabels != null && !rawDockerServiceLabels.trim().isEmpty()) {
@@ -76,11 +109,70 @@ public class SwarmDiscoveryConfig {
 
 		// invalid setup
 		if (dockerServiceLabels.size() == 0 && dockerServiceNames.size() == 0) {
-			String msg = "You must specify at least one value for "
-					+ "either 'docker-service-names' or 'docker-service-labels' in the swarm discovery SPI config";
-			System.out.println(msg);
-			throw new RuntimeException(msg);
+			String msg = "SwarmDiscoveryUtil() You must specify at least one value for "
+					+ "either 'docker-service-names' or 'docker-service-labels'";
+			logger.severe(msg);
+			throw new Exception(msg);
 		}
+		
+		// discover self
+		discoverSelf();
+	}
+	
+	
+	private void discoverSelf() throws Exception {
+		
+		Set<DiscoveredContainer> discoveredContainers = this.discoverContainers();
+		
+		Map<String,DiscoveredContainer> ip2ContainerMap = new HashMap<String,DiscoveredContainer>();
+		for (DiscoveredContainer dc : discoveredContainers) {
+			ip2ContainerMap.put(dc.getIp(), dc);
+		}
+		
+		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+        while (networkInterfaces.hasMoreElements()) {
+            NetworkInterface ni = networkInterfaces.nextElement();
+            Enumeration<InetAddress> e = ni.getInetAddresses();
+            while (e.hasMoreElements()) {
+                InetAddress inetAddress = e.nextElement();
+                
+                DiscoveredContainer dc = ip2ContainerMap.get(inetAddress.getHostAddress());
+                
+                // found myself..
+                if (dc != null) {
+                	
+                	// set local references
+                	this.myContainer = dc;
+                	this.myAddress = new Address(myContainer.getIp(), this.getHazelcastPeerPort());
+                	
+                	if (bindSocketChannel) {
+                		
+	                	// configure ServerSocketChannel
+	                	this.serverSocketChannel = ServerSocketChannel.open();
+	                    ServerSocket serverSocket = serverSocketChannel.socket();
+	                    serverSocket.setReuseAddress(true);
+	                    serverSocket.setSoTimeout(SOCKET_TIMEOUT_MILLIS);
+	                    
+	                    
+	                    try {
+	                    	InetSocketAddress inetSocketAddress = new InetSocketAddress(this.myAddress.getHost(), this.getHazelcastPeerPort());
+	                        logger.info("Trying to bind inet socket address: " + inetSocketAddress);
+	                        serverSocket.bind(inetSocketAddress, SOCKET_BACKLOG_LENGTH);
+	                        logger.info("Bind successful to inet socket address: " + serverSocket.getLocalSocketAddress());
+	                        this.serverSocketChannel.configureBlocking(false);
+	                        
+	                    } catch (Exception e2) {
+	                        serverSocket.close();
+	                        serverSocketChannel.close();
+	                        throw new HazelcastException(e2.getMessage(), e2);
+	                    }
+                	}
+
+                	break;
+                }
+            }
+        }
+		
 	}
 
 
@@ -155,8 +247,6 @@ public class SwarmDiscoveryConfig {
 	
 	public Set<DiscoveredContainer> discoverContainers() throws Exception {
 		
-		System.out.println("DNODES!");
-
 		List<DiscoveryNode> toReturn = new ArrayList<DiscoveryNode>();
 
 		try {
@@ -168,7 +258,7 @@ public class SwarmDiscoveryConfig {
 			sb.append("docker-network-names = " + this.getRawDockerNetworkNames() + "\n");
 			sb.append("docker-service-names = " + this.getRawDockerServiceNames() + "\n");
 			sb.append("docker-service-labels = " + this.getRawDockerServiceLabels() + "\n");
-			System.out.println(sb.toString());
+			logger.info(sb.toString());
 
 			// our discovered containers
 			Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
@@ -181,7 +271,7 @@ public class SwarmDiscoveryConfig {
 				List<Network> networks = docker.listNetworks(ListNetworksParam.byNetworkName(dockerNetworkName));
 				for (Network network : networks) {
 					relevantNetIds2Networks.put(network.id(),network);
-					System.out.println("Found relevant network: " + network.name() +"["+ network.id() + "]");
+					logger.info("Found relevant docker network: " + network.name() +"["+ network.id() + "]");
 				}
 			}
 
@@ -237,9 +327,12 @@ public class SwarmDiscoveryConfig {
 
 				// does the service have a VIP on one of the networks we care about?
 				if (relevantNetIds2Networks.containsKey(vip.networkId())) {
-
+					
 					// get the network object that the vip is on
 					Network network = relevantNetIds2Networks.get(vip.networkId());
+					
+					logger.info("Found qualifying docker service["+service.spec().name()+"] "
+							+ "on network: " + network.name() +"["+ network.id() + ":" +vip.addr() +"]");
 
 					// if so, then lets find all its tasks (actual container instances of the service)
 					List<Task> tasks = docker.listTasks(Task.Criteria.builder().serviceName(service.spec().name()).build());
@@ -252,6 +345,9 @@ public class SwarmDiscoveryConfig {
 							// the service.. then lets treat it as a "dicovered container"
 							// that we actually care aboute
 							if (networkAttachment.network().id().equals(vip.networkId())) {
+								
+								logger.info("Found qualifying docker service task[taskId: " +task.id()+ ", container:"+task.status().containerStatus().containerId()+"] "
+										+ "on network: " + network.name() +"["+ network.id() + ":" + networkAttachment.addresses().iterator().next() +"]");
 							
 								// add it!
 								discoveredContainers.add(
@@ -266,6 +362,21 @@ public class SwarmDiscoveryConfig {
 		}
 
 		return discoveredContainers;
+	}
+
+
+	public DiscoveredContainer getMyContainer() {
+		return myContainer;
+	}
+
+
+	public Address getMyAddress() {
+		return myAddress;
+	}
+
+
+	public ServerSocketChannel getServerSocketChannel() {
+		return serverSocketChannel;
 	}
 
 }

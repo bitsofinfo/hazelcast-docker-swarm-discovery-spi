@@ -4,7 +4,7 @@ buildscript {
     }
     
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
 }
 
@@ -24,7 +24,7 @@ allprojects {
 	apply plugin: 'com.github.johnrengelman.shadow'
 	apply plugin: 'java'
 	
-	mainClassName = 'org.bitsofinfo.hazelcast.discovery.docker.swarm.ManualRunner'
+    mainClassName = 'org.bitsofinfo.hazelcast.discovery.docker.swarm.test.DockerTestRunner'
 }
 
 sourceCompatibility = 1.7
@@ -37,9 +37,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.spotify/docker-client
     compile group: 'com.spotify', name: 'docker-client', version: '8.7.3'
     
-
-    // for consul-client
-    testCompile 'junit:junit:4.12'
     
 }
 
@@ -117,4 +114,5 @@ unitTest {
 artifacts {
     archives sourcesJar
 }
+
 

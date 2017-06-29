@@ -1,0 +1,39 @@
+buildscript {
+	repositories {
+    	jcenter()
+    }
+    
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+
+group = 'org.bitsofinfo'
+
+allprojects {
+	repositories {
+		jcenter()
+	}
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	apply plugin: 'application'
+	apply plugin: 'com.github.johnrengelman.shadow'
+	apply plugin: 'java'
+	
+	mainClassName = 'org.bitsofinfo.hazelcast.discovery.docker.swarm.test.DockerTestRunner'
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.7.8'
+    
+    // https://mvnrepository.com/artifact/com.spotify/docker-client
+    compile group: 'com.spotify', name: 'docker-client', version: '8.7.3'
+    
+}
+
+
