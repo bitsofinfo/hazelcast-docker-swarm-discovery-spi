@@ -62,8 +62,10 @@ script:
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
   - sleep 120
   - docker ps
-  - docker logs $CONTAINER1_ID 
-  - export MEMBER_TOTAL=`docker logs $CONTAINER1_ID 2>&1 | grep "Members \[2\]"`
+  - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test." --format "{{.ID}}"`
+  - echo $CONTAINERX_ID
+  - docker logs $CONTAINERX_ID 
+  - export MEMBER_TOTAL=`docker logs $CONTAINERX_ID 2>&1 | grep "Members \[2\]"`
   - echo $MEMBER_TOTAL
   - if [ "$MEMBER_TOTAL" = 'Members [2] {' ]; then echo "OK"; else exit 1; fi
   
