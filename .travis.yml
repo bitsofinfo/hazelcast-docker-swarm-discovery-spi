@@ -30,7 +30,13 @@ script:
   - echo $MY_IP
   - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -jar /test.jar
   - docker service ls
+  - sleep 10
   - docker ps
+  - sleep 10
+  - docker ps -a
+  - sleep 10
+  - docker ps
+  - sleep 10
   - docker ps -a
   - docker service rm hazelcast-docker-swarm-discovery-spi-test
   
