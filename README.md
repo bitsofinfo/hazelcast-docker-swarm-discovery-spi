@@ -88,7 +88,7 @@ dependencies {
 
 * Configure your hazelcast.xml configuration file to use the `DockerSwarmDiscoveryStrategy` (similar to the below): [See hazelcast-docker-swarm-discovery-spi-example.xml](src/main/resources/hazelcast-docker-swarm-discovery-spi-example.xml) for an example with documentation of options.
 
-**CAVEAT** Due to [hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801) you MUST start your Hazelcast instance in the following way in order to use this SPI:
+**CAVEAT** Due to [hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801) you MUST start your Hazelcast instance by first customizing the `AddressPicker` that Hazelcast will use to be the `SwarmAddressPicker`; you can do this in the following way:
 
 ```
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
@@ -131,6 +131,7 @@ docker service create \
     -jar /test.jar
 ```
 
+Example configuration: see the example: (hazelcast-docker-swarm-discovery-spi-example.xml)[src/main/resources/META-INF/hazelcast-docker-swarm-discovery-spi-example.xml]
 ```
 <network>
     <port auto-increment="true">5701</port>
