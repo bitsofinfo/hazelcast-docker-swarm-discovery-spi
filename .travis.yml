@@ -20,6 +20,9 @@ script:
   - docker swarm init
   - docker network create -d overlay hazelcast-docker-swarm-discovery-spi-test
   - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://192.168.0.148:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -jar /test.jar
+  - docker service ls
+  - docker ps
+  - docker service hazelcast-docker-swarm-discovery-spi-test stop
+  - ifconfig -a
 jdk:
   - oraclejdk8
-  - openjdk8
