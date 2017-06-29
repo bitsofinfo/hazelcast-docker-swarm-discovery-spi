@@ -32,7 +32,7 @@ targetCompatibility = 1.7
 
 dependencies {
 
-    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.7.8'
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.8.2'
     
     // https://mvnrepository.com/artifact/com.spotify/docker-client
     compile group: 'com.spotify', name: 'docker-client', version: '8.7.3'

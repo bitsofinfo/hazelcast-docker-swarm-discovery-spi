@@ -1,4 +1,4 @@
-package org.bitsofinfo.hazelcast.discovery.docker.swarm.test;
+package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

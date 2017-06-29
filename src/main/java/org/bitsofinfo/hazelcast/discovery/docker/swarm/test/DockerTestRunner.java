@@ -1,6 +1,7 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm.test;
 
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
+import org.bitsofinfo.hazelcast.discovery.docker.swarm.SystemPrintLogger;
 
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;

@@ -18,22 +18,23 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 * [Related Info](#related)
 * [Todo](#todo)
 * [Notes](#notes)
-* [Docker info](#docker)
 
 
 ## <a id="status"></a>Status
 
-Working however this is **ALPHA** and still under development. 
+This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.8.x Stable releases.
 
 ## <a id="releases"></a>Releases
 
 * MASTER - in progress, this README refers to what is in the master tag. Switch to relevant RELEASE tag above to see that versions README
 
+* [1.0-RC1](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC1): Initial release
+
 ## <a id="requirements"></a>Requirements
 
 * Java 7+
 * [Hazelcast 3.6+](https://hazelcast.org/)
-* [Docker Swarm Mode](https://docs.docker.com/engine/swarm/)
+* [Docker 1.12+ Swarm Mode](https://docs.docker.com/engine/swarm/)
 
 ## <a id="mavengradle"></a>Maven/Gradle
 
@@ -47,7 +48,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:NOT-RELEASED-YET'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC1'
 }
 ```
 
@@ -58,7 +59,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>NOT-RELEASED-YET</version>
+        <version>1.0-RC1</version>
     </dependency>
 </dependencies>
 
@@ -76,7 +77,7 @@ dependencies {
 
 ## <a id="features"></a>Features
 
-* Will permit Hazelcast instances deployed on a Docker Swarm to automatically discover and connect with one another
+* Will permit Hazelcast instances deployed on a Docker 1.12+ Swarm to automatically discover and connect with one another
 
 * Provides a custom `AddressPicker` to workaround Hazelcast interface/binding issues that are present when deploying in a Docker Swarm environment.
 [hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801)
@@ -90,12 +91,17 @@ dependencies {
 **CAVEAT** Due to [hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801) you MUST start your Hazelcast instance in the following way in order to use this SPI:
 
 ```
+import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
+...
+
 Config conf =new ClasspathXmlConfig("yourHzConfig.xml");
 
 NodeContext nodeContext = new DefaultNodeContext() {
     @Override
     public AddressPicker createAddressPicker(Node node) {
-        return new SwarmAddressPicker();
+        return new SwarmAddressPicker(new ILogger() {
+            // you provide the impl... or use provided "SystemPrintLogger"
+        });
     }
 };
 
@@ -108,7 +114,7 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 * Create an overlay network for your service, `docker network create -d overlay [name]`
 
-* Launch your services via `docker service create ` against a Docker Swarm cluster:
+* Launch your services via `docker service create` against your Docker Swarm cluster:
 
 Note this example command assumes an entrypoint script exists that execs the `java` command
 
@@ -122,7 +128,6 @@ docker service create \
     -DdockerNetworkNames=[mynet] \
     -DdockerServiceNames=myHzService1 \
     -DhazelcastPeerPort=5701 \
-    -DhazelcastInterface=10.0.5.* \
     -jar /test.jar
 ```
 
@@ -130,15 +135,14 @@ docker service create \
 <network>
     <port auto-increment="true">5701</port>
     
-    <interfaces enabled="true">
-        <interface>${hazelcastInterface}</interface>        
+    <interfaces enabled="false">       
     </interfaces> 
     
     <join> 
     
         <multicast enabled="false"/>
-         <aws enabled="false"/>
-         <tcp-ip enabled="false" />
+        <aws enabled="false"/>
+        <tcp-ip enabled="false" />
           
          <!-- Enable a Docker Swarm based discovery strategy -->
          <discovery-strategies>
@@ -179,9 +183,7 @@ docker service create \
 
 ## <a id="building"></a>Building from source
 
-IN-PROCESS
-
-* From the root of this project, build a Jar : `./gradlew build`
+* From the root of this project, build a Jar : `./gradlew jar`
 
 * Include the built jar artifact located at `build/libs/hazelcast-docker-swarm-discovery-spi-[VERSION].jar` in your hazelcast project
 
@@ -194,31 +196,15 @@ compile group: 'com.spotify', name: 'docker-client', version: '8.7.3'
 
 ## <a id="tests"></a>Unit-tests
 
-TBD
+[![Build Status](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi.svg?branch=master)](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi)
 
-```
-./gradlew clean
+There are really no traditional Java "unit tests" for this SPI due to its reliance on Docker. 
 
-./gradlew shadowJar
+There is however a [Travis CI test](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi) that properly
+validates the SPI functionality in a real Docker swarm environment that brings up a single instance, scales it to 10 hazelcast
+nodes and then back down to 2 nodes. Demonstrating the proper discovery of peer hazelcast members.
 
-docker build -t hazelcast-docker-swarm-discovery-spi-test -f Test.Dockerfile .
-
-docker network create -d overlay hazelcast-docker-swarm-discovery-spi-test
-
-docker service create \
-    --network hazelcast-docker-swarm-discovery-spi-test \
-    --name hazelcast-docker-swarm-discovery-spi-test \
-    -e "DOCKER_HOST=http://192.168.0.148:2376" \
-    hazelcast-docker-swarm-discovery-spi-test \
-    java \
-    -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test \
-    -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test \
-    -DhazelcastPeerPort=5701 \
-    -jar /test.jar
-
-
-
-```
+See the [.travis.yml](.travis.yml) file for the full details.
 
 
 ## <a id="related"></a>Related info
@@ -226,13 +212,13 @@ docker service create \
 * https://docs.docker.com/engine/swarm/
 * http://docs.hazelcast.org/docs/3.8/manual/html-single/index.html#discovery-spi
 * https://github.com/hazelcast/hazelcast/issues/10801
+* https://github.com/hazelcast/hazelcast/issues/10802
+
 
 ## <a id="todo"></a>Todo
 
-TBD
+None at this time
 
 ## <a id="notes"></a> Notes
 
-### <a id="docker"></a>Containerization (Docker) notes
 
-TBD
