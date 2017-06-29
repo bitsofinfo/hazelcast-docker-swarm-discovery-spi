@@ -20,26 +20,35 @@ cache:
 before_script:
 
 script: 
+
+  # Build FAT jar and Docker container for the test
+  # and start socat to map docker socket to 2376 tcp port
   - ./gradlew --refresh-dependencies shadowJar
   - docker run -d -v /var/run/docker.sock:/var/run/docker.sock -p 2376:2375 bobrik/socat TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
   - docker build -t hazelcast-docker-swarm-discovery-spi-test -f Test.Dockerfile .
   - docker images 
+  
+  # Init swarm and network
   - docker swarm init
   - docker node ls
   - docker network create -d overlay hazelcast-docker-swarm-discovery-spi-test
   
+  # Capture the VM's IP
   - export MY_IP=`ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
   - echo $MY_IP
   
+  # Create the service
   - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -jar /test.jar
   - docker service ls
   - sleep 10
   
+  # Dump logs of first container and scale to 10
   - docker ps
   - export CONTAINER1_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.1" --format "{{.ID}}"`
   - docker logs $CONTAINER1_ID
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=10
   
+  # Let cluster form w/ 10 nodes and verify there are 10 hz members
   - sleep 60
   - docker ps
   - docker logs $CONTAINER1_ID 
@@ -49,15 +58,16 @@ script:
   - echo $MEMBER_TOTAL
   - if [ "$MEMBER_TOTAL" = 'Members [10] {' ]; then echo "OK"; else exit 1; fi
   
+  # Scale cluster down to 2 nodes, wait 2 minutes then verify only 2 nodes
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
-  - sleep 60
+  - sleep 120
   - docker ps
   - docker logs $CONTAINER1_ID 
   - export MEMBER_TOTAL=`docker logs $CONTAINER1_ID 2>&1 | grep "Members \[2\]"`
   - echo $MEMBER_TOTAL
   - if [ "$MEMBER_TOTAL" = 'Members [2] {' ]; then echo "OK"; else exit 1; fi
   
-  
+  # Remove the service
   - docker service rm hazelcast-docker-swarm-discovery-spi-test
   
 jdk:
