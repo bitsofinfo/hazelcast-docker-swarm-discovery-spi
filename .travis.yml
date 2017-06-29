@@ -27,15 +27,19 @@ script:
   - docker swarm init
   - docker node ls
   - docker network create -d overlay hazelcast-docker-swarm-discovery-spi-test
+  
   - export MY_IP=`ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
   - echo $MY_IP
+  
   - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -jar /test.jar
   - docker service ls
   - sleep 10
+  
   - docker ps
   - export CONTAINER1_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.1" --format "{{.ID}}"`
   - docker logs $CONTAINER1_ID
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=10
+  
   - sleep 60
   - docker ps
   - docker logs $CONTAINER1_ID 
@@ -43,7 +47,17 @@ script:
   - docker logs $CONTAINER10_ID 
   - export MEMBER_TOTAL=`docker logs $CONTAINER1_ID 2>&1 | grep "Members \[10\]"`
   - echo $MEMBER_TOTAL
-  - if [ "$MEMBER_TOTAL" = 'Members [10]' ]; then echo "OK"; else exit 1; fi
+  - if [ "$MEMBER_TOTAL" = 'Members [10] {' ]; then echo "OK"; else exit 1; fi
+  
+  - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
+  - sleep 60
+  - docker ps
+  - docker logs $CONTAINER1_ID 
+  - export MEMBER_TOTAL=`docker logs $CONTAINER1_ID 2>&1 | grep "Members \[2\]"`
+  - echo $MEMBER_TOTAL
+  - if [ "$MEMBER_TOTAL" = 'Members [2] {' ]; then echo "OK"; else exit 1; fi
+  
+  
   - docker service rm hazelcast-docker-swarm-discovery-spi-test
   
 jdk:
