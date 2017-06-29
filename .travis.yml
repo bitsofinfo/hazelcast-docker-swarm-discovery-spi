@@ -62,8 +62,7 @@ script:
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
   - sleep 120
   - docker ps
-  - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test." --format "{{.ID}}"`
-  - echo $CONTAINERX_ID
+  - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test." --format "{{.ID}}" | awk '{ print $1 }'`
   - docker logs $CONTAINERX_ID 
   - export MEMBER_TOTAL=`docker logs $CONTAINERX_ID 2>&1 | grep "Members \[2\]"`
   - echo $MEMBER_TOTAL
