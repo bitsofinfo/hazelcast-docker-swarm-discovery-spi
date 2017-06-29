@@ -36,7 +36,7 @@ script:
   - export CONTAINER1_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.1" --format "{{.ID}}"`
   - docker logs $CONTAINER1_ID
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=10
-  - sleep 30
+  - sleep 60
   - docker ps
   - docker logs $CONTAINER1_ID 
   - export CONTAINER10_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.10" --format "{{.ID}}"`
