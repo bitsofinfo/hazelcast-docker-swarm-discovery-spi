@@ -32,12 +32,13 @@ script:
   - docker service ls
   - sleep 10
   - docker ps
-  - sleep 10
-  - docker ps -a
+  - export CONTAINER1_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.1" --format "{{.ID}}"`
+  - docker logs $CONTAINER1_ID
+  - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
   - sleep 10
   - docker ps
-  - sleep 10
-  - docker ps -a
+  - export CONTAINER2_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.2" --format "{{.ID}}"`
+  - docker logs $CONTAINER2_ID
   - docker service rm hazelcast-docker-swarm-discovery-spi-test
   
 jdk:
