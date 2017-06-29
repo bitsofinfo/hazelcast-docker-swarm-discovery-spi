@@ -20,17 +20,19 @@ cache:
 before_script:
 
 script: 
-  - export MY_IP=`ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
   - ./gradlew --refresh-dependencies shadowJar
   - docker build -t hazelcast-docker-swarm-discovery-spi-test -f Test.Dockerfile .
   - docker images 
   - docker swarm init
   - docker node ls
   - docker network create -d overlay hazelcast-docker-swarm-discovery-spi-test
+  - export MY_IP=`ifconfig eth0 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
+  - echo $MY_IP
   - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -jar /test.jar
   - docker service ls
   - docker ps
-  - docker service hazelcast-docker-swarm-discovery-spi-test stop
+  - docker ps -a
+  - docker service rm hazelcast-docker-swarm-discovery-spi-test
   
 jdk:
   - oraclejdk8
