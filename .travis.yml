@@ -24,5 +24,7 @@ script:
   - docker ps
   - docker service hazelcast-docker-swarm-discovery-spi-test stop
   - ifconfig -a
+  - export TEST=1
+  - echo $TEST
 jdk:
   - oraclejdk8
