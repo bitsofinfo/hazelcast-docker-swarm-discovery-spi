@@ -1,7 +1,5 @@
 # hazelcast-docker-swarm-discovery-spi
 
-This is working however this is **ALPHA** and still under development. 
-
 [![Build Status](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi.svg?branch=master)](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi)
 
 Provides a Docker Swarm mode based discovery strategy for Hazlecast 3.6+ enabled applications.
