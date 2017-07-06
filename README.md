@@ -34,7 +34,7 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.8.x S
 
 * Java 7+
 * [Hazelcast 3.6+](https://hazelcast.org/)
-* [Docker 1.12+ Swarm Mode](https://docs.docker.com/engine/swarm/)
+* [Docker 1.12+ Swarm Mode](https://docs.docker.com/engine/swarm/) with one or more swarm manager nodes listening on a `tcp://` socket
 
 ## <a id="mavengradle"></a>Maven/Gradle
 
@@ -128,13 +128,13 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 * Launch your services via `docker service create` against your Docker Swarm cluster:
 
-Note this example command assumes an entrypoint script exists that execs the `java` command
+Note this example command assumes an entrypoint script exists that execs the `java` command. Your *DOCKER_HOST* must be accessible over http (i.e. daemons listening on the *tcp://* socket
 
 ```
 docker service create \
     --network [mynet] \
     --name myHzService1 \
-    -e "DOCKER_HOST=http://swarmmgrnode:2376" \
+    -e "DOCKER_HOST=http://[swarmmgr]:[port]" \
     [yourappimage] \
     java \
     -DdockerNetworkNames=[mynet] \
