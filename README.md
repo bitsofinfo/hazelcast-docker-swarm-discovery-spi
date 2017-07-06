@@ -9,6 +9,7 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 * [Releases](#releases)
 * [Requirements](#requirements)
 * [Maven/Gradle install](#mavengradle)
+* [How it works](#howitworks)
 * [Features](#features)
 * [Usage](#usage)
 * [Build from source](#building)
@@ -80,6 +81,18 @@ dependencies {
 
 * Provides a custom `AddressPicker` to workaround Hazelcast interface/binding issues that are present when deploying in a Docker Swarm environment.
 [hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801)
+
+## <a id="howitworks"></a>How it works
+
+Hazelcast applications that use this discovery SPI will discover one another when deployed as Docker services in the following way.
+
+* Launch your docker service with its service name and target overlay network name. In addition specify additional ENVIRONMENT variables via `-e` named `dockerNetworkNames`, `dockerServiceNames` and optionally `dockerServiceLabels`. These variables will be consumed by the discovery SPI. The `DOCKER_HOST` environment variable for the container should also be set to a name that resolves to one or more swarm manager nodes.
+
+* The Docker Swarm Discovery SPI consumes from the `DOCKER_HOST`, `dockerNetworkNames`, `dockerServiceNames`, optionally `dockerServiceLabels` and `hazelcastPeerPort` and begins the following process.
+
+    1. Leverages the custom `SwarmAddressPicker` to talk to the *$DOCKER_HOST* `/networks`, `/services` and `/tasks` APIs to determine the current node's IP address on the docker network, and bind hazelcast on `hazelcastPeerPort` to that address.
+    
+    2. Next hazelcast invokes the SPI `discoverMembers()` to determine all peer docker service tasks (containers) ip addresses and attempts to connect to them to form the cluster connecting to the configured `hazelcastPeerPort` (default 5701)
 
 ## <a id="usage"></a>Usage
 
