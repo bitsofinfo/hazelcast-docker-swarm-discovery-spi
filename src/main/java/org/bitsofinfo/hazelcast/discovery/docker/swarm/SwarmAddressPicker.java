@@ -30,6 +30,11 @@ import com.hazelcast.nio.Address;
  *
  */
 public class SwarmAddressPicker implements AddressPicker {
+	
+	public static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
+	public static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
+	public static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
+	public static final String PROP_HAZELCAST_PEER_PORT = "hazelcastPeerPort";
 
 	private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
 	private ILogger logger = null;
@@ -41,13 +46,13 @@ public class SwarmAddressPicker implements AddressPicker {
 		
 		this.logger = iLogger;
 		
-		String rawDockerNetworkNames = System.getProperty("dockerNetworkNames");
-		String rawDockerServiceLabels = System.getProperty("dockerServiceLabels");
-		String rawDockerServiceNames = System.getProperty("dockerServiceNames");
+		String rawDockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
+		String rawDockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
+		String rawDockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
 		
 		Integer hazelcastPeerPort = 5701;
 		if (System.getProperty("hazelcastPeerPort") != null) {
-			hazelcastPeerPort = Integer.valueOf(System.getProperty("hazelcastPeerPort"));
+			hazelcastPeerPort = Integer.valueOf(System.getProperty(PROP_HAZELCAST_PEER_PORT));
 		}
 		
 		try {
