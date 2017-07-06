@@ -17,6 +17,7 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 * [Todo](#todo)
 * [Notes](#notes)
 
+![Diagram of hazelcast docker swarm discovery strategy](/docs/diag1.png "Diagram1")
 
 ## <a id="status"></a>Status
 
