@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.nio.channels.ServerSocketChannel;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import com.hazelcast.core.HazelcastException;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
-import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListNetworksParam;
@@ -29,6 +27,7 @@ import com.spotify.docker.client.messages.swarm.NetworkAttachment;
 import com.spotify.docker.client.messages.swarm.Service;
 import com.spotify.docker.client.messages.swarm.Service.Criteria;
 import com.spotify.docker.client.messages.swarm.Task;
+import com.spotify.docker.client.messages.swarm.TaskStatus;
 
 /**
  * SwarmDiscoveryUtil is the workhorse of this discovery SPI implementation
@@ -247,8 +246,6 @@ public class SwarmDiscoveryUtil {
 	
 	public Set<DiscoveredContainer> discoverContainers() throws Exception {
 		
-		List<DiscoveryNode> toReturn = new ArrayList<DiscoveryNode>();
-
 		try {
 
 			// our client
@@ -303,7 +300,7 @@ public class SwarmDiscoveryUtil {
 	
 	/**
 	 * Discover containers on the relevant networks that match the given
-	 * service critiera. 
+	 * service criteria. 
 	 * 
 	 * @param docker
 	 * @param relevantNetIds2Networks
@@ -342,21 +339,20 @@ public class SwarmDiscoveryUtil {
 						for (NetworkAttachment networkAttachment : task.networkAttachments()) {
 
 							// if the network ID the task is = the current network we care about for 
-							// the service.. then lets treat it as a "dicovered container"
-							// that we actually care aboute
+							// the service.. then lets treat it as a "discovered container"
+							// that we actually care about
 							if (networkAttachment.network().id().equals(vip.networkId())) {
-								
-								logger.info("Found qualifying docker service task[taskId: " +task.id()+ ", container:"+task.status().containerStatus().containerId()+"] "
-										+ "on network: " + network.name() +"["+ network.id() + ":" + networkAttachment.addresses().iterator().next() +"]");
+																
+								logger.info("Found qualifying docker service task[taskId: " +task.id() + ", container: "+task.status().containerStatus().containerId()+ ", state: " + task.status().state()+ "] "
+										+ "on network: " + network.name() +"["+ network.id() + ":" + networkAttachment.addresses().iterator().next() +"]");																
 							
-								// add it!
-								discoveredContainers.add(
-										new DiscoveredContainer(network, service, task, networkAttachment));
+								// if container is in status 'running', then add it!									
+								if (TaskStatus.TASK_STATE_RUNNING.equals(task.status().state())) {
+									discoveredContainers.add(new DiscoveredContainer(network, service, task, networkAttachment));
+								}
 							}
-
 						}
 					}
-
 				}
 			}
 		}
