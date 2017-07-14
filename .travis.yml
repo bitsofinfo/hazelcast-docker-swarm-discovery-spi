@@ -24,6 +24,7 @@ script:
   # Build FAT jar and Docker container for the test
   # and start socat to map docker socket to 2376 tcp port
   - ./gradlew --refresh-dependencies shadowJar
+  - ls -al build/libs
   - docker run -d -v /var/run/docker.sock:/var/run/docker.sock -p 2376:2375 bobrik/socat TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
   - docker build -t hazelcast-docker-swarm-discovery-spi-test -f Test.Dockerfile .
   - docker images 
