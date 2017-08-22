@@ -16,7 +16,7 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 * [Unit tests](#tests)
 * [Related Info](#related)
 * [Todo](#todo)
-* [Notes](#notes)
+* [Troubleshooting](#troubleshooting)
 
 ![Diagram of hazelcast docker swarm discovery strategy](/docs/diag1.png "Diagram1")
 
@@ -93,7 +93,7 @@ Hazelcast applications that use this discovery SPI will discover one another whe
 * The Docker Swarm Discovery SPI consumes from the `DOCKER_HOST`, `dockerNetworkNames`, `dockerServiceNames`, optionally `dockerServiceLabels` and `hazelcastPeerPort` and begins the following process.
 
     1. Leverages the custom `SwarmAddressPicker` to talk to the *$DOCKER_HOST* `/networks`, `/services` and `/tasks` APIs to determine the current node's IP address on the docker network, and bind hazelcast on `hazelcastPeerPort` to that address.
-    
+
     2. Next hazelcast invokes the SPI `discoverMembers()` to determine all peer docker service tasks (containers) ip addresses and attempts to connect to them to form the cluster connecting to the configured `hazelcastPeerPort` (default 5701)
 
 ## <a id="usage"></a>Usage
@@ -121,7 +121,7 @@ NodeContext nodeContext = new DefaultNodeContext() {
 
 HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
         .newHazelcastInstance(conf,"myAppName",nodeContext);
-        
+
 ```
 
 * Create a Docker image for your application that uses Hazelcast
@@ -149,48 +149,48 @@ Example configuration: see the example: (hazelcast-docker-swarm-discovery-spi-ex
 ```
 <network>
     <port auto-increment="true">5701</port>
-    
-    <interfaces enabled="false">       
-    </interfaces> 
-    
-    <join> 
-    
+
+    <interfaces enabled="false">
+    </interfaces>
+
+    <join>
+
         <multicast enabled="false"/>
         <aws enabled="false"/>
         <tcp-ip enabled="false" />
-          
+
          <!-- Enable a Docker Swarm based discovery strategy -->
          <discovery-strategies>
-    
+
            <discovery-strategy enabled="true"
                class="org.bitsofinfo.hazelcast.discovery.docker.swarm.DockerSwarmDiscoveryStrategy">
-    
+
              <properties>
                   <!-- Comma delimited list of Docker network names to discover matching services on -->
                   <property name="docker-network-names">${dockerNetworkNames}</property>
-                  
-                  <!-- Comma delimited list of relevant Docker service names 
+
+                  <!-- Comma delimited list of relevant Docker service names
                        to find tasks/containers on the above networks -->
                   <property name="docker-service-names">${dockerServiceNames}</property>
-                  
-                  <!-- Comma delimited list of relevant Docker service label=values 
+
+                  <!-- Comma delimited list of relevant Docker service label=values
                        to find tasks/containers on the above networks -->
                   <property name="docker-service-labels">${dockerServiceLabels}</property>
-                  
-                  <!-- The raw port that hazelcast is listening on 
-                    
+
+                  <!-- The raw port that hazelcast is listening on
+
                        IMPORTANT: this is NOT a docker "published" port, nor is it necessarily
                        a EXPOSEd port... it is simply the hazelcast port that the service
                        is configured with, this must be the same for all matched containers
                        in order to work, and just using the default of 5701 is the simplist
                        way to go.
                    -->
-                  <property name="hazelcast-peer-port">${hazelcastPeerPort}</property>      
+                  <property name="hazelcast-peer-port">${hazelcastPeerPort}</property>
              </properties>
-             
+
            </discovery-strategy>
          </discovery-strategies>
-          
+
     </join>
 </network>
 ```
@@ -213,7 +213,7 @@ compile group: 'com.spotify', name: 'docker-client', version: '8.7.3'
 
 [![Build Status](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi.svg?branch=master)](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi)
 
-There are really no traditional Java "unit tests" for this SPI due to its reliance on Docker. 
+There are really no traditional Java "unit tests" for this SPI due to its reliance on Docker.
 
 There is however a [Travis CI test](https://travis-ci.org/bitsofinfo/hazelcast-docker-swarm-discovery-spi) that properly
 validates the SPI functionality in a real Docker swarm environment that brings up a single instance, scales it to 10 hazelcast
@@ -234,6 +234,34 @@ See the [.travis.yml](.travis.yml) file for the full details.
 
 None at this time
 
-## <a id="notes"></a> Notes
+## <a id="troubleshooting"></a> Troubleshooting
 
+If you get an exception (e.g. `AbstractMethodError`), this may have been caused by having `jersey-common` library twice.
+(One from the plugin itself -as a transitive dependency- and the other from the shaded `docker-client` library. In such
+a case you may add an exclusion to your project's build file.
 
+For maven:
+
+```
+	<dependency>
+		<groupId>org.bitsofinfo</groupId>
+		<artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
+		<version>1.0-RC2</version>
+		<exclusions>
+			<exclusion>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-common</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+```
+
+For gradle:
+
+```
+	compile('org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC2') {
+		exclude module: 'jersey-common'
+	}
+```
+
+For details please see [Pull Request #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6).
