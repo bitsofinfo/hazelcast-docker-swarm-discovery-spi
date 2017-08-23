@@ -28,6 +28,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.8.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. Switch to relevant RELEASE tag above to see that versions README
 
+* [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
+
 * [1.0-RC2](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC2): Excludes stopped tasks [#2](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/2)
 
 * [1.0-RC1](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC1): Initial release
