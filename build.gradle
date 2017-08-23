@@ -1,8 +1,8 @@
 buildscript {
-	repositories {
-    	jcenter()
+    repositories {
+        jcenter()
     }
-    
+
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
@@ -15,15 +15,15 @@ plugins {
 group = 'org.bitsofinfo'
 
 allprojects {
-	repositories {
-		jcenter()
-	}
-	apply plugin: 'maven'
-	apply plugin: 'maven-publish'
-	apply plugin: 'application'
-	apply plugin: 'com.github.johnrengelman.shadow'
-	apply plugin: 'java'
-	
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'application'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'java'
+
     mainClassName = 'org.bitsofinfo.hazelcast.discovery.docker.swarm.test.DockerTestRunner'
 }
 
@@ -31,18 +31,13 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 dependencies {
-
-    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.8.2'
-    
-    // https://mvnrepository.com/artifact/com.spotify/docker-client
-    compile group: 'com.spotify', name: 'docker-client', version: '8.7.3', classifier: 'shaded'
-    
-    
+    compile group: 'com.hazelcast', name: 'hazelcast', version: '3.8.4'
+    compile group: 'com.spotify', name: 'docker-client', version: '8.9.0', classifier: 'shaded'
 }
 
 bintray {
-	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('bintrayUser')
-	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('bintrayApiKey')
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('bintrayUser')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('bintrayApiKey')
     publications = ['hazelcastDockerSwarmDiscoverySpi']
     pkg {
         repo = 'maven'
@@ -51,11 +46,11 @@ bintray {
         vcsUrl = 'https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi'
         publicDownloadNumbers = true
         version {
-		    name = project.property('version')
-		    desc = project.property('version') + " : " + project.property('description')
-		    released  = new Date()
-		    vcsTag = project.property('version')
-		}
+            name = project.property('version')
+            desc = project.property('version') + " : " + project.property('description')
+            released = new Date()
+            vcsTag = project.property('version')
+        }
     }
 }
 
@@ -78,23 +73,23 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task runTests(type: Test) {
-	description 'Runs unit tests for all tests except TestDoNothingRegistrator.'
-  	
-  	//Always run tests even when up-to-date 
-  	outputs.upToDateWhen { 
-  		false 
-  	}
-	
+    description 'Runs unit tests for all tests except TestDoNothingRegistrator.'
+
+    //Always run tests even when up-to-date
+    outputs.upToDateWhen {
+        false
+    }
+
 }
 
 task unitTest(type: Test) {
-	description 'Runs unit tests for single class.'
-  	
-  	//Always run tests even when up-to-date 
-  	outputs.upToDateWhen { 
-  		false 
-  	}
-  	
+    description 'Runs unit tests for single class.'
+
+    //Always run tests even when up-to-date
+    outputs.upToDateWhen {
+        false
+    }
+
 }
 
 runTests {
