@@ -52,7 +52,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC2'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC3'
 }
 ```
 
@@ -63,7 +63,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC2</version>
+        <version>1.0-RC3</version>
     </dependency>
 </dependencies>
 
