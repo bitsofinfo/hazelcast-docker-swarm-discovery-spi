@@ -84,7 +84,7 @@ dependencies {
 * Will permit Hazelcast instances deployed on a Docker 1.12+ Swarm to automatically discover and connect with one another
 
 * Provides a custom `AddressPicker` to workaround Hazelcast interface/binding issues that are present when deploying in a Docker Swarm environment.
-[hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801)
+[hazelcast/issues/10801](https://github.com/hazelcast/hazelcast/issues/10801) TODO: change to use [MemberAddressProvider SPI?](https://github.com/hazelcast/hazelcast/blob/3cede71cad1fe87312f0901ff77f903ed2d4383d/hazelcast/src/main/java/com/hazelcast/spi/MemberAddressProvider.java)
 
 ## <a id="howitworks"></a>How it works
 
@@ -234,7 +234,7 @@ See the [.travis.yml](.travis.yml) file for the full details.
 
 ## <a id="todo"></a>Todo
 
-None at this time
+* TODO: change to use [MemberAddressProvider SPI?](https://github.com/hazelcast/hazelcast/blob/3cede71cad1fe87312f0901ff77f903ed2d4383d/hazelcast/src/main/java/com/hazelcast/spi/MemberAddressProvider.java)
 
 ## <a id="troubleshooting"></a> Troubleshooting
 
