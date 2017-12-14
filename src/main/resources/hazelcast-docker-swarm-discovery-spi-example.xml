@@ -11,7 +11,7 @@
     <properties>
         <property name="hazelcast.discovery.enabled">true</property>
         <property name="hazelcast.shutdownhook.enabled">true</property> 
-        <property name="hazelcast.socket.bind.any">false</property>
+        <property name="hazelcast.socket.bind.any">true</property>
     </properties>
 
     <network>
