@@ -51,7 +51,7 @@ script:
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=10
   
   # Let cluster form w/ 10 nodes and verify there are 10 hz members
-  - sleep 60
+  - sleep 120
   - docker ps
   - docker logs $CONTAINER1_ID 
   - export CONTAINER10_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test.10" --format "{{.ID}}"`
