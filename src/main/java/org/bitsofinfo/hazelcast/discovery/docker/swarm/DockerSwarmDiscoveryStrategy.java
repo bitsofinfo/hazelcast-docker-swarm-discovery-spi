@@ -46,7 +46,7 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 															 rawDockerServiceLabels,
 															 rawDockerServiceNames,
 															 hazelcastPeerPort,
-															 false); // dont bind channel, the AddressPicker does this
+															 true); // dont bind channel, the AddressPicker does this
 		} catch(Exception e) {
 			String msg = "Unexpected error configuring SwarmDiscoveryUtil: " + e.getMessage();
 			logger.severe(msg,e);
