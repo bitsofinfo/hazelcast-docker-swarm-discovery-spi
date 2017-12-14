@@ -42,8 +42,7 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 		Integer hazelcastPeerPort = getOrDefault("hazelcast-peer-port",  DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT, 5701);
 
 		try {
-			this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(logger,
-															 rawDockerNetworkNames,
+			this.swarmDiscoveryUtil = new SwarmDiscoveryUtil( rawDockerNetworkNames,
 															 rawDockerServiceLabels,
 															 rawDockerServiceNames,
 															 hazelcastPeerPort,

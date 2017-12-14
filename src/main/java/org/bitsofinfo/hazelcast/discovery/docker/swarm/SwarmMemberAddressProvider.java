@@ -1,13 +1,15 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
+import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 
 import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
+import com.hazelcast.spi.MemberAddressProvider;
 
 /**
- * Custom AddressPicker that works for hazelcast instances running in swarm service instances
+ * Custom MemberAddressProvider that works for hazelcast instances running in swarm service instances
  * <p>
  * There are four JVM System properties to be defined:
  * <p>
@@ -24,14 +26,17 @@ import com.hazelcast.nio.Address;
  * - dockerServiceNames = zero or more comma delimited service "names" to match.
  * If ANY match, that services' containers will be included in list of discovered containers
  * <p>
- * Another way to initiate this class is to pass above properties when creating a new {@link SwarmAddressPicker}
+ * Another way to initiate this class is to pass above properties when creating a new {@link SwarmMemberAddressProvider}
  * instance. This eliminates the need to pass properties in both hazelcast.xml (for setting up discovery) and with
  * JVM properties.
  *
  * @author bitsofinfo
- * @see <a href="https://github.com/hazelcast/hazelcast/issues/10801">Hazelcast GitHub Issue #10801</a>
+ * @see https://github.com/hazelcast/hazelcast/issues/10801
+ * @see https://github.com/hazelcast/hazelcast/blob/44045949b683b958e4e245040b65f947f143a9ef/hazelcast/src/main/resources/hazelcast-full-example.xml#L408
+ * @see https://github.com/hazelcast/hazelcast/pull/11548
  */
-public class SwarmAddressPicker implements AddressPicker {
+public class SwarmMemberAddressProvider implements MemberAddressProvider {
+	
     private static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
     private static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
     private static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
@@ -42,22 +47,22 @@ public class SwarmAddressPicker implements AddressPicker {
     /**
      * Constructor
      */
-    public SwarmAddressPicker(final ILogger iLogger) {
+    public SwarmMemberAddressProvider() {
         final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
         final String dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
         final String dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
         final Integer hazelcastPeerPort = Integer.valueOf(System.getProperty(PROP_HAZELCAST_PEER_PORT));
 
-        initialize(iLogger, dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort);
     }
 
-    public SwarmAddressPicker(final ILogger iLogger, final String dockerNetworkNames, final String dockerServiceLabels,
+    public SwarmMemberAddressProvider(final String dockerNetworkNames, final String dockerServiceLabels,
         final String dockerServiceNames, final Integer hazelcastPeerPort) {
 
-        initialize(iLogger, dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort);
     }
 
-    private void initialize(final ILogger iLogger, final String dockerNetworkNames, final String dockerServiceLabels,
+    private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
         final String dockerServiceNames, final Integer hazelcastPeerPort) {
 
         final int port;
@@ -70,7 +75,6 @@ public class SwarmAddressPicker implements AddressPicker {
 
         try {
             this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(
-                iLogger,
                 dockerNetworkNames,
                 dockerServiceLabels,
                 dockerServiceNames,
@@ -86,22 +90,15 @@ public class SwarmAddressPicker implements AddressPicker {
     }
 
     @Override
-    public void pickAddress() throws Exception {
-        // nothing to do, done in SwarmDiscoveryUtil above
+    public InetSocketAddress getBindAddress() {
+        Address addr = this.swarmDiscoveryUtil.getMyAddress();
+        return InetSocketAddress.createUnresolved(addr.getHost(), addr.getPort());
     }
 
     @Override
-    public Address getBindAddress() {
-        return this.swarmDiscoveryUtil.getMyAddress();
+    public InetSocketAddress getPublicAddress() {
+        Address addr = this.swarmDiscoveryUtil.getMyAddress();
+        return InetSocketAddress.createUnresolved(addr.getHost(), addr.getPort());
     }
 
-    @Override
-    public Address getPublicAddress() {
-        return this.swarmDiscoveryUtil.getMyAddress();
-    }
-
-    @Override
-    public ServerSocketChannel getServerSocketChannel() {
-        return this.swarmDiscoveryUtil.getServerSocketChannel();
-    }
 }

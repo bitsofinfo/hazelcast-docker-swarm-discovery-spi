@@ -22,6 +22,11 @@
             <interface>${hazelcastInterface}</interface>        
         </interfaces> 
         
+        <!-- Enable a Docker Swarm based MemberAddressProvider (Hazelcast 3.9+ only) -->
+        <member-address-provider enabled="true">
+        		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
+        </member-address-provider>
+        
         <join> 
         
             <multicast enabled="false"/>
@@ -59,7 +64,6 @@
                  
                </discovery-strategy>
              </discovery-strategies>
-              
         </join>
     </network>
 </hazelcast>

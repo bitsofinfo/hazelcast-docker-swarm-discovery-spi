@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.hazelcast.core.HazelcastException;
 import com.hazelcast.logging.ILogger;
+import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.Address;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
@@ -59,18 +60,14 @@ public class SwarmDiscoveryUtil {
 	private boolean bindSocketChannel = true;
 	private ServerSocketChannel serverSocketChannel = null;
 	
-	private ILogger logger = null;
-
-
-	public SwarmDiscoveryUtil(ILogger logger,
-							  String rawDockerNetworkNames, 
+	private ILogger logger = Logger.getLogger(SwarmDiscoveryUtil.class);
+	
+	public SwarmDiscoveryUtil(String rawDockerNetworkNames, 
 						      String rawDockerServiceLabels,
 							  String rawDockerServiceNames, 
 							  Integer hazelcastPeerPort,
 							  boolean bindSocketChannel) throws Exception {
-		
-		this.logger = logger;
-		
+
 		this.bindSocketChannel = bindSocketChannel;
 		this.rawDockerNetworkNames = rawDockerNetworkNames;
 		this.rawDockerServiceLabels = rawDockerServiceLabels;
@@ -85,7 +82,6 @@ public class SwarmDiscoveryUtil {
 			}
 		} else {
 			String msg = "SwarmDiscoveryUtil() You must specify at least one value for 'docker-network-names'";
-			logger.severe("SwarmDiscoveryUtil: " + msg);
 			throw new Exception(msg);
 		}
 
@@ -110,7 +106,6 @@ public class SwarmDiscoveryUtil {
 		if (dockerServiceLabels.size() == 0 && dockerServiceNames.size() == 0) {
 			String msg = "SwarmDiscoveryUtil() You must specify at least one value for "
 					+ "either 'docker-service-names' or 'docker-service-labels'";
-			logger.severe(msg);
 			throw new Exception(msg);
 		}
 		
