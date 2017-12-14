@@ -93,7 +93,7 @@ Hazelcast applications that use this discovery SPI will discover one another whe
 
 * The Docker Swarm Discovery SPI consumes from the `DOCKER_HOST`, `dockerNetworkNames`, `dockerServiceNames`, optionally `dockerServiceLabels` and `hazelcastPeerPort` and begins the following process.
 
-    1. Leverages the custom `MemberAddressProvider` SPI implementation (`SwarmMemberAddressProvider`) to talk to the *$DOCKER_HOST* `/networks`, `/services` and `/tasks` APIs to determine the current node's IP address on the docker network, and bind hazelcast on `hazelcastPeerPort` to that address.
+    1. Leverages the custom `MemberAddressProvider` SPI implementation (`SwarmMemberAddressProvider`) or `SwarmAddressPicker` hack (read below!) to talk to the *$DOCKER_HOST* `/networks`, `/services` and `/tasks` APIs to determine the current node's IP address on the docker network, and bind hazelcast on `hazelcastPeerPort` to that address.
 
     2. Next hazelcast invokes the SPI `discoverMembers()` to determine all peer docker service tasks (containers) ip addresses and attempts to connect to them to form the cluster connecting to the configured `hazelcastPeerPort` (default 5701)
 
