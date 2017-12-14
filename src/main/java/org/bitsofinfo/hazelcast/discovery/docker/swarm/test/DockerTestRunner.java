@@ -1,5 +1,6 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm.test;
 
+import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider;
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SystemPrintLogger;
 
@@ -23,10 +24,35 @@ public class DockerTestRunner {
 
 	public static void main(String[] args) throws Exception {
 		
-		Config conf =new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example.xml");
-
-		HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
-				.newHazelcastInstance(conf,"hazelcast-docker-swarm-discovery-spi-example",new DefaultNodeContext());
+	
+		
+		if (System.getProperty("swarm-bind-method").equalsIgnoreCase("address-picker")) {
+			
+			Config conf =new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example.xml");
+			
+			NodeContext nodeContext = new DefaultNodeContext() {
+			    @Override
+			    public AddressPicker createAddressPicker(Node node) {
+			        return new SwarmAddressPicker(new SystemPrintLogger());
+			    }
+			};
+	
+			HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
+					.newHazelcastInstance(conf,"hazelcast-docker-swarm-discovery-spi-example",nodeContext);
+			
+			
+			
+		} else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("member-address-provider")) {
+			
+			Config conf =new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml");
+			
+			
+			HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
+					.newHazelcastInstance(conf,"hazelcast-docker-swarm-discovery-spi-example",new DefaultNodeContext());
+			
+		
+		}
+		
 		
 		Thread.currentThread().sleep(400000);
 		
