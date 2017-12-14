@@ -28,7 +28,7 @@ public class DockerTestRunner {
 		HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 				.newHazelcastInstance(conf,"hazelcast-docker-swarm-discovery-spi-example",new DefaultNodeContext());
 		
-		Thread.currentThread().sleep(300000);
+		Thread.currentThread().sleep(400000);
 		
 		System.exit(0);
 	}
