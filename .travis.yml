@@ -40,7 +40,7 @@ script:
   - echo $MY_IP
   
   # Create the service
-  - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -Dhazelcast.diagnostics.enabled=true -Dswarm-bind-method=address-picker -jar /test.jar
+  - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -Dhazelcast.diagnostics.enabled=true -Dswarm-bind-method=member-address-provider -jar /test.jar
   - docker service ls
   - sleep 10
   
