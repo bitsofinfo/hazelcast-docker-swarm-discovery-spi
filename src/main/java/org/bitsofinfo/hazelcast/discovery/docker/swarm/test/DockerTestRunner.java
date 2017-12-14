@@ -1,7 +1,6 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm.test;
 
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
-import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider;
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SystemPrintLogger;
 
 import com.hazelcast.config.ClasspathXmlConfig;
@@ -28,7 +27,7 @@ public class DockerTestRunner {
 		
 		if (System.getProperty("swarm-bind-method").equalsIgnoreCase("address-picker")) {
 			
-			Config conf =new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example.xml");
+			Config conf =new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example-address-picker.xml");
 			
 			NodeContext nodeContext = new DefaultNodeContext() {
 			    @Override
