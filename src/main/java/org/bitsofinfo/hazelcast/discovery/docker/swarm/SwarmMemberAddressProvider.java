@@ -92,13 +92,13 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     @Override
     public InetSocketAddress getBindAddress() {
         Address addr = this.swarmDiscoveryUtil.getMyAddress();
-        return InetSocketAddress.createUnresolved(addr.getHost(), addr.getPort());
+        return new InetSocketAddress(addr.getHost(), addr.getPort());
     }
 
     @Override
     public InetSocketAddress getPublicAddress() {
         Address addr = this.swarmDiscoveryUtil.getMyAddress();
-        return InetSocketAddress.createUnresolved(addr.getHost(), addr.getPort());
+        return new InetSocketAddress(addr.getHost(), addr.getPort());
     }
 
 }

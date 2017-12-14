@@ -26,7 +26,7 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 ## <a id="releases"></a>Releases
 
-* MASTER - in progress, this README refers to what is in the master tag. Switch to relevant RELEASE tag above to see that versions README
+* MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
 * [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI (removing `SwarmAddressPicker`)
 
