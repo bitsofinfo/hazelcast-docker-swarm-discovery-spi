@@ -28,7 +28,7 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
-* [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI (removing `SwarmAddressPicker`)
+* [1.0-RC4 IN-PROGRESS](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI, as alternative option to using `SwarmAddressPicker`
 
 * [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): **Use with Hazelcast 3.8.x and below. Will not work with Hazelcast 3.9+.** Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
 
@@ -99,9 +99,13 @@ Hazelcast applications that use this discovery SPI will discover one another whe
 
 ## <a id="usage"></a>Usage
 
-* Ensure your project has the `hazelcast-docker-swarm-discovery-spi` artifact dependency declared in your maven pom or gradle build file as described above. Or build the jar yourself and ensure the jar is in your project's classpath.
+Ensure your project has the `hazelcast-docker-swarm-discovery-spi` artifact dependency declared in your maven pom or gradle build file as described above. Or build the jar yourself and ensure the jar is in your project's classpath.
 
-* Configure your hazelcast.xml configuration file to use the `DockerSwarmDiscoveryStrategy` and `SwarmMemberAddressProvider` (similar to the below): [See hazelcast-docker-swarm-discovery-spi-example.xml](src/main/resources/hazelcast-docker-swarm-discovery-spi-example.xml) for an example with documentation of options.
+### Option 1: Local network binding via  SwarmMemberAddressProvider
+
+CANNOT be used until https://github.com/hazelcast/hazelcast/issues/11997 is fixed
+
+Configure your hazelcast.xml configuration file to use the `DockerSwarmDiscoveryStrategy` and `SwarmMemberAddressProvider` (similar to the below): [See hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml](src/main/resources/hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml) for an example with documentation of options.
 
 
 ```
@@ -111,6 +115,35 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
         .newHazelcastInstance(conf,"myAppName",new DefaultNodeContext());
 
 ```
+
+### Option 2: Local network binding via SwarmAddressPicker
+
+MUST be used until https://github.com/hazelcast/hazelcast/issues/11997 is fixed
+
+Configure your hazelcast.xml configuration file to use the `DockerSwarmDiscoveryStrategy` (similar to the below): [See hazelcast-docker-swarm-discovery-spi-example-address-picker.xml](src/main/resources/hazelcast-docker-swarm-discovery-spi-example-address-picker.xml) for an example with documentation of options.
+
+
+```
+import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
+...
+
+Config conf =new ClasspathXmlConfig("yourHzConfig.xml");
+
+NodeContext nodeContext = new DefaultNodeContext() {
+    @Override
+    public AddressPicker createAddressPicker(Node node) {
+        return new SwarmAddressPicker(new ILogger() {
+            // you provide the impl... or use provided "SystemPrintLogger"
+        });
+    }
+};
+
+HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
+        .newHazelcastInstance(conf,"myAppName",nodeContext);
+
+```
+
+### Once your local network binding option is chosen, proceed:
 
 * Create a Docker image for your application that uses Hazelcast
 
@@ -148,12 +181,14 @@ Example configuration: see the example: (hazelcast-docker-swarm-discovery-spi-ex
         <aws enabled="false"/>
         <tcp-ip enabled="false" />
 
-         <!-- Enable a Docker Swarm based discovery strategy -->
-         
+        <-- OPTIONAL: cannot use until: https://github.com/hazelcast/hazelcast/issues/11997 is fixed
         <member-address-provider enabled="true">
         		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
         </member-address-provider>
+        -->
         
+        
+         <!-- Enable a Docker Swarm based discovery strategy -->
          <discovery-strategies>
 
            <discovery-strategy enabled="true"
@@ -222,6 +257,7 @@ See the [.travis.yml](.travis.yml) file for the full details.
 * http://docs.hazelcast.org/docs/3.8/manual/html-single/index.html#discovery-spi
 * https://github.com/hazelcast/hazelcast/issues/10801
 * https://github.com/hazelcast/hazelcast/issues/10802
+* https://github.com/hazelcast/hazelcast/issues/11997
 
 
 ## <a id="todo"></a>Todo
