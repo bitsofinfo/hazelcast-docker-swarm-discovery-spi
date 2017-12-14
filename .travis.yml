@@ -58,7 +58,7 @@ script:
   - docker logs $CONTAINER10_ID 
   - export MEMBER_TOTAL=`docker logs --tail 50 $CONTAINER1_ID 2>&1 | grep "Members {size:10"`
   - echo $MEMBER_TOTAL
-  - if [ "$MEMBER_TOTAL" = 'Members {size:10' ]; then echo "OK"; else exit 1; fi
+  - if [[ "$MEMBER_TOTAL" == 'Members {size:10'* ]]; then echo "OK"; else exit 1; fi
   
   # Scale cluster down to 2 nodes, wait 2 minutes then verify only 2 nodes
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
@@ -69,7 +69,7 @@ script:
   - docker logs --tail 50 $CONTAINERX_ID 
   - export MEMBER_TOTAL=`docker logs --tail 50 $CONTAINERX_ID 2>&1 | grep "Members {size:2"`
   - echo $MEMBER_TOTAL
-  - if [ "$MEMBER_TOTAL" = 'Members {size:2' ]; then echo "OK"; else exit 1; fi
+  - if [[ "$MEMBER_TOTAL" == 'Members {size:2'* ]]; then echo "OK"; else exit 1; fi
   
   # Remove the service
   - docker service rm hazelcast-docker-swarm-discovery-spi-test
