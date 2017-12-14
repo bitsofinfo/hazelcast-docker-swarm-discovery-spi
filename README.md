@@ -22,13 +22,15 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 
 ## <a id="status"></a>Status
 
-This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.8.x Stable releases.
+This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x Stable releases. See **Releases** below for compatible jars. For use only on Docker 1.12+ "swarm mode" environments. 
 
 ## <a id="releases"></a>Releases
 
 * MASTER - in progress, this README refers to what is in the master tag. Switch to relevant RELEASE tag above to see that versions README
 
-* [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
+* [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`
+
+* [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): **Use with Hazelcast 3.8.x and below. Will not work with Hazelcast 3.9+.** Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
 
 * [1.0-RC2](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC2): Excludes stopped tasks [#2](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/2)
 

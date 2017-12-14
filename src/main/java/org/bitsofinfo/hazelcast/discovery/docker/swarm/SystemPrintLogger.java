@@ -104,4 +104,24 @@ public class SystemPrintLogger implements ILogger {
 		return true;
 	}
 
+	@Override
+	public void fine(Throwable thrown) {
+		System.out.println("FINE " + thrown.getMessage());
+	}
+
+	@Override
+	public void fine(String message, Throwable thrown) {
+		System.out.println("FINE " + message + " " + thrown.getMessage());
+	}
+
+	@Override
+	public boolean isInfoEnabled() {
+		return true;
+	}
+
+	@Override
+	public boolean isWarningEnabled() {
+		return true;
+	}
+
 }
