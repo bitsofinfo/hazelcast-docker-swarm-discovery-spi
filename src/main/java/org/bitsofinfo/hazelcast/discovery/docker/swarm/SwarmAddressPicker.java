@@ -32,10 +32,11 @@ import com.hazelcast.nio.Address;
  * @see <a href="https://github.com/hazelcast/hazelcast/issues/10801">Hazelcast GitHub Issue #10801</a>
  */
 public class SwarmAddressPicker implements AddressPicker {
-    private static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
-    private static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
-    private static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
-    private static final String PROP_HAZELCAST_PEER_PORT = "hazelcastPeerPort";
+	
+    public static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
+    public static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
+    public static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
+    public static final String PROP_HAZELCAST_PEER_PORT = "hazelcastPeerPort";
 
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
 
