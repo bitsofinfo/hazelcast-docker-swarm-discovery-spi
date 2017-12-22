@@ -338,11 +338,12 @@ public class SwarmDiscoveryUtil {
 							// that we actually care about
 							if (networkAttachment.network().id().equals(vip.networkId())) {
 																
-								logger.info("Found qualifying docker service task[taskId: " +task.id() + ", container: "+task.status().containerStatus().containerId()+ ", state: " + task.status().state()+ "] "
-										+ "on network: " + network.name() +"["+ network.id() + ":" + networkAttachment.addresses().iterator().next() +"]");																
-							
 								// if container is in status 'running', then add it!									
 								if (TaskStatus.TASK_STATE_RUNNING.equals(task.status().state())) {
+								
+									logger.info("Found qualifying docker service task[taskId: " +task.id() + ", container: "+task.status().containerStatus().containerId()+ ", state: " + task.status().state()+ "] "
+											+ "on network: " + network.name() +"["+ network.id() + ":" + networkAttachment.addresses().iterator().next() +"]");																
+								
 									discoveredContainers.add(new DiscoveredContainer(network, service, task, networkAttachment));
 								}
 							}
