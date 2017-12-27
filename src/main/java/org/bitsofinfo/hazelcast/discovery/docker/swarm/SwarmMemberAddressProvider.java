@@ -79,7 +79,7 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
                 dockerServiceLabels,
                 dockerServiceNames,
                 port,
-                true
+                false
             );
         } catch (final Exception e) {
             throw new RuntimeException(
