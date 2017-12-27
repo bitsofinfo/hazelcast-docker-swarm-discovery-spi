@@ -79,7 +79,11 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
                 dockerServiceLabels,
                 dockerServiceNames,
                 port,
-                false
+                
+                // do NOT bindSocketChannel
+                // this flag was originally here for SwarmAddressPicker, 
+                // see: https://github.com/hazelcast/hazelcast/issues/11997#issuecomment-354107373
+                false 
             );
         } catch (final Exception e) {
             throw new RuntimeException(
