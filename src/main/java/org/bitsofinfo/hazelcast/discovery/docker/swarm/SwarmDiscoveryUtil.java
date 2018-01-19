@@ -284,7 +284,7 @@ public class SwarmDiscoveryUtil {
 			sb.append("docker-network-names = " + this.getRawDockerNetworkNames() + "\n");
 			sb.append("docker-service-names = " + this.getRawDockerServiceNames() + "\n");
 			sb.append("docker-service-labels = " + this.getRawDockerServiceLabels() + "\n");
-			sb.append("swarmMgrUri = " + this.swarmMgrUri.toString() + "\n");
+			sb.append("swarmMgrUri = " + this.swarmMgrUri + "\n");
 			sb.append("skipVerifySsl = " + this.skipVerifySsl + "\n");
 			logger.info(sb.toString());
 
