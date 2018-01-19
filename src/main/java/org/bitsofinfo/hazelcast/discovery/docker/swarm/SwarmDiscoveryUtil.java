@@ -73,6 +73,14 @@ public class SwarmDiscoveryUtil {
 			  Integer hazelcastPeerPort,
 			  boolean bindSocketChannel) throws Exception {
 		
+		this(rawDockerNetworkNames,
+			 rawDockerServiceLabels,
+			 rawDockerServiceNames,
+			 hazelcastPeerPort,
+			 bindSocketChannel,
+			 new URI(System.getenv("DOCKER_HOST")),
+			 false);
+		
 	}
 	
 	public SwarmDiscoveryUtil(String rawDockerNetworkNames, 
