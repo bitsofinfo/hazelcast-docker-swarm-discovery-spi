@@ -46,6 +46,12 @@
                            to find tasks/containers on the above networks -->
                       <property name="docker-service-labels">${dockerServiceLabels}</property>
                       
+                      <!-- 1.0-RC5+ ONLY: Swarm Manager URI (overrides DOCKER_HOST) -->
+	                  <property name="swarm-mgr-uri">${swarmMgrUri}</property>
+	                  
+	                  <!-- 1.0-RC5+ ONLY: If Swarm Mgr URI is SSL, to enable skip-verify for it -->
+	                  <property name="skip-verify-ssl">${skipVerifySsl}</property>
+                      
                       <!-- The raw port that hazelcast is listening on 
                         
                            IMPORTANT: this is NOT a docker "published" port, nor is it necessarily

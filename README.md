@@ -28,6 +28,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC5](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC5): **For Hazelcast 3.9+ only**. Added support for SSL swarm manager URIs and skip verify for SSL.
+
 * [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI, as alternative option to using `SwarmAddressPicker`
 
 * [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): **Use with Hazelcast 3.8.x and below. Will not work with Hazelcast 3.9+.** Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
@@ -55,7 +57,7 @@ repositories {
 
 dependencies {
 	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC4'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC5'
 }
 ```
 
@@ -66,7 +68,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC4</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC5</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
     </dependency>
 </dependencies>
 
@@ -90,7 +92,7 @@ dependencies {
 
 Hazelcast applications that use this discovery SPI will discover one another when deployed as Docker services in the following way.
 
-* Launch your docker service with its service name and target overlay network name. In addition specify additional ENVIRONMENT variables via `-e` named `dockerNetworkNames`, `dockerServiceNames` and optionally `dockerServiceLabels`. These variables will be consumed by the discovery SPI. The `DOCKER_HOST` environment variable for the container should also be set to a name that resolves to one or more swarm manager nodes.
+* Launch your docker service with its service name and target overlay network name. In addition specify additional ENVIRONMENT variables via `-e` named `dockerNetworkNames`, `dockerServiceNames` and optionally `dockerServiceLabels`. These variables will be consumed by the discovery SPI. The `DOCKER_HOST` environment variable for the container should also be set to a name that resolves to one or more swarm manager nodes, via the format `tcp://`, `http://` or `https://`
 
 * The Docker Swarm Discovery SPI consumes from the `DOCKER_HOST`, `dockerNetworkNames`, `dockerServiceNames`, optionally `dockerServiceLabels` and `hazelcastPeerPort` and begins the following process.
 
@@ -154,6 +156,8 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 Note this example command assumes an entrypoint script exists that execs the `java` command. Your *DOCKER_HOST* must be accessible over http (i.e. daemons listening on the *tcp://* socket
 
+
+**DOCKER_HOST non-tls**
 ```
 docker service create \
     --network [mynet] \
@@ -165,6 +169,22 @@ docker service create \
     -DdockerServiceNames=myHzService1 \
     -DdockerServiceLabels=myLabel1,myLabel2 \
     -DhazelcastPeerPort=5701 \
+    -jar /test.jar
+```
+
+**1.0-RC5+ ONLY: DOCKER_HOST SSL w/ optional skip verify**
+```
+docker service create \
+    --network [mynet] \
+    --name myHzService1 \
+    [yourappimage] \
+    java \
+    -DdockerNetworkNames=[mynet] \
+    -DdockerServiceNames=myHzService1 \
+    -DdockerServiceLabels=myLabel1,myLabel2 \
+    -DhazelcastPeerPort=5701 \
+    -DswarmMgrUri=https://[swarmmgr]:[port] \
+    -DskipVerifySsl=[true|false] \
     -jar /test.jar
 ```
 
@@ -206,6 +226,12 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
                   <!-- Comma delimited list of relevant Docker service label=values
                        to find tasks/containers on the above networks -->
                   <property name="docker-service-labels">${dockerServiceLabels}</property>
+                  
+                  <!-- 1.0-RC5+ ONLY: Swarm Manager URI (overrides DOCKER_HOST) -->
+                  <property name="swarm-mgr-uri">${swarmMgrUri}</property>
+                  
+                  <!-- 1.0-RC5+ ONLY: If Swarm Mgr URI is SSL, to enable skip-verify for it -->
+                  <property name="skip-verify-ssl">${skipVerifySsl}</property>
 
                   <!-- The raw port that hazelcast is listening on
 
@@ -277,7 +303,7 @@ For maven:
 	<dependency>
 		<groupId>org.bitsofinfo</groupId>
 		<artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-		<version>1.0-RC4</version>
+		<version>1.0-RC5</version>
 		<exclusions>
 			<exclusion>
 				<groupId>org.glassfish.jersey.core</groupId>
@@ -290,7 +316,7 @@ For maven:
 For gradle:
 
 ```
-	compile('org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC4') {
+	compile('org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC5') {
 		exclude module: 'jersey-common'
 	}
 ```

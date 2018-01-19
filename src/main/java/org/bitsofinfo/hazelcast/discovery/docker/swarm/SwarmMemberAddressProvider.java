@@ -1,6 +1,7 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.channels.ServerSocketChannel;
 
 import com.hazelcast.instance.AddressPicker;
@@ -42,28 +43,44 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     private static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
     private static final String PROP_HAZELCAST_PEER_PORT = "hazelcastPeerPort";
 
+    public static final String PROP_SWARM_MGR_URI = "swarmMgrUri";
+    public static final String PROP_SKIP_VERIFY_SSL = "skipVerifySsl";
+    
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
 
     /**
      * Constructor
      */
     public SwarmMemberAddressProvider() {
-        final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
+    	final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
         final String dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
         final String dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
         final Integer hazelcastPeerPort = Integer.valueOf(System.getProperty(PROP_HAZELCAST_PEER_PORT));
+       
+       String swarmMgrUri = System.getProperty(PROP_SWARM_MGR_URI);
+        if (swarmMgrUri == null) {
+        		swarmMgrUri = System.getenv("DOCKER_HOST");
+        }
+        
+        Boolean skipVerifySsl = false;
+        if (System.getProperty(PROP_SKIP_VERIFY_SSL) != null) {
+        		skipVerifySsl = Boolean.valueOf(System.getProperty(PROP_SKIP_VERIFY_SSL));
+        }
 
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
     public SwarmMemberAddressProvider(final String dockerNetworkNames, final String dockerServiceLabels,
         final String dockerServiceNames, final Integer hazelcastPeerPort) {
 
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort);
+    		String swarmMgrUri = System.getenv("DOCKER_HOST"); 
+		Boolean skipVerifySsl = false;
+		
+		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
     private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
-        final String dockerServiceNames, final Integer hazelcastPeerPort) {
+        final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
 
         final int port;
 
@@ -74,6 +91,11 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         }
 
         try {
+        	 	 URI swarmMgr = null;
+             if (swarmMgrUri == null) {
+             		swarmMgr = new URI(System.getenv("DOCKER_HOST")); 
+             }
+             
             this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(
                 dockerNetworkNames,
                 dockerServiceLabels,
@@ -83,7 +105,10 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
                 // do NOT bindSocketChannel
                 // this flag was originally here for SwarmAddressPicker, 
                 // see: https://github.com/hazelcast/hazelcast/issues/11997#issuecomment-354107373
-                false 
+                false ,
+                
+                swarmMgr,
+                skipVerifySsl
             );
         } catch (final Exception e) {
             throw new RuntimeException(

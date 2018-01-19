@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.nio.channels.ServerSocketChannel;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+
 
 import com.hazelcast.core.HazelcastException;
 import com.hazelcast.logging.ILogger;
@@ -60,13 +62,29 @@ public class SwarmDiscoveryUtil {
 	private boolean bindSocketChannel = true;
 	private ServerSocketChannel serverSocketChannel = null;
 	
+	private URI swarmMgrUri = null;
+	private boolean skipVerifySsl = false;
+	
 	private ILogger logger = Logger.getLogger(SwarmDiscoveryUtil.class);
+	
+	public SwarmDiscoveryUtil(String rawDockerNetworkNames, 
+		      String rawDockerServiceLabels,
+			  String rawDockerServiceNames, 
+			  Integer hazelcastPeerPort,
+			  boolean bindSocketChannel) throws Exception {
+		
+	}
 	
 	public SwarmDiscoveryUtil(String rawDockerNetworkNames, 
 						      String rawDockerServiceLabels,
 							  String rawDockerServiceNames, 
 							  Integer hazelcastPeerPort,
-							  boolean bindSocketChannel) throws Exception {
+							  boolean bindSocketChannel,
+							  URI swarmMgrUri,
+							  boolean skipVerifySsl) throws Exception {
+		
+		this.swarmMgrUri = swarmMgrUri;
+		this.skipVerifySsl = skipVerifySsl;
 
 		this.bindSocketChannel = bindSocketChannel;
 		this.rawDockerNetworkNames = rawDockerNetworkNames;
@@ -244,12 +262,22 @@ public class SwarmDiscoveryUtil {
 		try {
 
 			// our client
-			final DockerClient docker = DefaultDockerClient.fromEnv().build();
+			DockerClient docker = null;
+			
+			if (skipVerifySsl) {
+				docker = DefaultDockerClient.fromEnv()
+							.dockerCertificates(new SkipVerifyDockerCertificatesStore())
+							.uri(this.swarmMgrUri).build();
+			} else {
+				docker = DefaultDockerClient.fromEnv().build();
+			}
 			
 			StringBuffer sb = new StringBuffer("discoverNodes(): via DOCKER_HOST: " + docker.getHost() + "\n");
 			sb.append("docker-network-names = " + this.getRawDockerNetworkNames() + "\n");
 			sb.append("docker-service-names = " + this.getRawDockerServiceNames() + "\n");
 			sb.append("docker-service-labels = " + this.getRawDockerServiceLabels() + "\n");
+			sb.append("swarmMgrUri = " + this.swarmMgrUri.toString() + "\n");
+			sb.append("skipVerifySsl = " + this.skipVerifySsl + "\n");
 			logger.info(sb.toString());
 
 			// our discovered containers

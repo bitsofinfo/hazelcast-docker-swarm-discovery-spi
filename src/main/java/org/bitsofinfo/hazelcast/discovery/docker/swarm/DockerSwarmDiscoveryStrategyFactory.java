@@ -17,7 +17,9 @@ public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFac
 						DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_LABELS,
 						DockerSwarmDiscoveryConfiguration.DOCKER_NETWORK_NAMES,
 						DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_NAMES,
-						DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT
+						DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT,
+						DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI,
+						DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL
 					});
 
 	public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {

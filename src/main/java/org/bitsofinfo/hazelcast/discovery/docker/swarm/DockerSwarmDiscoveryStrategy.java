@@ -1,5 +1,6 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,13 +41,25 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 		String rawDockerServiceLabels = getOrDefault("docker-service-labels",  DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_LABELS, null);
 		String rawDockerServiceNames = getOrDefault("docker-service-names",  DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_NAMES, null);
 		Integer hazelcastPeerPort = getOrDefault("hazelcast-peer-port",  DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT, 5701);
-
+		String swarmMgrUri = getOrDefault("swarm-mgr-uri",  DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI, null);
+		Boolean skipVerifySsl = getOrDefault("skip-verify-ssl",  DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL, false);
+		
 		try {
+			
+			URI swarmMgr = null;
+			if (swarmMgrUri == null && System.getenv("DOCKER_HOST") != null) {
+				swarmMgr = new URI(System.getenv("DOCKER_HOST"));
+			} else {
+				swarmMgr = new URI(swarmMgrUri);
+			}
+			
 			this.swarmDiscoveryUtil = new SwarmDiscoveryUtil( rawDockerNetworkNames,
 															 rawDockerServiceLabels,
 															 rawDockerServiceNames,
 															 hazelcastPeerPort,
-															 false); // dont bind channel, the AddressPicker does this
+															 false, // dont bind channel, the AddressPicker does this
+															 swarmMgr,
+															 skipVerifySsl); 
 		} catch(Exception e) {
 			String msg = "Unexpected error configuring SwarmDiscoveryUtil: " + e.getMessage();
 			logger.severe(msg,e);

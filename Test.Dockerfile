@@ -1,6 +1,6 @@
 FROM java:8u111-jre-alpine
 
-ADD build/libs/hazelcast-docker-swarm-discovery-spi-1.0-RC4-all.jar /test.jar
+ADD build/libs/hazelcast-docker-swarm-discovery-spi-1.0-RC5-all.jar /test.jar
 
 
 # Create our entrypoint

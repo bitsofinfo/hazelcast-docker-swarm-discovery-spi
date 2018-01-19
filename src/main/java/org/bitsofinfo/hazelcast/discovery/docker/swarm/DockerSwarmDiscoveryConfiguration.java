@@ -29,5 +29,13 @@ public class DockerSwarmDiscoveryConfiguration {
 	// port that is reachable by any other container on the same overlay network
 	public static final PropertyDefinition HAZELCAST_PEER_PORT =
 			new SimplePropertyDefinition("hazelcast-peer-port", true, PropertyTypeConverter.INTEGER);
+	
+	// Swarm MGR URI, overrides DOCKER_HOST
+	public static final PropertyDefinition SWARM_MGR_URI =
+			new SimplePropertyDefinition("swarm-mgr-uri", true, PropertyTypeConverter.STRING);
+	
+	// Skip Verify SSL
+	public static final PropertyDefinition SKIP_VERIFY_SSL =
+			new SimplePropertyDefinition("skip-verify-ssl", true, PropertyTypeConverter.BOOLEAN);
 
 }
