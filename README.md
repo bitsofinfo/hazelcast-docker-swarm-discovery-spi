@@ -183,7 +183,7 @@ docker service create \
     -DdockerServiceNames=myHzService1 \
     -DdockerServiceLabels=myLabel1,myLabel2 \
     -DhazelcastPeerPort=5701 \
-    -DswarmMgrUri=https://[swarmmgr]:[port] \
+    -DswarmMgrUri=http(s)://[swarmmgr]:[port] \
     -DskipVerifySsl=[true|false] \
     -jar /test.jar
 ```
