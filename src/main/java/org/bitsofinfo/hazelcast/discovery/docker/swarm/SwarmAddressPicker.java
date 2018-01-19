@@ -55,7 +55,7 @@ public class SwarmAddressPicker implements AddressPicker {
         final Integer hazelcastPeerPort = Integer.valueOf(System.getProperty(PROP_HAZELCAST_PEER_PORT));
        
        String swarmMgrUri = System.getProperty(PROP_SWARM_MGR_URI);
-        if (swarmMgrUri == null) {
+        if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
         		swarmMgrUri = System.getenv("DOCKER_HOST");
         }
         
@@ -90,7 +90,7 @@ public class SwarmAddressPicker implements AddressPicker {
 
         try {
             URI swarmMgr = null;
-            if (swarmMgrUri == null) {
+            if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
             		swarmMgr = new URI(System.getenv("DOCKER_HOST")); 
             }
             
