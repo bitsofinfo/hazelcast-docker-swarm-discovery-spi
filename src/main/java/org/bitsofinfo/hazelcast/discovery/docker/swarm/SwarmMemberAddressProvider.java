@@ -94,6 +94,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         	 	 URI swarmMgr = null;
              if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
              	swarmMgr = new URI(System.getenv("DOCKER_HOST")); 
+             } else {
+            	 	swarmMgr = new URI(swarmMgrUri);
              }
              
             this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(
