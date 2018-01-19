@@ -23,6 +23,7 @@ import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.Address;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DefaultDockerClient.Builder;
 import com.spotify.docker.client.DockerClient.ListNetworksParam;
 import com.spotify.docker.client.messages.Network;
 import com.spotify.docker.client.messages.swarm.EndpointVirtualIp;
@@ -93,6 +94,13 @@ public class SwarmDiscoveryUtil {
 		
 		this.swarmMgrUri = swarmMgrUri;
 		this.skipVerifySsl = skipVerifySsl;
+		
+		
+		if (this.swarmMgrUri == null) {
+			if (System.getenv("DOCKER_HOST") != null && System.getenv("DOCKER_HOST").trim().isEmpty()) {
+				this.swarmMgrUri = new URI(System.getenv("DOCKER_HOST"));
+			}
+		}
 
 		this.bindSocketChannel = bindSocketChannel;
 		this.rawDockerNetworkNames = rawDockerNetworkNames;
@@ -272,13 +280,17 @@ public class SwarmDiscoveryUtil {
 			// our client
 			DockerClient docker = null;
 			
+			Builder dockerBuilder = DefaultDockerClient.fromEnv();
+			
 			if (skipVerifySsl) {
-				docker = DefaultDockerClient.fromEnv()
-							.dockerCertificates(new SkipVerifyDockerCertificatesStore())
-							.uri(this.swarmMgrUri).build();
-			} else {
-				docker = DefaultDockerClient.fromEnv().build();
+				dockerBuilder.dockerCertificates(new SkipVerifyDockerCertificatesStore());
 			}
+			
+			if (this.swarmMgrUri != null) {
+				dockerBuilder.uri(this.swarmMgrUri);
+			}
+					
+			docker = dockerBuilder.build();
 			
 			StringBuffer sb = new StringBuffer("discoverNodes(): via DOCKER_HOST: " + docker.getHost() + "\n");
 			sb.append("docker-network-names = " + this.getRawDockerNetworkNames() + "\n");
