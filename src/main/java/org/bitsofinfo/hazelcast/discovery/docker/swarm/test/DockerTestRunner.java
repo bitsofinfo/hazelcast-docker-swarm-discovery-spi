@@ -48,8 +48,14 @@ public class DockerTestRunner {
 			
 			HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 					.newHazelcastInstance(conf,"hazelcast-docker-swarm-discovery-spi-example",new DefaultNodeContext());
-			
-		
+		} else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("dockerDNSRR")) {
+			Config conf =
+				new ClasspathXmlConfig(
+					"hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml"
+				);
+
+			HazelcastInstance hazelcastInstance =
+				HazelcastInstanceFactory.newHazelcastInstance(conf);
 		}
 		
 		

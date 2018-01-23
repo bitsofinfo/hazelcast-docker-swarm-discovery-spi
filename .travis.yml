@@ -74,6 +74,55 @@ script:
   
   # Remove the service
   - docker service rm hazelcast-docker-swarm-discovery-spi-test
-  
+
+  # Test Docker Swarm DNSRR discovery
+  - > 
+    docker service create
+    --network hazelcast-docker-swarm-discovery-spi-test
+    --name hazelcast-docker-swarm-dnsrr-discovery-spi-service
+    --endpoint-mode dnsrr
+    hazelcast-docker-swarm-discovery-spi-test
+    java
+    -Dswarm-bind-method=dockerDNSRR
+    -DserviceName=hazelcast-docker-swarm-dnsrr-discovery-spi-service
+    -DservicePort=5701
+    -DpeerServicesCsv=hazelcast-docker-swarm-dnsrr-discovery-spi-service:5701
+    -Dhazelcast.diagnostics.enabled=true
+    -jar /test.jar
+
+  # Wait for startup
+  - docker service ls
+  - sleep 10
+  - docker service logs hazelcast-docker-swarm-dnsrr-discovery-spi-service
+
+  # Dump logs of first container and scale to 10
+  - docker ps
+  - export CONTAINER1_ID=`docker ps -f "name=hazelcast-docker-swarm-dnsrr-discovery-spi-service.1" --format "{{.ID}}"`
+  - docker logs $CONTAINER1_ID
+  - docker service scale hazelcast-docker-swarm-dnsrr-discovery-spi-service=10
+
+  # Let cluster form w/ 10 nodes and verify there are 10 hz members
+  - sleep 80
+  - docker ps
+  - docker logs $CONTAINER1_ID
+  - export CONTAINER10_ID=`docker ps -f "name=hazelcast-docker-swarm-dnsrr-discovery-spi-service.10" --format "{{.ID}}"`
+  - docker logs $CONTAINER10_ID
+  - export MEMBER_TOTAL=`docker logs --tail 150 $CONTAINER1_ID 2>&1 | grep "Members {size:10"`
+  - echo $MEMBER_TOTAL
+  - if [[ "$MEMBER_TOTAL" == 'Members {size:10'* ]]; then echo "OK"; else exit 1; fi
+
+  # Scale cluster down to 2 nodes, wait 2 minutes then verify only 2 nodes
+  - docker service scale hazelcast-docker-swarm-dnsrr-discovery-spi-service=2
+  - sleep 80
+  - docker ps
+  - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-dnsrr-discovery-spi-service." --format "{{.ID}}"`
+  - CONTAINERX_ID=`echo $CONTAINERX_ID | awk '{ print $1 }'`
+  - docker logs --tail 50 $CONTAINERX_ID
+  - export MEMBER_TOTAL=`docker logs --tail 150 $CONTAINERX_ID 2>&1 | grep "Members {size:2"`
+  - echo $MEMBER_TOTAL
+  - if [[ "$MEMBER_TOTAL" == 'Members {size:2'* ]]; then echo "OK"; else exit 1; fi
+
+  - docker service rm hazelcast-docker-swarm-dnsrr-discovery-spi-service
+
 jdk:
   - oraclejdk8
