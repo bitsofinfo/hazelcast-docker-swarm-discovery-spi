@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast
+    xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.10.xsd"
+    xmlns="http://www.hazelcast.com/schema/config"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+    <properties>
+        <property name="hazelcast.discovery.enabled">true</property>
+    </properties>
+
+    <network>
+        <port auto-increment="false">${servicePort}</port>
+        <member-address-provider enabled="true">
+            <class-name>org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.DockerDNSRRMemberAddressProvider</class-name>
+            <properties>
+                <property name="serviceName">${serviceName}</property>
+                <property name="servicePort">${servicePort}</property>
+            </properties>
+        </member-address-provider>
+        <join>
+            <multicast enabled="false"/>
+            <aws enabled="false"/>
+            <tcp-ip enabled="false" />
+            <discovery-strategies>
+                <discovery-strategy
+                    enabled="true"
+                    class="org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.discovery.DockerDNSRRDiscoveryStrategy"
+                >
+                    <properties>
+                        <property name="peerServicesCsv">${peerServicesCsv}</property>
+                    </properties>
+                </discovery-strategy>
+            </discovery-strategies>
+        </join>
+    </network>
+</hazelcast>
