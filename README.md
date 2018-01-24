@@ -28,6 +28,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC6): **For Hazelcast 3.9+ only**. Added support for swarm dnsrr based discovery, thanks [Cardds](https://github.com/Cardds), https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/10
+
 * [1.0-RC5](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC5): **For Hazelcast 3.9+ only**. Added support for SSL swarm manager URIs and skip verify for SSL.
 
 * [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI, as alternative option to using `SwarmAddressPicker`
@@ -57,7 +59,7 @@ repositories {
 
 dependencies {
 	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC5'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC6'
 }
 ```
 
@@ -68,7 +70,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC5</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC6</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
     </dependency>
 </dependencies>
 
@@ -131,7 +133,7 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 ### Option 2: Swarm DNSRR network binding via DockerDNSRRMemberAddressProvider
 
-*Note this is only available for Hazelcast 3.9+. apps*
+*Note this is only available in RC6+ and only for Hazelcast 3.9+. apps*
 
 Configure your hazelcast.xml configuration file to use the `DockerDNSRRDiscoveryStrategy` and `DockerDNSRRMemberAddressProvider` (similar to the below): [See hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml](src/main/resources/hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml) for an example with documentation of options.
 
