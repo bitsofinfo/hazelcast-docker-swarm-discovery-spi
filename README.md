@@ -100,6 +100,16 @@ Hazelcast applications that use this discovery SPI will discover one another whe
 
     2. Next hazelcast invokes the SPI `discoverMembers()` to determine all peer docker service tasks (containers) ip addresses and attempts to connect to them to form the cluster connecting to the configured `hazelcastPeerPort` (default 5701)
 
+Alternatively, discovery can be limited to the bounds of the docker cluster using [docker endpoint_mode dnsrr](https://docs.docker.com/engine/swarm/networking/#configure-service-discovery).
+
+* Launch your docker service with its service name and target overlay network name with `endpoint_mode` set to `dnsrr`. In addition, specify additional ENVIRONMENT variables via `-e` named `serviceName`, `servicePort`, and `peerServicesCsv`
+
+    1. Leverages the custom `MemberAddressProvider` SPI implementation (`DockerDNSRRMemberAddressProvider`) to resolve the DNS entries for its own service, `serviceName`, and port, `servicePort`, to IP addresses within the docker network.
+
+    2. Next, hazelcast invokes the SPI DiscoveryStrategy to resolve the internal docker DNS entries for all services that the hazelcast instance should consider its peers, and connects to them over the ports specified in `peerServicesCsv` (default 5701)
+
+    *Note: `peerServicesCsv` must contain a reference to the `serviceName` and `servicePort`, if the service is meant to cluster with itself*
+
 ## <a id="usage"></a>Usage
 
 Ensure your project has the `hazelcast-docker-swarm-discovery-spi` artifact dependency declared in your maven pom or gradle build file as described above. Or build the jar yourself and ensure the jar is in your project's classpath.
@@ -119,7 +129,21 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 ```
 
-### Option 2: Local network binding via SwarmAddressPicker
+### Option 2: Swarm DNSRR network binding via DockerDNSRRMemberAddressProvider
+
+*Note this is only available for Hazelcast 3.9+. apps*
+
+Configure your hazelcast.xml configuration file to use the `DockerDNSRRDiscoveryStrategy` and `DockerDNSRRMemberAddressProvider` (similar to the below): [See hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml](src/main/resources/hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml) for an example with documentation of options.
+
+```
+Config conf =new ClasspathXmlConfig("yourHzConfig.xml");
+
+HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
+        .newHazelcastInstance(conf,"myAppName",new DefaultNodeContext());
+
+```
+
+### Option 3: Local network binding via SwarmAddressPicker
 
 *Note this the preferred method for Hazecast <= 3.8.x apps*
 
@@ -146,7 +170,7 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 ```
 
-### Once your local network binding option is chosen, proceed:
+### If a local network binding option is chosen, proceed with the below:
 
 * Create a Docker image for your application that uses Hazelcast
 
@@ -251,6 +275,80 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
 </network>
 ```
 
+### If Swarm DNSRR network binding option is chosen, proceed with the below:
+
+* Create a Docker image for your application that uses Hazelcast
+
+* Create an overlay network for your service, `docker network create -d overlay [mynetname]`
+
+* Launch your services via `docker service create` against your Docker Swarm cluster:
+
+Note this example command assumes an entrypoint script exists that execs the `java` command.
+
+```
+docker service create \
+    --network [mynetname] \
+    --name myHzService1 \
+    --endpoint-mode dnsrr
+    [yourappimage] \
+    java
+    -DserviceName=myHzService1
+    -DservicePort=5701
+    -DpeerServicesCsv=myHzService1:5701
+    -jar /test.jar
+```
+
+Example configuration, full text at [hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml](src/main/resources/META-INF/hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml)
+
+```
+    <properties>
+        <!-- Explicitly enable hazelcast discovery join methods -->
+        <property name="hazelcast.discovery.enabled">true</property>
+    </properties>
+
+    <network>
+        <!--
+            Auto-increment is turned off for the port; docker containers will
+            always be available at the available in-network ports.
+        -->
+        <port auto-increment="false">${servicePort}</port>
+        <member-address-provider enabled="true">
+            <class-name>org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.DockerDNSRRMemberAddressProvider</class-name>
+            <properties>
+                <!-- Name of the docker service that this instance is running in -->
+                <property name="serviceName">${serviceName}</property>
+
+                <!-- Internal port that hazelcast is listening on -->
+                <property name="servicePort">${servicePort}</property>
+            </properties>
+        </member-address-provider>
+        <join>
+            <!-- Explicitly disable other cluster join methods -->
+            <multicast enabled="false"/>
+            <aws enabled="false"/>
+            <tcp-ip enabled="false" />
+
+            <discovery-strategies>
+                <discovery-strategy
+                    enabled="true"
+                    class="org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.discovery.DockerDNSRRDiscoveryStrategy"
+                >
+                    <properties>
+                        <!--
+                            Comma separated list of docker services and associated ports 
+                            to be considered peers of this service.
+
+                            Note, this must include itself (the definition of
+                            serviceName and servicePort) if the service is to
+                            cluster with other instances of this service.
+                        -->
+                        <property name="peerServicesCsv">${peerServicesCsv}</property>
+                    </properties>
+                </discovery-strategy>
+            </discovery-strategies>
+        </join>
+    </network>
+```
 
 ## <a id="building"></a>Building from source
 
