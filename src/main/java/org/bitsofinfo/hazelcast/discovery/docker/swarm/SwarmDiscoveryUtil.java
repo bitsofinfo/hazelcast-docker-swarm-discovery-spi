@@ -32,6 +32,7 @@ import com.spotify.docker.client.messages.swarm.Service;
 import com.spotify.docker.client.messages.swarm.Service.Criteria;
 import com.spotify.docker.client.messages.swarm.Task;
 import com.spotify.docker.client.messages.swarm.TaskStatus;
+import java.net.SocketException;
 
 /**
  * SwarmDiscoveryUtil is the workhorse of this discovery SPI implementation
@@ -342,6 +343,34 @@ public class SwarmDiscoveryUtil {
 	}
 	
 	/**
+	 * Test the {@link NetworkAttachment} against the local {@link NetworkInterface}s.
+	 * This returns true if the {@link NetworkAttachment} contains an address that is 
+	 * in {@link NetworkInterface#getNetworkInterfaces()}
+	 * 
+	 * @param networkAttachment 
+	 * @return true if the given {@link NetworkAttachment} is this local node
+	 * @throws SocketException 
+	 */
+	private boolean isSelf(NetworkAttachment networkAttachment) throws SocketException{
+	  for(String addrWithSubnet : networkAttachment.addresses()){
+		String addr = addrWithSubnet.split("/")[0];
+		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+        while (networkInterfaces.hasMoreElements()) {
+            NetworkInterface ni = networkInterfaces.nextElement();
+            Enumeration<InetAddress> e = ni.getInetAddresses();
+            while (e.hasMoreElements()) {
+                InetAddress inetAddress = e.nextElement();
+				//Split the networkAttachment address by the "/" since it contains the subnet
+				if(inetAddress.getHostAddress().equals(addr)){
+				  return true;
+				}
+			}
+		}
+	  }
+	  return false;
+	}
+	
+	/**
 	 * Discover containers on the relevant networks that match the given
 	 * service criteria. 
 	 * 
@@ -385,9 +414,12 @@ public class SwarmDiscoveryUtil {
 							// the service.. then lets treat it as a "discovered container"
 							// that we actually care about
 							if (networkAttachment.network().id().equals(vip.networkId())) {
-																
+								boolean foundSelfService = isSelf(networkAttachment);
+								if(foundSelfService){
+								  logger.info("Found own task, adding regardless of state.");
+								}
 								// if container is in status 'running', then add it!									
-								if (TaskStatus.TASK_STATE_RUNNING.equals(task.status().state())) {
+								if (TaskStatus.TASK_STATE_RUNNING.equals(task.status().state()) || foundSelfService) {
 								
 									logger.info("Found qualifying docker service task[taskId: " +task.id() + ", container: "+task.status().containerStatus().containerId()+ ", state: " + task.status().state()+ "] "
 											+ "on network: " + network.name() +"["+ network.id() + ":" + networkAttachment.addresses().iterator().next() +"]");																
