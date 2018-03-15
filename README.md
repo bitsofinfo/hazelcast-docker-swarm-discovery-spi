@@ -22,7 +22,7 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 
 ## <a id="status"></a>Status
 
-This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x Stable releases. See **Releases** below for compatible jars. For use only on Docker 1.12+ "swarm mode" environments. 
+This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x Stable releases. See **Releases** below for compatible jars. For use only on Docker 1.12+ "swarm mode" environments.
 
 ## <a id="releases"></a>Releases
 
@@ -94,9 +94,9 @@ dependencies {
 
 Hazelcast applications that use this discovery SPI will discover one another when deployed as Docker services in the following way.
 
-* Launch your docker service with its service name and target overlay network name. In addition specify additional ENVIRONMENT variables via `-e` named `dockerNetworkNames`, `dockerServiceNames` and optionally `dockerServiceLabels`. These variables will be consumed by the discovery SPI. The `DOCKER_HOST` environment variable for the container should also be set to a name that resolves to one or more swarm manager nodes, via the format `tcp://`, `http://` or `https://`
+* Launch your docker service with its target overlay network name and either its service name or service labels. In addition, specify additional ENVIRONMENT variables via `-e` named `dockerNetworkNames` and optionally `dockerServiceNames` and `dockerServiceLabels`. You should have at least one of `dockerServiceNames` or `dockerServiceLabels` defined. These variables will be consumed by the discovery SPI. The `DOCKER_HOST` environment variable for the container should also be set to a name that resolves to one or more swarm manager nodes, via the format `tcp://`, `http://` or `https://`
 
-* The Docker Swarm Discovery SPI consumes from the `DOCKER_HOST`, `dockerNetworkNames`, `dockerServiceNames`, optionally `dockerServiceLabels` and `hazelcastPeerPort` and begins the following process.
+* The Docker Swarm Discovery SPI consumes from the `DOCKER_HOST`, `dockerNetworkNames`, optionally `dockerServiceNames`, `dockerServiceLabels` and `hazelcastPeerPort` and begins the following process.
 
     1. Leverages the custom `MemberAddressProvider` SPI implementation (`SwarmMemberAddressProvider`) or `SwarmAddressPicker` hack (read below!) to talk to the *$DOCKER_HOST* `/networks`, `/services` and `/tasks` APIs to determine the current node's IP address on the docker network, and bind hazelcast on `hazelcastPeerPort` to that address.
 
@@ -188,12 +188,14 @@ Note this example command assumes an entrypoint script exists that execs the `ja
 docker service create \
     --network [mynet] \
     --name myHzService1 \
+    -l myLabel1=value1 \
+    -l myLabel2=value2 \
     -e "DOCKER_HOST=http://[swarmmgr]:[port]" \
     [yourappimage] \
     java \
     -DdockerNetworkNames=[mynet] \
     -DdockerServiceNames=myHzService1 \
-    -DdockerServiceLabels=myLabel1,myLabel2 \
+    -DdockerServiceLabels="myLabel1=value1,myLabel2=value2" \
     -DhazelcastPeerPort=5701 \
     -jar /test.jar
 ```
@@ -203,11 +205,13 @@ docker service create \
 docker service create \
     --network [mynet] \
     --name myHzService1 \
+    -l myLabel1=value1 \
+    -l myLabel2=value2 \
     [yourappimage] \
     java \
     -DdockerNetworkNames=[mynet] \
     -DdockerServiceNames=myHzService1 \
-    -DdockerServiceLabels=myLabel1,myLabel2 \
+    -DdockerServiceLabels="myLabel1=value1,myLabel2=value2" \
     -DhazelcastPeerPort=5701 \
     -DswarmMgrUri=http(s)://[swarmmgr]:[port] \
     -DskipVerifySsl=[true|false] \
@@ -234,7 +238,7 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
         <member-address-provider enabled="true">
         		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
         </member-address-provider>
-        
+
          <!-- Enable a Docker Swarm based discovery strategy -->
          <discovery-strategies>
 
@@ -252,10 +256,10 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
                   <!-- Comma delimited list of relevant Docker service label=values
                        to find tasks/containers on the above networks -->
                   <property name="docker-service-labels">${dockerServiceLabels}</property>
-                  
+
                   <!-- 1.0-RC5+ ONLY: Swarm Manager URI (overrides DOCKER_HOST) -->
                   <property name="swarm-mgr-uri">${swarmMgrUri}</property>
-                  
+
                   <!-- 1.0-RC5+ ONLY: If Swarm Mgr URI is SSL, to enable skip-verify for it -->
                   <property name="skip-verify-ssl">${skipVerifySsl}</property>
 
@@ -337,7 +341,7 @@ Example configuration, full text at [hazelcast-docker-swarm-dnsrr-discovery-spi-
                 >
                     <properties>
                         <!--
-                            Comma separated list of docker services and associated ports 
+                            Comma separated list of docker services and associated ports
                             to be considered peers of this service.
 
                             Note, this must include itself (the definition of

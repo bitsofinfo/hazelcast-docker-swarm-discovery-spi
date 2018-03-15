@@ -22,7 +22,7 @@ public class DockerSwarmDiscoveryConfiguration {
 
 	// comma delimited list of docker service names to match
 	public static final PropertyDefinition DOCKER_SERVICE_NAMES =
-			new SimplePropertyDefinition("docker-service-names", PropertyTypeConverter.STRING);
+			new SimplePropertyDefinition("docker-service-names", true, PropertyTypeConverter.STRING);
 
 	// the configured hazelcast port that all instances are listening on
 	// this is not the published/exposed docker port, but just the hazelcast listening
