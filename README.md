@@ -28,6 +28,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC7](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC7): **For Hazelcast 3.9+ only**. Incorporated PRs #14 (initial scan self check), #15 (docker service names optional)
+
 * [1.0-RC6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC6): **For Hazelcast 3.9+ only**. Added support for swarm dnsrr based discovery, thanks [Cardds](https://github.com/Cardds), https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/10
 
 * [1.0-RC5](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC5): **For Hazelcast 3.9+ only**. Added support for SSL swarm manager URIs and skip verify for SSL.
