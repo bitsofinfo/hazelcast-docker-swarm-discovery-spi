@@ -315,6 +315,9 @@ public class SwarmDiscoveryUtil {
 					logger.info("Found relevant docker network: " + network.name() +"["+ network.id() + "]");
 				}
 			}
+		        if(relevantNetIds2Networks.size() == 0) {
+		            logger.warning("Did not find relevant docker network for: " + this.getDockerNetworkNames());
+		        }
 
 			// Collect all relevant containers for services with services-names on the relevant networks
 			for (String dockerServiceName : this.getDockerServiceNames()) {
