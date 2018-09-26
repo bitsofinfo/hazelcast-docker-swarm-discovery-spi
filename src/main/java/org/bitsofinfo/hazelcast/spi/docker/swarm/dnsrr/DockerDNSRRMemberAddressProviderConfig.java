@@ -33,4 +33,9 @@ public class DockerDNSRRMemberAddressProviderConfig {
      *       the network configuration as of the time of writing this.
      */
     public static final String SERVICEPORT = "servicePort";
+
+    /**
+     * Property definition to load exposed network-interface-name to bind
+     */
+    public static final String NETWORK_INTERFACE_NAME = "networkInterfaceName";
 }
