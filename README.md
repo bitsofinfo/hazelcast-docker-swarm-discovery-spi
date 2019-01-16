@@ -28,7 +28,7 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
-* [1.0-RC9] Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
+* [1.0-RC9](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC9) Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
 
 * [1.0-RC8](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC8): **For Hazelcast 3.9+ only**. Incorporated PRs #18 (adjust depedencies declaration), #17 
 
