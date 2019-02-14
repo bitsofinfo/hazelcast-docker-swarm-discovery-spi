@@ -28,6 +28,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC10](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC10) **For Hazelcast 3.9+ only**. Better logging in: `DockerDNSRRMemberAddressProvider` for https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/25
+
 * [1.0-RC9](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC9) **For Hazelcast 3.9+ only**. Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
 
 * [1.0-RC8](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC8): **For Hazelcast 3.9+ only**. Incorporated PRs #18 (adjust depedencies declaration), #17 
@@ -65,7 +67,7 @@ repositories {
 
 dependencies {
 	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC8'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC10'
 }
 ```
 
@@ -76,7 +78,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC8</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC10</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
     </dependency>
 </dependencies>
 
