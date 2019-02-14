@@ -100,6 +100,9 @@ public class DockerDNSRRMemberAddressProvider
 
                     while(networkInterfaceAddresses.hasMoreElements()) {
                         address = networkInterfaceAddresses.nextElement();
+                        if(address != null) {
+                            logger.info("Checking address " + address.toString());
+                        }
 
                         if(
                             potentialInetAddresses.contains(address)
