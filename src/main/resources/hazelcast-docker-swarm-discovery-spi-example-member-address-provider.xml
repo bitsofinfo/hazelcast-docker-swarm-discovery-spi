@@ -25,6 +25,22 @@
         <!-- Enable a Docker Swarm based MemberAddressProvider (Hazelcast 3.9+ only) -->
         <member-address-provider enabled="true">
         		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
+        		
+        		<!-- OPTIONAL: 
+        		
+        			 The following will be passed as a java.util.Properties to
+        		     the SwarmMemberAddressProvider(java.util.Properties) constructor.
+        		     
+        		     If you do not defined these here in XML, by default they will be fetched via
+        		     -D java System.properties by the same names via the default no-arg constructor
+        		     of SwarmMemberAddressProvider
+        		     
+        		    <property name="dockerNetworkNames">...</property>
+                <property name="dockerServiceLabels">...</property>
+                <property name="dockerServiceNames">...</property>
+                <property name="hazelcastPeerPort">...</property>
+        		 -->
+        		
         </member-address-provider>
         
         <join> 

@@ -28,6 +28,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC11](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC11) **For Hazelcast 3.9+ only**. Added `java.util.Properties` based constructor for `SwarmMemberAddressProvider`
+
 * [1.0-RC10](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC10) **For Hazelcast 3.9+ only**. Better logging in: `DockerDNSRRMemberAddressProvider` for https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/25
 
 * [1.0-RC9](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC9) **For Hazelcast 3.9+ only**. Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
@@ -67,7 +69,7 @@ repositories {
 
 dependencies {
 	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC10'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC11'
 }
 ```
 
@@ -78,7 +80,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC10</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC11</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
     </dependency>
 </dependencies>
 
@@ -245,6 +247,21 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
 		<!-- for Hazelcast 3.9+ apps only, comment out for <= 3.8.x apps)
         <member-address-provider enabled="true">
         		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
+        		
+        		<!-- OPTIONAL: 
+        		
+        			The following will be passed as a java.util.Properties to
+        		     the SwarmMemberAddressProvider(java.util.Properties) constructor.
+        		     
+        		     If you do not defined these here in XML, by default they will be fetched via
+        		     -D java System.properties by the same names via the default no-arg constructor
+        		     of SwarmMemberAddressProvider
+        		     
+        		     <property name="dockerNetworkNames">...</property>
+                   <property name="dockerServiceLabels">...</property>
+                   <property name="dockerServiceNames">...</property>
+                   <property name="hazelcastPeerPort">...</property>
+        		 -->
         </member-address-provider>
 
          <!-- Enable a Docker Swarm based discovery strategy -->

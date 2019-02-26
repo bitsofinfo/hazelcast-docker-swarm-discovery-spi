@@ -3,6 +3,7 @@ package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.channels.ServerSocketChannel;
+import java.util.Properties;
 
 import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.logging.ILogger;
@@ -52,7 +53,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
      * Constructor
      */
     public SwarmMemberAddressProvider() {
-    	final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
+    	
+    		final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
         final String dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
         final String dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
         final Integer hazelcastPeerPort = Integer.valueOf(System.getProperty(PROP_HAZELCAST_PEER_PORT));
@@ -69,19 +71,59 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
 
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
+    
+    /**
+     * If you do not provide any properties, the class may have either a 
+     * no-arg constructor or a constructor accepting a single java.util.Properties instance. 
+     * On the other hand, if you do provide properties in the configuration, 
+     * the class must have a constructor accepting a single java.util.Properties instance.
+     * 
+     * See: https://docs.hazelcast.org/docs/3.9.4/manual/html-single/index.html#member-address-provider-spi
+     * @param properties
+     */
+    public SwarmMemberAddressProvider(Properties properties) {
+    		this((String)properties.get(PROP_DOCKER_NETWORK_NAMES),
+    			 (String)properties.get(PROP_DOCKER_SERVICE_LABELS),
+    			(String)properties.get(PROP_DOCKER_SERVICE_NAMES),
+    			properties.get(PROP_HAZELCAST_PEER_PORT));
+    }
 
-    public SwarmMemberAddressProvider(final String dockerNetworkNames, final String dockerServiceLabels,
-        final String dockerServiceNames, final Integer hazelcastPeerPort) {
+    public SwarmMemberAddressProvider(final String dockerNetworkNames, 
+    									 final String dockerServiceLabels,
+    									 final String dockerServiceNames, 
+    									 final Object hazelcastPeerPort) {
 
     		String swarmMgrUri = System.getenv("DOCKER_HOST"); 
 		Boolean skipVerifySsl = false;
 		
-		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, swarmMgrUri, skipVerifySsl, hazelcastPeerPort);
+    }
+    
+    private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
+            			final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
+    		initialize(dockerNetworkNames,dockerServiceLabels,dockerServiceNames,swarmMgrUri,skipVerifySsl,hazelcastPeerPort);
     }
 
-    private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
-        final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
 
+    private void initialize(final String dockerNetworkNames, 
+    						   final String dockerServiceLabels,
+    						   final String dockerServiceNames, 
+    						   final String swarmMgrUri, 
+    						   final Boolean skipVerifySsl, 
+    						   final Object rawHazelcastPeerPort) {
+
+    	
+    		Integer hazelcastPeerPort = null;
+		if (rawHazelcastPeerPort != null) {
+			if (rawHazelcastPeerPort instanceof String) {
+				try {
+					hazelcastPeerPort = Integer.valueOf(rawHazelcastPeerPort.toString());
+				} catch(Throwable ignore) {}
+			} else if (rawHazelcastPeerPort instanceof Integer) {
+				hazelcastPeerPort = (Integer)rawHazelcastPeerPort;
+			}
+		}
+    	
         final int port;
 
         if (hazelcastPeerPort != null) {
