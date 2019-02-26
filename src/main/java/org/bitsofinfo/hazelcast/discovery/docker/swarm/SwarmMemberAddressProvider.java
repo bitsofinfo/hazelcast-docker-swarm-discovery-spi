@@ -172,13 +172,13 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     						   final Boolean skipVerifySsl, 
     						   final Object rawHazelcastPeerPort) {
     	
-    		logger.info("SwarmMemberAddressProvider.initialize() passed: " + 
-    						dockerNetworkNames + ":"+dockerNetworkNames + " " +
-    						dockerServiceLabels + ":"+dockerServiceLabels + " " +
-    						dockerServiceNames + ":"+dockerServiceNames + " " +
-    						swarmMgrUri + ":"+swarmMgrUri + " " +
-    						skipVerifySsl + ":"+skipVerifySsl + " " +
-    						rawHazelcastPeerPort + ":"+rawHazelcastPeerPort
+    		logger.info("SwarmMemberAddressProvider.initialize() passed properties: " + 
+    						"dockerNetworkNames:"+dockerNetworkNames + " " +
+    						"dockerServiceLabels:"+dockerServiceLabels + " " +
+    						"dockerServiceNames:"+dockerServiceNames + " " +
+    						"swarmMgrUri:"+swarmMgrUri + " " +
+    						"skipVerifySsl:"+skipVerifySsl + " " +
+    						"rawHazelcastPeerPort:"+rawHazelcastPeerPort
     						);
 
     	
