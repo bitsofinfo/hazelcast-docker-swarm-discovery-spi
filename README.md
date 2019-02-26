@@ -192,7 +192,7 @@ HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
 
 Note this example command assumes an entrypoint script exists that execs the `java` command. Your *DOCKER_HOST* must be accessible over http (i.e. daemons listening on the *tcp://* socket
 
-NOTE! All `-D` java System properties below can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. 
+NOTE! All `-D` java System properties below can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. You can mix/match combination of -D defined properties and those defined in Hazelcast XML. Properties defined in Hazelcast XMl take priority.
 
 
 **DOCKER_HOST non-tls**
@@ -230,7 +230,7 @@ docker service create \
     -jar /test.jar
 ```
 
-NOTE! All `-D` java System properties above can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. 
+NOTE! All `-D` java System properties above can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. You can mix/match combination of -D defined properties and those defined in Hazelcast XML. Properties defined in Hazelcast XMl take priority.
 
 Example configuration (using MemberAddressProvider for Hazelcast 3.9+): see the example: (hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml)[src/main/resources/META-INF/hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml]
 
