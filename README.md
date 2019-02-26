@@ -261,6 +261,8 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
                    <property name="dockerServiceLabels">...</property>
                    <property name="dockerServiceNames">...</property>
                    <property name="hazelcastPeerPort">...</property>
+                   <property name="swarmMgrUri">...</property>
+                   <property name="skipVerifySsl">...</property>
         		 -->
         </member-address-provider>
 

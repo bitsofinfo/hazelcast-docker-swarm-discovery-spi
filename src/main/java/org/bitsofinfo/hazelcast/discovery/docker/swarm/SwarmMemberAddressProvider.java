@@ -72,6 +72,16 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
     
+
+    public SwarmMemberAddressProvider(final String dockerNetworkNames, final String dockerServiceLabels,
+        final String dockerServiceNames, final Integer hazelcastPeerPort) {
+
+    		String swarmMgrUri = System.getenv("DOCKER_HOST"); 
+		Boolean skipVerifySsl = false;
+		
+		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+    }
+    
     /**
      * If you do not provide any properties, the class may have either a 
      * no-arg constructor or a constructor accepting a single java.util.Properties instance. 
@@ -82,10 +92,57 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
      * @param properties
      */
     public SwarmMemberAddressProvider(Properties properties) {
-    		this((String)properties.get(PROP_DOCKER_NETWORK_NAMES),
-    			 (String)properties.get(PROP_DOCKER_SERVICE_LABELS),
-    			(String)properties.get(PROP_DOCKER_SERVICE_NAMES),
-    			properties.get(PROP_HAZELCAST_PEER_PORT));
+    	
+    		String dockerNetworkNames = (String)properties.get(PROP_DOCKER_NETWORK_NAMES);
+    		if (dockerNetworkNames == null || dockerNetworkNames.trim().isEmpty()) {
+    			dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
+    		}
+    		
+    		String dockerServiceLabels = (String)properties.get(PROP_DOCKER_SERVICE_LABELS);
+    		if (dockerServiceLabels == null || dockerServiceLabels.trim().isEmpty()) {
+    			dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
+    		}
+    		
+    		String dockerServiceNames = (String)properties.get(PROP_DOCKER_SERVICE_NAMES);
+    		if (dockerServiceNames == null || dockerServiceNames.trim().isEmpty()) {
+    			dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
+    		}
+    		
+    		
+    		Object rawHazelcastPeerPort = properties.get(PROP_HAZELCAST_PEER_PORT);
+    		if (rawHazelcastPeerPort == null || rawHazelcastPeerPort.toString().trim().isEmpty()) {
+    			rawHazelcastPeerPort = System.getProperty(PROP_HAZELCAST_PEER_PORT);
+    		}
+    		Integer hazelcastPeerPort = 5701;
+    		if (rawHazelcastPeerPort instanceof String) {
+    			try {
+    				hazelcastPeerPort = Integer.valueOf(rawHazelcastPeerPort.toString());
+    			} catch(Throwable ignore) {}
+    		} else if (rawHazelcastPeerPort instanceof Integer) {
+    			hazelcastPeerPort = (Integer)rawHazelcastPeerPort;
+    		}
+    		
+    		
+    		String swarmMgrUri = (String)properties.get(PROP_SWARM_MGR_URI);
+    		if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
+    			swarmMgrUri = System.getProperty(PROP_SWARM_MGR_URI);
+    		}
+    		if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
+        		swarmMgrUri = System.getenv("DOCKER_HOST");
+        }
+    		
+    		
+    		Object rawSkipVerifySsl = properties.get(PROP_SKIP_VERIFY_SSL);
+    		if (rawSkipVerifySsl == null || rawSkipVerifySsl.toString().trim().isEmpty()) {
+    			rawSkipVerifySsl = System.getProperty(PROP_SKIP_VERIFY_SSL);
+    		}
+    		Boolean skipVerifySsl = false;
+	    if (rawSkipVerifySsl != null) {
+	    		skipVerifySsl = Boolean.valueOf(rawSkipVerifySsl.toString());
+	    }
+    		
+    	
+    		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
     public SwarmMemberAddressProvider(final String dockerNetworkNames, 
