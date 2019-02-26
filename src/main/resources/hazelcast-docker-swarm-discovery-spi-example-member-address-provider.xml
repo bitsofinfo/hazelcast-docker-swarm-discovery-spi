@@ -35,6 +35,10 @@
         		     -D java System.properties by the same names via the default no-arg constructor
         		     of SwarmMemberAddressProvider
         		     
+        		     You can mix/match combination of -D defined properties and those defined here
+        		     
+        		     Properties defined here take precedence over those defined via -D system properties
+        		     
         		    <property name="dockerNetworkNames">...</property>
                 <property name="dockerServiceLabels">...</property>
                 <property name="dockerServiceNames">...</property>
