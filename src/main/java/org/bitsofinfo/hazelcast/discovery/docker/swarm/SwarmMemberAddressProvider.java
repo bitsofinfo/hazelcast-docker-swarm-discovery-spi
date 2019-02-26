@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.logging.ILogger;
+import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.Address;
 import com.hazelcast.spi.MemberAddressProvider;
 
@@ -48,6 +49,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     public static final String PROP_SKIP_VERIFY_SSL = "skipVerifySsl";
     
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
+    
+    private ILogger logger = Logger.getLogger(SwarmMemberAddressProvider.class);
 
     /**
      * Constructor
@@ -168,6 +171,15 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     						   final String swarmMgrUri, 
     						   final Boolean skipVerifySsl, 
     						   final Object rawHazelcastPeerPort) {
+    	
+    		logger.info("SwarmMemberAddressProvider.initialize() passed: " + 
+    						dockerNetworkNames + ":"+dockerNetworkNames + " " +
+    						dockerServiceLabels + ":"+dockerServiceLabels + " " +
+    						dockerServiceNames + ":"+dockerServiceNames + " " +
+    						swarmMgrUri + ":"+swarmMgrUri + " " +
+    						skipVerifySsl + ":"+skipVerifySsl + " " +
+    						rawHazelcastPeerPort + ":"+rawHazelcastPeerPort
+    						);
 
     	
     		Integer hazelcastPeerPort = null;
