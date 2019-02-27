@@ -75,7 +75,7 @@ repositories {
 
 dependencies {
 	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC11'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC12'
 }
 ```
 
@@ -86,7 +86,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC11</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC12</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
     </dependency>
 </dependencies>
 
