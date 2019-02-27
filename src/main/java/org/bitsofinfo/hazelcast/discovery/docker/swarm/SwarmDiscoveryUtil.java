@@ -397,8 +397,7 @@ public class SwarmDiscoveryUtil {
 
 		logger.info("Number of services matching given criteria = " + services.size());
 
-		if (true || services.size() == 0) {
-			// TODO remove true once log output has been verified via Travis CI
+		if (services.size() == 0) {
 			List<Service> allServices = docker.listServices();
 
 			StringBuilder sb = new StringBuilder();
@@ -409,7 +408,7 @@ public class SwarmDiscoveryUtil {
 			}
 
 			logger.info("No service match for given criteria");
-			logger.info("allServices=[" + sb.toString() + "]");
+			logger.warning("allServices=[" + sb.toString() + "]");
 		}
 
 		for (Service service : services) {
