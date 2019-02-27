@@ -407,8 +407,8 @@ public class SwarmDiscoveryUtil {
 				delim = ",";
 			}
 
-			logger.warning("No service match for given criteria");
-			logger.info("allServices=[" + sb.toString() + "]");
+			logger.info("No service match for given criteria");
+			logger.fine("allServices=[" + sb.toString() + "]");
 		}
 
 		for (Service service : services) {
