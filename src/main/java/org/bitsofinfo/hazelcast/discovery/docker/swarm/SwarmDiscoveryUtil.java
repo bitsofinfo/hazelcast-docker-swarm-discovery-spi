@@ -398,7 +398,7 @@ public class SwarmDiscoveryUtil {
 
 		for (Service service : services) {
 
-			logger.info("Processing service with id=" + service.id());
+			logger.info("Processing service with name=" + service.spec().name());
 
 			// crawl through all VIPs the service is on
 			for (EndpointVirtualIp vip : service.endpoint().virtualIps()) {
