@@ -26,25 +26,31 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 ## <a id="releases"></a>Releases
 
+### For Hazelcast 3.9+ only (see below for <= 3.8)
+
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
-* [1.0-RC11](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC11) **For Hazelcast 3.9+ only**. Added `java.util.Properties` based constructor for `SwarmMemberAddressProvider`
+* [1.0-RC12](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC12) Additional debug logging
 
-* [1.0-RC10](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC10) **For Hazelcast 3.9+ only**. Better logging in: `DockerDNSRRMemberAddressProvider` for https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/25
+* [1.0-RC11](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC11) Added `java.util.Properties` based constructor for `SwarmMemberAddressProvider`
 
-* [1.0-RC9](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC9) **For Hazelcast 3.9+ only**. Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
+* [1.0-RC10](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC10) Better logging in: `DockerDNSRRMemberAddressProvider` for https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/25
 
-* [1.0-RC8](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC8): **For Hazelcast 3.9+ only**. Incorporated PRs #18 (adjust depedencies declaration), #17 
+* [1.0-RC9](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC9) Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
 
-* [1.0-RC7](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC7): **For Hazelcast 3.9+ only**. Incorporated PRs #14 (initial scan self check), #15 (docker service names optional)
+* [1.0-RC8](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC8): Incorporated PRs #18 (adjust depedencies declaration), #17 
 
-* [1.0-RC6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC6): **For Hazelcast 3.9+ only**. Added support for swarm dnsrr based discovery, thanks [Cardds](https://github.com/Cardds), https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/10
+* [1.0-RC7](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC7): Incorporated PRs #14 (initial scan self check), #15 (docker service names optional)
 
-* [1.0-RC5](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC5): **For Hazelcast 3.9+ only**. Added support for SSL swarm manager URIs and skip verify for SSL.
+* [1.0-RC6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC6): Added support for swarm dnsrr based discovery, thanks [Cardds](https://github.com/Cardds), https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/10
 
-* [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): **For Hazelcast 3.9+ only**. Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI, as alternative option to using `SwarmAddressPicker`
+* [1.0-RC5](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC5): Added support for SSL swarm manager URIs and skip verify for SSL.
 
-* [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): **Use with Hazelcast 3.8.x and below. Will not work with Hazelcast 3.9+.** Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
+* [1.0-RC4](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC4): Changed gradle dependencies for HZ `3.9.+` & spotify docker-client for `8.+`. Implemented new `MemberAddressProvider` SPI, as alternative option to using `SwarmAddressPicker`
+
+### For Hazelcast 3.8 and below
+
+* [1.0-RC3](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC3): Improved SwarmAddressPicker constructor [PR #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6)
 
 * [1.0-RC2](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC2): Excludes stopped tasks [#2](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/issues/2)
 
@@ -261,12 +267,14 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
         		     -D java System.properties by the same names via the default no-arg constructor
         		     of SwarmMemberAddressProvider
         		     
-        		     <property name="dockerNetworkNames">...</property>
-                   <property name="dockerServiceLabels">...</property>
-                   <property name="dockerServiceNames">...</property>
-                   <property name="hazelcastPeerPort">...</property>
-                   <property name="swarmMgrUri">...</property>
-                   <property name="skipVerifySsl">...</property>
+        		      <properties>
+	        		     <property name="dockerNetworkNames">...</property>
+	                   <property name="dockerServiceLabels">...</property>
+	                   <property name="dockerServiceNames">...</property>
+	                   <property name="hazelcastPeerPort">...</property>
+	                   <property name="swarmMgrUri">...</property>
+	                   <property name="skipVerifySsl">...</property>
+	               </properties>
         		 -->
         </member-address-provider>
 
