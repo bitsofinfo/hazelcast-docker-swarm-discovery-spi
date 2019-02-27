@@ -323,6 +323,7 @@ public class SwarmDiscoveryUtil {
 
 			// Collect all relevant containers for services with services-names on the relevant networks
 			for (String dockerServiceName : this.getDockerServiceNames()) {
+				logger.info("Invoking criteria-based container discovery for dockerServiceName=" + dockerServiceName);
 				discoveredContainers.addAll(
 						discoverContainersViaCriteria(docker,
 										   relevantNetIds2Networks,
