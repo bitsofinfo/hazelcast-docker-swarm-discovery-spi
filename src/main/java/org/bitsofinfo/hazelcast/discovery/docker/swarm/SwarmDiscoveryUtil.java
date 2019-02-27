@@ -6,14 +6,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.channels.ServerSocketChannel;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -396,6 +389,21 @@ public class SwarmDiscoveryUtil {
 		List<Service> services = docker.listServices(criteria);
 
 		logger.info("Number of services matching given criteria = " + services.size());
+
+		if (true || services.size() == 0) {
+			// TODO remove true once log output has been verified via Travis CI
+			List<Service> allServices = docker.listServices();
+
+			StringBuilder sb = new StringBuilder();
+			String delim = "";
+			for (Service s : allServices) {
+				sb.append(delim).append(s.spec().name());
+				delim = ",";
+			}
+
+			logger.info("No service match for given criteria");
+			logger.info("allServices=[" + sb.toString() + "]");
+		}
 
 		for (Service service : services) {
 
