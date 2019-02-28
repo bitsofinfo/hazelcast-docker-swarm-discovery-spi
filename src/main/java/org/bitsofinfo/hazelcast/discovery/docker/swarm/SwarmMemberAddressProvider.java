@@ -48,6 +48,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     public static final String PROP_SWARM_MGR_URI = "swarmMgrUri";
     public static final String PROP_SKIP_VERIFY_SSL = "skipVerifySsl";
     
+    public static final String PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY = "logAllServiceNamesOnFailedDiscovery";
+    
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
     
     private ILogger logger = Logger.getLogger(SwarmMemberAddressProvider.class);
@@ -71,18 +73,25 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         if (System.getProperty(PROP_SKIP_VERIFY_SSL) != null) {
         		skipVerifySsl = Boolean.valueOf(System.getProperty(PROP_SKIP_VERIFY_SSL));
         }
+        
+        Boolean logAllServiceNamesOnFailedDiscovery = false;
+        if (System.getProperty(PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY) != null) {
+        		logAllServiceNamesOnFailedDiscovery = Boolean.valueOf(System.getProperty(PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY));
+        }
 
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, 
+        		swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery);
     }
     
 
     public SwarmMemberAddressProvider(final String dockerNetworkNames, final String dockerServiceLabels,
-        final String dockerServiceNames, final Integer hazelcastPeerPort) {
+        final String dockerServiceNames, final Integer hazelcastPeerPort, final Boolean logAllServiceNamesOnFailedDiscovery) {
 
     		String swarmMgrUri = System.getenv("DOCKER_HOST"); 
 		Boolean skipVerifySsl = false;
 		
-		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, 
+				swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery);
     }
     
     /**
@@ -143,25 +152,41 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
 	    if (rawSkipVerifySsl != null) {
 	    		skipVerifySsl = Boolean.valueOf(rawSkipVerifySsl.toString());
 	    }
+	    
+	    
+		Object rawLogAllServiceNamesOnFailedDiscovery = properties.get(PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY);
+		if (rawLogAllServiceNamesOnFailedDiscovery == null || rawLogAllServiceNamesOnFailedDiscovery.toString().trim().isEmpty()) {
+			rawLogAllServiceNamesOnFailedDiscovery = System.getProperty(PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY);
+		}
+		Boolean logAllServiceNamesOnFailedDiscovery = false;
+	    if (rawLogAllServiceNamesOnFailedDiscovery != null) {
+	    		logAllServiceNamesOnFailedDiscovery = Boolean.valueOf(rawLogAllServiceNamesOnFailedDiscovery.toString());
+	    }
     		
     	
-    		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+    		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, 
+    				swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery);
     }
 
     public SwarmMemberAddressProvider(final String dockerNetworkNames, 
     									 final String dockerServiceLabels,
     									 final String dockerServiceNames, 
-    									 final Object hazelcastPeerPort) {
+    									 final Object hazelcastPeerPort,
+    									 final Object logAllServiceNamesOnFailedDiscovery) {
 
     		String swarmMgrUri = System.getenv("DOCKER_HOST"); 
 		Boolean skipVerifySsl = false;
 		
-		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, swarmMgrUri, skipVerifySsl, hazelcastPeerPort);
+		initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, 
+				swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery);
     }
     
     private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
-            			final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
-    		initialize(dockerNetworkNames,dockerServiceLabels,dockerServiceNames,swarmMgrUri,skipVerifySsl,hazelcastPeerPort);
+            			final String dockerServiceNames, final Integer hazelcastPeerPort, 
+            			final String swarmMgrUri, final Boolean skipVerifySsl, final Boolean logAllServiceNamesOnFailedDiscovery) {
+    	
+    		initialize(dockerNetworkNames,dockerServiceLabels,dockerServiceNames,
+    				swarmMgrUri,skipVerifySsl,hazelcastPeerPort,logAllServiceNamesOnFailedDiscovery);
     }
 
 
@@ -170,7 +195,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     						   final String dockerServiceNames, 
     						   final String swarmMgrUri, 
     						   final Boolean skipVerifySsl, 
-    						   final Object rawHazelcastPeerPort) {
+    						   final Object rawHazelcastPeerPort,
+    						   final Object rawLogAllServiceNamesOnFailedDiscovery) {
     	
     		logger.info("SwarmMemberAddressProvider.initialize() passed properties: " + 
     						"dockerNetworkNames:"+dockerNetworkNames + " " +
@@ -178,9 +204,20 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     						"dockerServiceNames:"+dockerServiceNames + " " +
     						"swarmMgrUri:"+swarmMgrUri + " " +
     						"skipVerifySsl:"+skipVerifySsl + " " +
-    						"rawHazelcastPeerPort:"+rawHazelcastPeerPort
+    						"hazelcastPeerPort:"+rawHazelcastPeerPort + " " +
+    						"logAllServiceNamesOnFailedDiscovery:" + rawLogAllServiceNamesOnFailedDiscovery
     						);
 
+    		Boolean logAllServiceNamesOnFailedDiscovery = false;
+		if (rawLogAllServiceNamesOnFailedDiscovery != null) {
+			if (rawLogAllServiceNamesOnFailedDiscovery instanceof String) {
+				try {
+					logAllServiceNamesOnFailedDiscovery = Boolean.valueOf(rawLogAllServiceNamesOnFailedDiscovery.toString());
+				} catch(Throwable ignore) {}
+			} else if (rawHazelcastPeerPort instanceof Boolean) {
+				logAllServiceNamesOnFailedDiscovery = (Boolean)rawLogAllServiceNamesOnFailedDiscovery;
+			}
+		}
     	
     		Integer hazelcastPeerPort = null;
 		if (rawHazelcastPeerPort != null) {
@@ -221,7 +258,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
                 false ,
                 
                 swarmMgr,
-                skipVerifySsl
+                skipVerifySsl,
+                logAllServiceNamesOnFailedDiscovery
             );
         } catch (final Exception e) {
             throw new RuntimeException(
@@ -234,12 +272,26 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
     @Override
     public InetSocketAddress getBindAddress() {
         Address addr = this.swarmDiscoveryUtil.getMyAddress();
+        
+        if (addr == null) {
+	        logger.severe("SwarmMemberAddressProvider.getBindAddress(): "
+	        		+ "swarmDiscoveryUtil.getMyAddress() returned null Hazelcast "+Address.class.getName()+", I am returning null.");
+	        return null;
+        }
+        
         return new InetSocketAddress(addr.getHost(), addr.getPort());
     }
 
     @Override
     public InetSocketAddress getPublicAddress() {
         Address addr = this.swarmDiscoveryUtil.getMyAddress();
+        
+        if (addr == null) {
+	        logger.severe("SwarmMemberAddressProvider.getPublicAddress(): "
+	        		+ "swarmDiscoveryUtil.getMyAddress() returned null Hazelcast "+Address.class.getName()+", I am returning null.");
+	        return null;
+        }
+        
         return new InetSocketAddress(addr.getHost(), addr.getPort());
     }
 

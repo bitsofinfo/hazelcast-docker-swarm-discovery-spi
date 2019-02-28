@@ -30,6 +30,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC13](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC13) Additional configurable properties (`log-all-service-names-on-failed-discovery / logAllServiceNamesOnFailedDiscovery`) to optionally log (FINE) all available docker service names if no containers can be discovered via configured criteria.
+
 * [1.0-RC12](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC12) Additional debug logging
 
 * [1.0-RC11](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC11) Added `java.util.Properties` based constructor for `SwarmMemberAddressProvider`
@@ -75,7 +77,7 @@ repositories {
 
 dependencies {
 	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC12'
+	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC13'
 }
 ```
 
@@ -86,7 +88,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC12</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC13</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
     </dependency>
 </dependencies>
 
@@ -219,6 +221,7 @@ docker service create \
 ```
 
 **1.0-RC5+ ONLY: DOCKER_HOST SSL w/ optional skip verify**
+**1.0-RC13+ ONLY: Optionally, logAllServiceNamesOnFailedDiscovery, FINE logging only**
 ```
 docker service create \
     --network [mynet] \
@@ -233,10 +236,13 @@ docker service create \
     -DhazelcastPeerPort=5701 \
     -DswarmMgrUri=http(s)://[swarmmgr]:[port] \
     -DskipVerifySsl=[true|false] \
+    -DlogAllServiceNamesOnFailedDiscovery=[true|false] \
     -jar /test.jar
 ```
 
 NOTE! All `-D` java System properties above can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. You can mix/match combination of -D defined properties and those defined in Hazelcast XML. Properties defined in Hazelcast XMl take priority.
+
+NOTE! Use the optional `logAllServiceNamesOnFailedDiscovery` property with caution. If your target swarm cluster contains many services this call may result in logging a considerable amount of un-related docker service names, some potentially sensitive depending upon your posture.
 
 Example configuration (using MemberAddressProvider for Hazelcast 3.9+): see the example: (hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml)[src/main/resources/META-INF/hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml]
 

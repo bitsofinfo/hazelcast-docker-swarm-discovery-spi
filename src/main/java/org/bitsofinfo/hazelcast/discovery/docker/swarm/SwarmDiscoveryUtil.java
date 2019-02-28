@@ -69,13 +69,16 @@ public class SwarmDiscoveryUtil {
 	private URI swarmMgrUri = null;
 	private boolean skipVerifySsl = false;
 	
+	private boolean logAllServiceNamesOnFailedDiscovery = false;
+	
 	private ILogger logger = Logger.getLogger(SwarmDiscoveryUtil.class);
 	
 	public SwarmDiscoveryUtil(String rawDockerNetworkNames, 
 		      String rawDockerServiceLabels,
 			  String rawDockerServiceNames, 
 			  Integer hazelcastPeerPort,
-			  boolean bindSocketChannel) throws Exception {
+			  boolean bindSocketChannel,
+			  boolean logAllServiceNamesOnFailedDiscovery) throws Exception {
 		
 		this(rawDockerNetworkNames,
 			 rawDockerServiceLabels,
@@ -83,7 +86,8 @@ public class SwarmDiscoveryUtil {
 			 hazelcastPeerPort,
 			 bindSocketChannel,
 			 new URI(System.getenv("DOCKER_HOST")),
-			 false);
+			 false,
+			 logAllServiceNamesOnFailedDiscovery);
 		
 	}
 	
@@ -93,10 +97,12 @@ public class SwarmDiscoveryUtil {
 							  Integer hazelcastPeerPort,
 							  boolean bindSocketChannel,
 							  URI swarmMgrUri,
-							  boolean skipVerifySsl) throws Exception {
+							  boolean skipVerifySsl,
+							  boolean logAllServiceNamesOnFailedDiscovery) throws Exception {
 		
 		this.swarmMgrUri = swarmMgrUri;
 		this.skipVerifySsl = skipVerifySsl;
+		this.logAllServiceNamesOnFailedDiscovery = logAllServiceNamesOnFailedDiscovery;
 		
 		
 		if (this.swarmMgrUri == null) {
@@ -301,6 +307,7 @@ public class SwarmDiscoveryUtil {
 			sb.append("docker-service-labels = " + this.getRawDockerServiceLabels() + "\n");
 			sb.append("swarmMgrUri = " + this.swarmMgrUri + "\n");
 			sb.append("skipVerifySsl = " + this.skipVerifySsl + "\n");
+			sb.append("logAllServiceNamesOnFailedDiscovery = " + this.logAllServiceNamesOnFailedDiscovery + "\n");
 			logger.info(sb.toString());
 
 			// our discovered containers
@@ -317,9 +324,10 @@ public class SwarmDiscoveryUtil {
 					logger.info("Found relevant docker network: " + network.name() +"["+ network.id() + "]");
 				}
 			}
-		        if(relevantNetIds2Networks.size() == 0) {
-		            logger.warning("Did not find relevant docker network for: " + this.getDockerNetworkNames());
-		        }
+			
+	        if(relevantNetIds2Networks.size() == 0) {
+	            logger.warning("Did not find relevant docker network for: " + this.getDockerNetworkNames());
+	        }
 
 			// Collect all relevant containers for services with services-names on the relevant networks
 			for (String dockerServiceName : this.getDockerServiceNames()) {
@@ -334,13 +342,38 @@ public class SwarmDiscoveryUtil {
 			// Collect all relevant containers for services matching the labels on the relevant networks
 			for (String dockerServiceLabel : this.getDockerServiceLabels().keySet()) {
 				String labelValue = this.getDockerServiceLabels().get(dockerServiceLabel);
+				logger.info("Invoking criteria-based container discovery for service label: "+ dockerServiceLabel + "=" + labelValue);
 				discoveredContainers.addAll(
 						discoverContainersViaCriteria(docker,
 										   relevantNetIds2Networks,
 										   Criteria.builder().addLabel(dockerServiceLabel, labelValue).build()));
 			}
 
-
+			
+			
+			// Optionally dump all available services names when configured criteria
+			// yields zero containers
+			if (discoveredContainers.size() == 0 && logAllServiceNamesOnFailedDiscovery) {
+				try {
+					List<Service> allServices = docker.listServices();
+					
+					StringBuilder sb2 = new StringBuilder();
+					if (allServices != null) {
+						String delim = "";
+						for (Service s : allServices) {
+							sb2.append(delim).append(s.spec().name());
+							delim = ",";
+						}
+					}
+					
+					logger.fine("discoveredContainers.size()=0; logAllServiceNamesOnFailedDiscovery=true, "
+							+ "ALL available docker service names=[" + sb2.toString() + "]");
+					
+				} catch(Throwable e) {
+					logger.warning("Unexpected error in dumpAllServiceNamesOnFailedDiscovery=true handling:" + e.getMessage(),e);
+				}
+			}
+			
 			return discoveredContainers;
 
 		} catch(Exception e) {
@@ -394,22 +427,18 @@ public class SwarmDiscoveryUtil {
 
 		// find all relevant services given the criteria....
 		List<Service> services = docker.listServices(criteria);
-
-		logger.info("Number of services matching given criteria = " + services.size());
-
-		if (services.size() == 0) {
-			List<Service> allServices = docker.listServices();
-
-			StringBuilder sb = new StringBuilder();
-			String delim = "";
-			for (Service s : allServices) {
-				sb.append(delim).append(s.spec().name());
-				delim = ",";
-			}
-
-			logger.info("No service match for given criteria");
-			logger.fine("allServices=[" + sb.toString() + "]");
+		
+		if (services == null) {
+			logger.info("No service match for given criteria, docker.listServices(criteria) returned null.");
+			return discoveredContainers;
 		}
+ 
+		if (services.size() == 0) {
+			logger.info("No service match for given criteria, docker.listServices(criteria) returned 0");
+			return discoveredContainers;
+		}
+			
+		logger.info("Number of services matching given criteria = " + services.size());
 
 		for (Service service : services) {
 

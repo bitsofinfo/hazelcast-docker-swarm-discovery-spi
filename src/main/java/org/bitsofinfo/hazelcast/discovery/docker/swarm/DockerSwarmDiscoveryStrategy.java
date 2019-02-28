@@ -43,6 +43,7 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 		Integer hazelcastPeerPort = getOrDefault("hazelcast-peer-port",  DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT, 5701);
 		String swarmMgrUri = getOrDefault("swarm-mgr-uri",  DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI, null);
 		Boolean skipVerifySsl = getOrDefault("skip-verify-ssl",  DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL, false);
+		Boolean logAllServiceNamesOnFailedDiscovery = getOrDefault("log-all-service-names-on-failed-discovery",  DockerSwarmDiscoveryConfiguration.PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY, false);
 		
 		try {
 			
@@ -59,7 +60,8 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 															 hazelcastPeerPort,
 															 false, // dont bind channel, the AddressPicker does this
 															 swarmMgr,
-															 skipVerifySsl); 
+															 skipVerifySsl,
+															 logAllServiceNamesOnFailedDiscovery); 
 		} catch(Exception e) {
 			String msg = "Unexpected error configuring SwarmDiscoveryUtil: " + e.getMessage();
 			logger.severe(msg,e);
