@@ -40,7 +40,7 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * [1.0-RC9](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC9) Better NPE handling for invalid/null Tasks returned from service spec or no network attachments
 
-* [1.0-RC8](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC8): Incorporated PRs #18 (adjust depedencies declaration), #17 
+* [1.0-RC8](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC8): Incorporated PRs #18 (adjust depedencies declaration), #17
 
 * [1.0-RC7](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC7): Incorporated PRs #14 (initial scan self check), #15 (docker service names optional)
 
@@ -76,8 +76,8 @@ repositories {
 }
 
 dependencies {
-	// <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-	compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC13'
+  // <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
+  compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC13'
 }
 ```
 
@@ -261,29 +261,30 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
         <aws enabled="false"/>
         <tcp-ip enabled="false" />
 
-		<!-- for Hazelcast 3.9+ apps only, comment out for <= 3.8.x apps)
+        <!-- for Hazelcast 3.9+ apps only, comment out for <= 3.8.x apps)
         <member-address-provider enabled="true">
         		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
-        		
-        		<!-- OPTIONAL: 
-        		
-        			The following will be passed as a java.util.Properties to
-        		     the SwarmMemberAddressProvider(java.util.Properties) constructor.
-        		     
-        		     If you do not defined these here in XML, by default they will be fetched via
-        		     -D java System.properties by the same names via the default no-arg constructor
-        		     of SwarmMemberAddressProvider
-        		     
-        		      <properties>
-	        		     <property name="dockerNetworkNames">...</property>
-	                   <property name="dockerServiceLabels">...</property>
-	                   <property name="dockerServiceNames">...</property>
-	                   <property name="hazelcastPeerPort">...</property>
-	                   <property name="swarmMgrUri">...</property>
-		              <property name="skipVerifySsl">true|false</property>
-		              <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
-	               </properties>
-        		 -->
+
+        		<!--
+            OPTIONAL:
+
+            The following will be passed as a java.util.Properties to
+            the SwarmMemberAddressProvider(java.util.Properties) constructor.
+
+            If you do not defined these here in XML, by default they will be fetched via
+            -D java System.properties by the same names via the default no-arg constructor
+            of SwarmMemberAddressProvider
+
+            <properties>
+              <property name="dockerNetworkNames">...</property>
+              <property name="dockerServiceLabels">...</property>
+              <property name="dockerServiceNames">...</property>
+              <property name="hazelcastPeerPort">...</property>
+              <property name="swarmMgrUri">...</property>
+              <property name="skipVerifySsl">true|false</property>
+              <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
+            </properties>
+        	-->
         </member-address-provider>
 
          <!-- Enable a Docker Swarm based discovery strategy -->
@@ -309,6 +310,12 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
 
                   <!-- 1.0-RC5+ ONLY: If Swarm Mgr URI is SSL, to enable skip-verify for it -->
                   <property name="skip-verify-ssl">${skipVerifySsl}</property>
+                  
+                  <!-- 1.0-RC13+ ONLY NOTE! If enabled logged w/ severity FINE.
+                  	    Use with caution. If your target swarm cluster contains many services this call 
+                  	    may result in logging a considerable amount of un-related docker service names.
+                  -->
+                  <property name="log-all-service-names-on-failed-discovery">${logAllServiceNamesOnFailedDiscovery}</property>
 
                   <!-- The raw port that hazelcast is listening on
 
@@ -365,6 +372,7 @@ Example configuration, full text at [hazelcast-docker-swarm-dnsrr-discovery-spi-
             always be available at the available in-network ports.
         -->
         <port auto-increment="false">${servicePort}</port>
+        
         <member-address-provider enabled="true">
             <class-name>org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.DockerDNSRRMemberAddressProvider</class-name>
             <properties>
@@ -375,6 +383,7 @@ Example configuration, full text at [hazelcast-docker-swarm-dnsrr-discovery-spi-
                 <property name="servicePort">${servicePort}</property>
             </properties>
         </member-address-provider>
+        
         <join>
             <!-- Explicitly disable other cluster join methods -->
             <multicast enabled="false"/>
@@ -451,25 +460,25 @@ a case you may add an exclusion to your project's build file.
 For maven:
 
 ```
-	<dependency>
-		<groupId>org.bitsofinfo</groupId>
-		<artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-		<version>1.0-RC5</version>
-		<exclusions>
-			<exclusion>
-				<groupId>org.glassfish.jersey.core</groupId>
-				<artifactId>jersey-common</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
+  <dependency>
+    <groupId>org.bitsofinfo</groupId>
+    <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
+    <version>1.0-RC13</version>
+    <exclusions>
+      <exclusion>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-common</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
 ```
 
 For gradle:
 
 ```
-	compile('org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC5') {
-		exclude module: 'jersey-common'
-	}
+  compile('org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC13') {
+    exclude module: 'jersey-common'
+  }
 ```
 
 For details please see [Pull Request #6](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/pull/6).
