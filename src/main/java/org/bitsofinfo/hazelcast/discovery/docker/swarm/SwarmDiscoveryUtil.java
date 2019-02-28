@@ -378,7 +378,7 @@ public class SwarmDiscoveryUtil {
 							+ "ALL available docker service names=[" + sb2.toString() + "]");
 					
 				} catch(Throwable e) {
-					logger.warning("SwarmDiscoveryUtil["+this.context+"] Unexpected error in dumpAllServiceNamesOnFailedDiscovery=true handling:" + e.getMessage(),e);
+					logger.warning("SwarmDiscoveryUtil["+this.context+"] Unexpected error in logAllServiceNamesOnFailedDiscovery=true handling:" + e.getMessage(),e);
 				}
 			}
 			
