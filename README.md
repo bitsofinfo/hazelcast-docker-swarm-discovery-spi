@@ -280,7 +280,8 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
 	                   <property name="dockerServiceNames">...</property>
 	                   <property name="hazelcastPeerPort">...</property>
 	                   <property name="swarmMgrUri">...</property>
-	                   <property name="skipVerifySsl">...</property>
+		              <property name="skipVerifySsl">true|false</property>
+		              <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
 	               </properties>
         		 -->
         </member-address-provider>
