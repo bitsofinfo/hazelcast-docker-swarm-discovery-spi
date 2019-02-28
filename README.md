@@ -266,25 +266,25 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
             <class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
 
             <!--
-	            OPTIONAL:
-	
-	            The following will be passed as a java.util.Properties to
-	            the SwarmMemberAddressProvider(java.util.Properties) constructor.
-	
-	            If you do not defined these here in XML, by default they will be fetched via
-	            -D java System.properties by the same names via the default no-arg constructor
-	            of SwarmMemberAddressProvider
-	
-	            <properties>
-	              <property name="dockerNetworkNames">...</property>
-	              <property name="dockerServiceLabels">...</property>
-	              <property name="dockerServiceNames">...</property>
-	              <property name="hazelcastPeerPort">...</property>
-	              <property name="swarmMgrUri">...</property>
-	              <property name="skipVerifySsl">true|false</property>
-	              <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
-	            </properties>
-        	-->
+                OPTIONAL:
+
+                The following will be passed as a java.util.Properties to
+                the SwarmMemberAddressProvider(java.util.Properties) constructor.
+
+                If you do not defined these here in XML, by default they will be fetched via
+                -D java System.properties by the same names via the default no-arg constructor
+                of SwarmMemberAddressProvider
+
+                <properties>
+                <property name="dockerNetworkNames">...</property>
+                <property name="dockerServiceLabels">...</property>
+                <property name="dockerServiceNames">...</property>
+                <property name="hazelcastPeerPort">...</property>
+                <property name="swarmMgrUri">...</property>
+                <property name="skipVerifySsl">true|false</property>
+                <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
+                </properties>
+            -->
         </member-address-provider>
 
          <!-- Enable a Docker Swarm based discovery strategy -->
