@@ -397,6 +397,20 @@ public class SwarmDiscoveryUtil {
 
 		logger.info("Number of services matching given criteria = " + services.size());
 
+		if (services.size() == 0) {
+			List<Service> allServices = docker.listServices();
+
+			StringBuilder sb = new StringBuilder();
+			String delim = "";
+			for (Service s : allServices) {
+				sb.append(delim).append(s.spec().name());
+				delim = ",";
+			}
+
+			logger.info("No service match for given criteria");
+			logger.fine("allServices=[" + sb.toString() + "]");
+		}
+
 		for (Service service : services) {
 
 			logger.info("Processing service with name=" + service.spec().name());
