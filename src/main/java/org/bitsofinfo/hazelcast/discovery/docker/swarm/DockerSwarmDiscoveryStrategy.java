@@ -54,7 +54,8 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 				swarmMgr = new URI(swarmMgrUri);
 			}
 			
-			this.swarmDiscoveryUtil = new SwarmDiscoveryUtil( rawDockerNetworkNames,
+			this.swarmDiscoveryUtil = new SwarmDiscoveryUtil( this.getClass().getSimpleName(),
+															 rawDockerNetworkNames,
 															 rawDockerServiceLabels,
 															 rawDockerServiceNames,
 															 hazelcastPeerPort,

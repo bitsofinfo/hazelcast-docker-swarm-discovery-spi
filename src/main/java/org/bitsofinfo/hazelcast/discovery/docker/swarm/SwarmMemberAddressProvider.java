@@ -247,6 +247,7 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
              }
              
             this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(
+            		this.getClass().getSimpleName(),
                 dockerNetworkNames,
                 dockerServiceLabels,
                 dockerServiceNames,

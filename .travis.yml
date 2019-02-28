@@ -63,7 +63,7 @@ script:
   
   # Scale cluster down to 2 nodes, wait 2 minutes then verify only 2 nodes
   - docker service scale hazelcast-docker-swarm-discovery-spi-test=2
-  - sleep 80
+  - sleep 120
   - docker ps
   - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test." --format "{{.ID}}"`
   - CONTAINERX_ID=`echo $CONTAINERX_ID | awk '{ print $1 }'`

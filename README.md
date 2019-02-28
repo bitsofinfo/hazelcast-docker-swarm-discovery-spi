@@ -30,7 +30,7 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
-* [1.0-RC13](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC13) Additional configurable properties (`log-all-service-names-on-failed-discovery / logAllServiceNamesOnFailedDiscovery`) to optionally log (FINE) all available docker service names if no containers can be discovered via configured criteria.
+* [1.0-RC13](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC13) Additional configurable properties (`log-all-service-names-on-failed-discovery / logAllServiceNamesOnFailedDiscovery`) to optionally log (FINE) all available docker service names if no containers can be discovered via configured criteria. Better logging to provide the context by which `SwarmDiscoveryUtil` is being utilized.
 
 * [1.0-RC12](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC12) Additional debug logging
 

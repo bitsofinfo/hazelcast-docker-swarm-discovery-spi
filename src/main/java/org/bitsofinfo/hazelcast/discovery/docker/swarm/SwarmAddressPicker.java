@@ -95,6 +95,7 @@ public class SwarmAddressPicker implements AddressPicker {
             }
             
             this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(
+                this.getClass().getSimpleName(),
                 dockerNetworkNames,
                 dockerServiceLabels,
                 dockerServiceNames,
