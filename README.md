@@ -221,6 +221,7 @@ docker service create \
 ```
 
 **1.0-RC5+ ONLY: DOCKER_HOST SSL w/ optional skip verify**
+
 **1.0-RC13+ ONLY: Optionally, logAllServiceNamesOnFailedDiscovery, FINE logging only**
 ```
 docker service create \
@@ -242,7 +243,7 @@ docker service create \
 
 NOTE! All `-D` java System properties above can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. You can mix/match combination of -D defined properties and those defined in Hazelcast XML. Properties defined in Hazelcast XMl take priority.
 
-NOTE! Use the optional `logAllServiceNamesOnFailedDiscovery` property with caution. If your target swarm cluster contains many services this call may result in logging a considerable amount of un-related docker service names, some potentially sensitive depending upon your posture.
+NOTE! Use the optional `logAllServiceNamesOnFailedDiscovery` property with caution. If your target swarm cluster contains many services this call may result in logging a considerable amount of un-related docker service names.
 
 Example configuration (using MemberAddressProvider for Hazelcast 3.9+): see the example: (hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml)[src/main/resources/META-INF/hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml]
 
