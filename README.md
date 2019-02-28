@@ -263,27 +263,27 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
 
         <!-- for Hazelcast 3.9+ apps only, comment out for <= 3.8.x apps)
         <member-address-provider enabled="true">
-        		<class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
+            <class-name>org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmMemberAddressProvider</class-name>
 
-        		<!--
-            OPTIONAL:
-
-            The following will be passed as a java.util.Properties to
-            the SwarmMemberAddressProvider(java.util.Properties) constructor.
-
-            If you do not defined these here in XML, by default they will be fetched via
-            -D java System.properties by the same names via the default no-arg constructor
-            of SwarmMemberAddressProvider
-
-            <properties>
-              <property name="dockerNetworkNames">...</property>
-              <property name="dockerServiceLabels">...</property>
-              <property name="dockerServiceNames">...</property>
-              <property name="hazelcastPeerPort">...</property>
-              <property name="swarmMgrUri">...</property>
-              <property name="skipVerifySsl">true|false</property>
-              <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
-            </properties>
+            <!--
+	            OPTIONAL:
+	
+	            The following will be passed as a java.util.Properties to
+	            the SwarmMemberAddressProvider(java.util.Properties) constructor.
+	
+	            If you do not defined these here in XML, by default they will be fetched via
+	            -D java System.properties by the same names via the default no-arg constructor
+	            of SwarmMemberAddressProvider
+	
+	            <properties>
+	              <property name="dockerNetworkNames">...</property>
+	              <property name="dockerServiceLabels">...</property>
+	              <property name="dockerServiceNames">...</property>
+	              <property name="hazelcastPeerPort">...</property>
+	              <property name="swarmMgrUri">...</property>
+	              <property name="skipVerifySsl">true|false</property>
+	              <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
+	            </properties>
         	-->
         </member-address-provider>
 
@@ -311,9 +311,10 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
                   <!-- 1.0-RC5+ ONLY: If Swarm Mgr URI is SSL, to enable skip-verify for it -->
                   <property name="skip-verify-ssl">${skipVerifySsl}</property>
                   
-                  <!-- 1.0-RC13+ ONLY NOTE! If enabled logged w/ severity FINE.
-                  	    Use with caution. If your target swarm cluster contains many services this call 
-                  	    may result in logging a considerable amount of un-related docker service names.
+                  <!-- 1.0-RC13+ ONLY! 
+                       If enabled logged w/ severity FINE.
+                       Use with caution. If your target swarm cluster contains many services this call 
+                       may result in logging a considerable amount of un-related docker service names.
                   -->
                   <property name="log-all-service-names-on-failed-discovery">${logAllServiceNamesOnFailedDiscovery}</property>
 
