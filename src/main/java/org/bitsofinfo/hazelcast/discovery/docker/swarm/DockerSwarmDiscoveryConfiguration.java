@@ -39,7 +39,7 @@ public class DockerSwarmDiscoveryConfiguration {
 			new SimplePropertyDefinition("skip-verify-ssl", true, PropertyTypeConverter.BOOLEAN);
 	
 	// Log all service names on failed discovery
-	public static final PropertyDefinition PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY =
+	public static final PropertyDefinition LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY =
 			new SimplePropertyDefinition("log-all-service-names-on-failed-discovery", true, PropertyTypeConverter.BOOLEAN);
 
 }
