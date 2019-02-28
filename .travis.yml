@@ -40,7 +40,7 @@ script:
   - echo $MY_IP
   
   # Create the service
-  - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -Dhazelcast.diagnostics.enabled=true -Dswarm-bind-method=member-address-provider -DswarmMgrUri=http://$MY_IP:2376 -DskipVerifySsl=false -DlogAllServiceNamesOnFailedDiscovery=true -Dhazelcast.max.no.heartbeat.seconds=60 -jar /test.jar
+  - docker service create --network hazelcast-docker-swarm-discovery-spi-test --name hazelcast-docker-swarm-discovery-spi-test -e "DOCKER_HOST=http://$MY_IP:2376" hazelcast-docker-swarm-discovery-spi-test java -DdockerNetworkNames=hazelcast-docker-swarm-discovery-spi-test -DdockerServiceNames=hazelcast-docker-swarm-discovery-spi-test -DhazelcastPeerPort=5701 -Dhazelcast.diagnostics.enabled=true -Dswarm-bind-method=member-address-provider -DswarmMgrUri=http://$MY_IP:2376 -DskipVerifySsl=false -DlogAllServiceNamesOnFailedDiscovery=true -Dhazelcast.max.no.heartbeat.seconds=30 -jar /test.jar
   - docker service ls
   - sleep 10
   - docker service logs hazelcast-docker-swarm-discovery-spi-test
@@ -67,7 +67,7 @@ script:
   - docker ps
   - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-discovery-spi-test." --format "{{.ID}}"`
   - CONTAINERX_ID=`echo $CONTAINERX_ID | awk '{ print $1 }'`
-  - docker logs --tail 50 $CONTAINERX_ID 
+  - docker logs --tail 100 $CONTAINERX_ID 
   - export MEMBER_TOTAL=`docker logs --tail 100 $CONTAINERX_ID 2>&1 | grep "Members {size:2"`
   - echo $MEMBER_TOTAL
   - if [[ "$MEMBER_TOTAL" == 'Members {size:2'* ]]; then echo "OK"; else exit 1; fi
@@ -88,7 +88,7 @@ script:
     -DservicePort=5701
     -DpeerServicesCsv=hazelcast-docker-swarm-dnsrr-discovery-spi-service:5701
     -Dhazelcast.diagnostics.enabled=true
-    -Dhazelcast.max.no.heartbeat.seconds=60
+    -Dhazelcast.max.no.heartbeat.seconds=30
     -jar /test.jar
 
   # Wait for startup
@@ -118,7 +118,7 @@ script:
   - docker ps
   - export CONTAINERX_ID=`docker ps -f "name=hazelcast-docker-swarm-dnsrr-discovery-spi-service." --format "{{.ID}}"`
   - CONTAINERX_ID=`echo $CONTAINERX_ID | awk '{ print $1 }'`
-  - docker logs --tail 50 $CONTAINERX_ID
+  - docker logs --tail 150 $CONTAINERX_ID
   - export MEMBER_TOTAL=`docker logs --tail 150 $CONTAINERX_ID 2>&1 | grep "Members {size:2"`
   - echo $MEMBER_TOTAL
   - if [[ "$MEMBER_TOTAL" == 'Members {size:2'* ]]; then echo "OK"; else exit 1; fi
