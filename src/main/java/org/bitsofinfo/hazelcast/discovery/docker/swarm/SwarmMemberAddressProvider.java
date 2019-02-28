@@ -212,9 +212,9 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
 		if (rawLogAllServiceNamesOnFailedDiscovery != null) {
 			if (rawLogAllServiceNamesOnFailedDiscovery instanceof String) {
 				try {
-					logAllServiceNamesOnFailedDiscovery = Boolean.valueOf(rawLogAllServiceNamesOnFailedDiscovery.toString());
+					logAllServiceNamesOnFailedDiscovery = Boolean.valueOf(((String)rawLogAllServiceNamesOnFailedDiscovery).trim());
 				} catch(Throwable ignore) {}
-			} else if (rawHazelcastPeerPort instanceof Boolean) {
+			} else if (rawLogAllServiceNamesOnFailedDiscovery instanceof Boolean) {
 				logAllServiceNamesOnFailedDiscovery = (Boolean)rawLogAllServiceNamesOnFailedDiscovery;
 			}
 		}
