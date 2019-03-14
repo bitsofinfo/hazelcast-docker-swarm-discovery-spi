@@ -479,63 +479,63 @@ public class SwarmDiscoveryUtil {
 
 			if(strictDockerServiceNameComparison && serviceFilter.reject(service)) {
 				logger.fine("Service with name " + service.spec().name() + " rejected by filter " + serviceFilter);
+				continue;
 			}
-			else {
-				logger.fine("SwarmDiscoveryUtil[" + this.context + "] Processing service with name=" + service.spec().name());
 
-				// crawl through all VIPs the service is on
-				for (EndpointVirtualIp vip : service.endpoint().virtualIps()) {
+			logger.fine("SwarmDiscoveryUtil[" + this.context + "] Processing service with name=" + service.spec().name());
 
-					logger.fine("SwarmDiscoveryUtil[" + this.context + "] Processing service endpoint with networkId=" + vip.networkId() + ", addr=" + vip.addr() + " for service with name=" + service.spec().name());
+			// crawl through all VIPs the service is on
+			for (EndpointVirtualIp vip : service.endpoint().virtualIps()) {
 
-					// does the service have a VIP on one of the networks we care about?
-					if (relevantNetIds2Networks.containsKey(vip.networkId())) {
+				logger.fine("SwarmDiscoveryUtil[" + this.context + "] Processing service endpoint with networkId=" + vip.networkId() + ", addr=" + vip.addr() + " for service with name=" + service.spec().name());
 
-						// get the network object that the vip is on
-						Network network = relevantNetIds2Networks.get(vip.networkId());
+				// does the service have a VIP on one of the networks we care about?
+				if (relevantNetIds2Networks.containsKey(vip.networkId())) {
 
-						logger.info("SwarmDiscoveryUtil[" + this.context + "] Found qualifying docker service[" + service.spec().name() + "] "
-								+ "on network: " + network.name() + "[" + network.id() + ":" + vip.addr() + "]");
+					// get the network object that the vip is on
+					Network network = relevantNetIds2Networks.get(vip.networkId());
 
-						// if so, then lets find all its tasks (actual container instances of the service)
-						List<Task> tasks = docker.listTasks(Task.Criteria.builder().serviceName(service.spec().name()).build());
+					logger.info("SwarmDiscoveryUtil[" + this.context + "] Found qualifying docker service[" + service.spec().name() + "] "
+							+ "on network: " + network.name() + "[" + network.id() + ":" + vip.addr() + "]");
 
-						if (tasks == null) {
-							logger.warning("SwarmDiscoveryUtil[" + this.context + "] docker.listTasks() returned NULL for service:" + service.spec().name() + ", skipping this service");
+					// if so, then lets find all its tasks (actual container instances of the service)
+					List<Task> tasks = docker.listTasks(Task.Criteria.builder().serviceName(service.spec().name()).build());
+
+					if (tasks == null) {
+						logger.warning("SwarmDiscoveryUtil[" + this.context + "] docker.listTasks() returned NULL for service:" + service.spec().name() + ", skipping this service");
+						continue;
+					}
+
+					// for every task, lets get its network attachments
+					for (Task task : tasks) {
+
+						ImmutableList<NetworkAttachment> networkAttachments = task.networkAttachments();
+						if (networkAttachments == null) {
+							logger.warning("SwarmDiscoveryUtil[" + this.context + "] task.networkAttachments() returned NULL for task "
+									+ "id:" + task.id() +
+									" name:" + task.name() +
+									" nodeid:" + task.nodeId() +
+									" I am skipping this task for service: " + service.spec().name());
 							continue;
 						}
 
-						// for every task, lets get its network attachments
-						for (Task task : tasks) {
+						for (NetworkAttachment networkAttachment : networkAttachments) {
 
-							ImmutableList<NetworkAttachment> networkAttachments = task.networkAttachments();
-							if (networkAttachments == null) {
-								logger.warning("SwarmDiscoveryUtil[" + this.context + "] task.networkAttachments() returned NULL for task "
-										+ "id:" + task.id() +
-										" name:" + task.name() +
-										" nodeid:" + task.nodeId() +
-										" I am skipping this task for service: " + service.spec().name());
-								continue;
-							}
+							// if the network ID the task is = the current network we care about for
+							// the service.. then lets treat it as a "discovered container"
+							// that we actually care about
+							if (networkAttachment.network().id().equals(vip.networkId())) {
+								boolean foundSelfService = isSelf(networkAttachment);
+								if (foundSelfService) {
+									logger.info("SwarmDiscoveryUtil[" + this.context + "] Found own task, adding regardless of state.");
+								}
+								// if container is in status 'running', then add it!
+								if (TaskStatus.TASK_STATE_RUNNING.equals(task.status().state()) || foundSelfService) {
 
-							for (NetworkAttachment networkAttachment : networkAttachments) {
+									logger.info("SwarmDiscoveryUtil[" + this.context + "] Found qualifying docker service task[taskId: " + task.id() + ", container: " + task.status().containerStatus().containerId() + ", state: " + task.status().state() + "] "
+											+ "on network: " + network.name() + "[" + network.id() + ":" + networkAttachment.addresses().iterator().next() + "]");
 
-								// if the network ID the task is = the current network we care about for
-								// the service.. then lets treat it as a "discovered container"
-								// that we actually care about
-								if (networkAttachment.network().id().equals(vip.networkId())) {
-									boolean foundSelfService = isSelf(networkAttachment);
-									if (foundSelfService) {
-										logger.info("SwarmDiscoveryUtil[" + this.context + "] Found own task, adding regardless of state.");
-									}
-									// if container is in status 'running', then add it!
-									if (TaskStatus.TASK_STATE_RUNNING.equals(task.status().state()) || foundSelfService) {
-
-										logger.info("SwarmDiscoveryUtil[" + this.context + "] Found qualifying docker service task[taskId: " + task.id() + ", container: " + task.status().containerStatus().containerId() + ", state: " + task.status().state() + "] "
-												+ "on network: " + network.name() + "[" + network.id() + ":" + networkAttachment.addresses().iterator().next() + "]");
-
-										discoveredContainers.add(new DiscoveredContainer(network, service, task, networkAttachment));
-									}
+									discoveredContainers.add(new DiscoveredContainer(network, service, task, networkAttachment));
 								}
 							}
 						}
