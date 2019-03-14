@@ -16,7 +16,7 @@ public interface ServiceFilter {
 
     /**
      * Apply criteria and return false if this service meets the criteria.
-     * This method exists so that tests for rejection can be expressed without inline negation which would result in a Sonar violation.
+     * This method exists so that tests for rejection can be expressed without inline negation.
      * @param service Service returned from criteria-based /services request
      * @return true if this Service does not meet additional criteria necessary for consideration
      */
