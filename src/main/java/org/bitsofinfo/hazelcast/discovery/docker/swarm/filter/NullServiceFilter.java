@@ -38,6 +38,6 @@ public class NullServiceFilter extends AbstractServiceFilter {
      */
     @Override
     public String toString() {
-        return "NullServiceFilter";
+        return getClass().getSimpleName();
     }
 }
