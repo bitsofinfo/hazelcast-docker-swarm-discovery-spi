@@ -44,7 +44,8 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 		String swarmMgrUri = getOrDefault("swarm-mgr-uri",  DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI, null);
 		Boolean skipVerifySsl = getOrDefault("skip-verify-ssl",  DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL, false);
 		Boolean logAllServiceNamesOnFailedDiscovery = getOrDefault("log-all-service-names-on-failed-discovery",  DockerSwarmDiscoveryConfiguration.LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY, false);
-		
+		Boolean strictDockerServiceNameComparison = getOrDefault("strict-docker-service-name-comparison", DockerSwarmDiscoveryConfiguration.STRICT_DOCKER_SERVICE_NAME_COMPARISON, false);
+
 		try {
 			
 			URI swarmMgr = null;
@@ -62,7 +63,8 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 															 false, // dont bind channel, the AddressPicker does this
 															 swarmMgr,
 															 skipVerifySsl,
-															 logAllServiceNamesOnFailedDiscovery); 
+															 logAllServiceNamesOnFailedDiscovery,
+															 strictDockerServiceNameComparison);
 		} catch(Exception e) {
 			String msg = "Unexpected error configuring SwarmDiscoveryUtil: " + e.getMessage();
 			logger.severe(msg,e);

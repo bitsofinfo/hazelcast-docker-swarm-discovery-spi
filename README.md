@@ -30,6 +30,8 @@ This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x S
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
 
+* [1.0-RC14](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC14) Additional configurable properties (`strict-docker-service-name-comparison / strictDockerServiceNameComparison`) to optionally add a strict "equals" check against names of services returned from docker; docker itself returns services based on a "startsWith" check.
+
 * [1.0-RC13](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC13) Additional configurable properties (`log-all-service-names-on-failed-discovery / logAllServiceNamesOnFailedDiscovery`) to optionally log (FINE) all available docker service names if no containers can be discovered via configured criteria. Better logging to provide the context by which `SwarmDiscoveryUtil` is being utilized.
 
 * [1.0-RC12](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC12) Additional debug logging
@@ -241,6 +243,26 @@ docker service create \
     -jar /test.jar
 ```
 
+**1.0-RC14+ ONLY: Optionally, strictDockerServiceNameComparison
+```
+docker service create \
+    --network [mynet] \
+    --name myHzService1 \
+    -l myLabel1=value1 \
+    -l myLabel2=value2 \
+    [yourappimage] \
+    java \
+    -DdockerNetworkNames=[mynet] \
+    -DdockerServiceNames=myHzService1 \
+    -DdockerServiceLabels="myLabel1=value1,myLabel2=value2" \
+    -DhazelcastPeerPort=5701 \
+    -DswarmMgrUri=http(s)://[swarmmgr]:[port] \
+    -DskipVerifySsl=[true|false] \
+    -DlogAllServiceNamesOnFailedDiscovery=[true|false] \
+    -DstrictDockerServiceNameComparison=[true|false] \
+    -jar /test.jar
+```
+
 NOTE! All `-D` java System properties above can be omitted and alternatively defined within the `<member-address-provider>` Hazelcast XML configuration stanza itself. You can mix/match combination of -D defined properties and those defined in Hazelcast XML. Properties defined in Hazelcast XMl take priority.
 
 NOTE! Use the optional `logAllServiceNamesOnFailedDiscovery` property with caution. If your target swarm cluster contains many services this call may result in logging a considerable amount of un-related docker service names.
@@ -283,6 +305,7 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
                 <property name="swarmMgrUri">...</property>
                 <property name="skipVerifySsl">true|false</property>
                 <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
+                <property name="strictDockerServiceNameComparison">true|false</property>
                 </properties>
             -->
         </member-address-provider>
@@ -317,6 +340,9 @@ For Hazelcast <= 3.8.x apps: see the example: (hazelcast-docker-swarm-discovery-
                        may result in logging a considerable amount of un-related docker service names.
                   -->
                   <property name="log-all-service-names-on-failed-discovery">${logAllServiceNamesOnFailedDiscovery}</property>
+
+                  <!-- 1.0-RC14+ ONLY: If enabled, perform strict "equals" name check of services returned from Docker -->
+                  <property name="strict-docker-service-name-comparison">${strictDockerServiceNameComparison}</property>
 
                   <!-- The raw port that hazelcast is listening on
 

@@ -73,6 +73,7 @@ public class SwarmDiscoveryUtil {
 	private boolean skipVerifySsl = false;
 
 	private boolean logAllServiceNamesOnFailedDiscovery = false;
+	private boolean strictDockerServiceNameComparison = false;
 
 	// Since SwarmDiscoveryUtil is used by several components
 	// the context lets us distinguish instances in logs
@@ -86,7 +87,8 @@ public class SwarmDiscoveryUtil {
 							  String rawDockerServiceNames,
 							  Integer hazelcastPeerPort,
 							  boolean bindSocketChannel,
-							  boolean logAllServiceNamesOnFailedDiscovery) throws Exception {
+							  boolean logAllServiceNamesOnFailedDiscovery,
+							  boolean strictDockerServiceNameComparison) throws Exception {
 
 		this(context,
 				rawDockerNetworkNames,
@@ -96,7 +98,8 @@ public class SwarmDiscoveryUtil {
 				bindSocketChannel,
 				new URI(System.getenv("DOCKER_HOST")),
 				false,
-				logAllServiceNamesOnFailedDiscovery);
+				logAllServiceNamesOnFailedDiscovery,
+				strictDockerServiceNameComparison);
 
 	}
 
@@ -108,12 +111,14 @@ public class SwarmDiscoveryUtil {
 							  boolean bindSocketChannel,
 							  URI swarmMgrUri,
 							  boolean skipVerifySsl,
-							  boolean logAllServiceNamesOnFailedDiscovery) throws Exception {
+							  boolean logAllServiceNamesOnFailedDiscovery,
+							  boolean strictDockerServiceNameComparison) throws Exception {
 
 		this.context = context;
 		this.swarmMgrUri = swarmMgrUri;
 		this.skipVerifySsl = skipVerifySsl;
 		this.logAllServiceNamesOnFailedDiscovery = logAllServiceNamesOnFailedDiscovery;
+		this.strictDockerServiceNameComparison = strictDockerServiceNameComparison;
 
 
 		if (this.swarmMgrUri == null) {
@@ -319,6 +324,7 @@ public class SwarmDiscoveryUtil {
 			sb.append("swarmMgrUri = " + this.swarmMgrUri + "\n");
 			sb.append("skipVerifySsl = " + this.skipVerifySsl + "\n");
 			sb.append("logAllServiceNamesOnFailedDiscovery = " + this.logAllServiceNamesOnFailedDiscovery + "\n");
+			sb.append("strictDockerServiceNameComparison = " + this.strictDockerServiceNameComparison + "\n");
 			logger.info(sb.toString());
 
 			// our discovered containers
@@ -471,8 +477,8 @@ public class SwarmDiscoveryUtil {
 
 		for (Service service : services) {
 
-			if(serviceFilter.reject(service)) {
-				logger.fine("service with name " + service.spec().name() + " rejected by filter " + serviceFilter);
+			if(strictDockerServiceNameComparison && serviceFilter.reject(service)) {
+				logger.fine("Service with name " + service.spec().name() + " rejected by filter " + serviceFilter);
 			}
 			else {
 				logger.fine("SwarmDiscoveryUtil[" + this.context + "] Processing service with name=" + service.spec().name());
