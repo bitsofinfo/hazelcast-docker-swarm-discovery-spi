@@ -64,7 +64,7 @@ public class DiscoveredContainer {
     @Override
     public boolean equals(Object o) {
         if (o instanceof DiscoveredContainer) {
-            return ((DiscoveredContainer) o).hashCode() == this.hashCode();
+            return o.hashCode() == this.hashCode();
         }
 
         return false;

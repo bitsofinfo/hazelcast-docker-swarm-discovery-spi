@@ -55,7 +55,7 @@ public class DockerTestRunner {
         }
 
 
-        Thread.currentThread().sleep(400000);
+        Thread.sleep(400000);
 
         System.exit(0);
     }
