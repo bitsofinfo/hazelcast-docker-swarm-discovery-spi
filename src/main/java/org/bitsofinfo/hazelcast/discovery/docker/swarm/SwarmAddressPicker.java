@@ -103,7 +103,8 @@ public class SwarmAddressPicker implements AddressPicker {
                 true,
                 swarmMgr,
                 skipVerifySsl,
-                false 
+                false,
+                false
             );
         } catch (final Exception e) {
             throw new RuntimeException(

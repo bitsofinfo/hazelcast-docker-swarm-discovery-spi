@@ -47,6 +47,7 @@
 	                <property name="swarmMgrUri">...</property>
 	                <property name="skipVerifySsl">true|false</property>
 	                <property name="logAllServiceNamesOnFailedDiscovery">true|false</property>
+	                <property name="strictDockerServiceNameComparison">true|false</property>
                 </properties>
         		 -->
         		

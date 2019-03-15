@@ -42,4 +42,8 @@ public class DockerSwarmDiscoveryConfiguration {
 	public static final PropertyDefinition LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY =
 			new SimplePropertyDefinition("log-all-service-names-on-failed-discovery", true, PropertyTypeConverter.BOOLEAN);
 
+	// Strict service name "equals" check
+	public static final PropertyDefinition STRICT_DOCKER_SERVICE_NAME_COMPARISON =
+			new SimplePropertyDefinition("strict-docker-service-name-comparison", true, PropertyTypeConverter.BOOLEAN);
+
 }
