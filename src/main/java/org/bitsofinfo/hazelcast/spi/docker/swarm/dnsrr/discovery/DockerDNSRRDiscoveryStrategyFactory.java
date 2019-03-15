@@ -27,11 +27,9 @@ import java.util.Map;
  * Factory to produce <code>DockerDNSRRDiscoveryStrategy</code>
  *
  * @author Cardds
- *
  */
 public class DockerDNSRRDiscoveryStrategyFactory
-        implements DiscoveryStrategyFactory
-{
+        implements DiscoveryStrategyFactory {
     @Override
     public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {
         return DockerDNSRRDiscoveryStrategy.class;

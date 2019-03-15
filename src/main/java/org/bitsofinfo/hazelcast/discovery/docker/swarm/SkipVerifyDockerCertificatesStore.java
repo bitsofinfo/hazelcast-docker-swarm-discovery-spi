@@ -9,14 +9,14 @@ import javax.net.ssl.SSLContext;
 
 public class SkipVerifyDockerCertificatesStore implements DockerCertificatesStore {
 
-	@Override
-	public SSLContext sslContext() {
-		return SSLContexts.createDefault();
-	}
+    @Override
+    public SSLContext sslContext() {
+        return SSLContexts.createDefault();
+    }
 
-	@Override
-	public HostnameVerifier hostnameVerifier() {
-		return NoopHostnameVerifier.INSTANCE;
-	}
+    @Override
+    public HostnameVerifier hostnameVerifier() {
+        return NoopHostnameVerifier.INSTANCE;
+    }
 
 }

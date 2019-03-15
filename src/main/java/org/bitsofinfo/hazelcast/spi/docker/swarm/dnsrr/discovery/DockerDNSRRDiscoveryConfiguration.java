@@ -25,7 +25,6 @@ import java.util.Collection;
  * Configuration required for <code>DockerDNSRRDiscoveryStrategy</code>
  *
  * @author Cardds
- *
  */
 public class DockerDNSRRDiscoveryConfiguration {
     /**
@@ -42,7 +41,7 @@ public class DockerDNSRRDiscoveryConfiguration {
      */
     public static final Collection<PropertyDefinition> PROPERTIES =
             Arrays.asList(
-                    new PropertyDefinition[] {
+                    new PropertyDefinition[]{
                             SERVICESCSV
                     }
             );
