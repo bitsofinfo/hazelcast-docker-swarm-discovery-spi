@@ -1,15 +1,13 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.nio.channels.ServerSocketChannel;
-import java.util.Properties;
-
-import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.Address;
 import com.hazelcast.spi.MemberAddressProvider;
+
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.util.Properties;
 
 /**
  * Custom MemberAddressProvider that works for hazelcast instances running in swarm service instances

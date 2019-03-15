@@ -1,14 +1,14 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-
 import com.hazelcast.config.properties.PropertyDefinition;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
 

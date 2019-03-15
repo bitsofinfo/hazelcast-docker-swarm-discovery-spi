@@ -1,11 +1,11 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.net.URI;
-import java.nio.channels.ServerSocketChannel;
-
 import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
+
+import java.net.URI;
+import java.nio.channels.ServerSocketChannel;
 
 /**
  * Custom AddressPicker that works for hazelcast instances running in swarm service instances

@@ -1,17 +1,17 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
+import com.hazelcast.logging.ILogger;
+import com.hazelcast.nio.Address;
+import com.hazelcast.spi.discovery.AbstractDiscoveryStrategy;
+import com.hazelcast.spi.discovery.DiscoveryNode;
+import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.hazelcast.logging.ILogger;
-import com.hazelcast.nio.Address;
-import com.hazelcast.spi.discovery.AbstractDiscoveryStrategy;
-import com.hazelcast.spi.discovery.DiscoveryNode;
-import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
 
 /**
  * DiscoveryStrategy for Docker Swarm

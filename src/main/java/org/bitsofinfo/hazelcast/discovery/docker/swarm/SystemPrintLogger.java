@@ -1,13 +1,12 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.LogEvent;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class SystemPrintLogger implements ILogger {
 

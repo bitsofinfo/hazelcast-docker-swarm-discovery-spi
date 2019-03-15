@@ -14,6 +14,10 @@
 
 package org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr;
 
+import com.hazelcast.logging.ILogger;
+import com.hazelcast.logging.Logger;
+import com.hazelcast.spi.MemberAddressProvider;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -24,10 +28,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-
-import com.hazelcast.logging.ILogger;
-import com.hazelcast.logging.Logger;
-import com.hazelcast.spi.MemberAddressProvider;
 
 /**
  * Member Address Provider for hazelcast that cross-references the service

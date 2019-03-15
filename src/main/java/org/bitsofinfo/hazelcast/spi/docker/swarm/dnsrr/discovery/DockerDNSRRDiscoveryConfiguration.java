@@ -14,12 +14,12 @@
 
 package org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.discovery;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import com.hazelcast.config.properties.PropertyDefinition;
 import com.hazelcast.config.properties.PropertyTypeConverter;
 import com.hazelcast.config.properties.SimplePropertyDefinition;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Configuration required for <code>DockerDNSRRDiscoveryStrategy</code>
