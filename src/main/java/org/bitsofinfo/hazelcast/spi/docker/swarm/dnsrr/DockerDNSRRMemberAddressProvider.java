@@ -35,25 +35,21 @@ import java.util.Set;
  * appropriate bind address for the hazelcast instance
  *
  * @author Cardds
- *
  */
 public class DockerDNSRRMemberAddressProvider
-        implements MemberAddressProvider
-{
-    ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
-
+        implements MemberAddressProvider {
     public static Properties properties;
     public static InetSocketAddress bindAddress = null;
+    ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
 
     public DockerDNSRRMemberAddressProvider(Properties properties)
             throws
             NumberFormatException,
             SocketException,
-            UnknownHostException
-    {
+            UnknownHostException {
         DockerDNSRRMemberAddressProvider.properties = properties;
 
-        if(properties != null) {
+        if (properties != null) {
             String serviceName = properties.getProperty(
                     DockerDNSRRMemberAddressProviderConfig.SERVICENAME
             );
@@ -70,7 +66,7 @@ public class DockerDNSRRMemberAddressProvider
             ) {
                 try {
                     port = Integer.valueOf(portString);
-                } catch(NumberFormatException nfe) {
+                } catch (NumberFormatException nfe) {
                     logger.severe(
                             "Unable to parse " +
                                     DockerDNSRRMemberAddressProviderConfig.SERVICEPORT +
@@ -91,20 +87,20 @@ public class DockerDNSRRMemberAddressProvider
             try {
                 networkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-                while(
+                while (
                         networkInterfaces.hasMoreElements() &&
                                 bindAddress == null
                 ) {
                     networkInterfaceAddresses =
                             networkInterfaces.nextElement().getInetAddresses();
 
-                    while(networkInterfaceAddresses.hasMoreElements()) {
+                    while (networkInterfaceAddresses.hasMoreElements()) {
                         address = networkInterfaceAddresses.nextElement();
-                        if(address != null) {
+                        if (address != null) {
                             logger.info("Checking address " + address.toString());
                         }
 
-                        if(
+                        if (
                                 potentialInetAddresses.contains(address)
                         ) {
                             bindAddress = new InetSocketAddress(
@@ -126,8 +122,7 @@ public class DockerDNSRRMemberAddressProvider
     }
 
     private Set<InetAddress> resolveServiceName(String serviceName)
-            throws UnknownHostException
-    {
+            throws UnknownHostException {
         Set<InetAddress> addresses = new HashSet<InetAddress>();
 
         try {
@@ -142,7 +137,7 @@ public class DockerDNSRRMemberAddressProvider
                     "Resolved domain name '" + serviceName +
                             "' to address(es): " + addresses
             );
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             logger.severe(
                     "Unable to resolve service name " + serviceName
             );

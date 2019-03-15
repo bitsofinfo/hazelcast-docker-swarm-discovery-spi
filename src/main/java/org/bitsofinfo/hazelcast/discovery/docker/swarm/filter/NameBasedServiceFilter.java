@@ -16,8 +16,7 @@ public class NameBasedServiceFilter extends AbstractServiceFilter {
     public boolean accept(Service service) {
         try {
             return serviceName.equals(service.spec().name());
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             return false;
         }
     }

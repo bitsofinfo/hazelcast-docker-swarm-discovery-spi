@@ -34,11 +34,9 @@ import java.util.Set;
  * addresses within the docker network to connect to each individually.
  *
  * @author Cardds
- *
  */
 public class DockerDNSRRDiscoveryStrategy
-        extends AbstractDiscoveryStrategy
-{
+        extends AbstractDiscoveryStrategy {
     private ILogger logger;
 
     public DockerDNSRRDiscoveryStrategy(
@@ -63,7 +61,7 @@ public class DockerDNSRRDiscoveryStrategy
         );
 
         //If there are no services configured, no point in doing anything.
-        if(
+        if (
                 servicesCsv == null ||
                         servicesCsv.trim().isEmpty()
         ) {
@@ -76,8 +74,8 @@ public class DockerDNSRRDiscoveryStrategy
         Integer port = 5701;
 
         //Loop for every service defined in the CSV
-        for(String service: servicesCsv.split(",")) {
-            if(!service.trim().isEmpty()) {
+        for (String service : servicesCsv.split(",")) {
+            if (!service.trim().isEmpty()) {
                 //CSV should be composed of hostname:port
                 serviceHostnameAndPort = service.split(":");
 
@@ -105,7 +103,7 @@ public class DockerDNSRRDiscoveryStrategy
                         port = Integer.valueOf(
                                 serviceHostnameAndPort[1]
                         );
-                    } catch(NumberFormatException nfe) {
+                    } catch (NumberFormatException nfe) {
                         logger.info(
                                 "Unable to parse port " +
                                         serviceHostnameAndPort[1] +
@@ -122,7 +120,7 @@ public class DockerDNSRRDiscoveryStrategy
                         );
 
                 //Add all IP addresses for service hostname with the given port.
-                for(InetAddress resolution: serviceNameResolutions) {
+                for (InetAddress resolution : serviceNameResolutions) {
                     discoveryNodes.add(
                             new SimpleDiscoveryNode(
                                     new Address(
@@ -152,7 +150,7 @@ public class DockerDNSRRDiscoveryStrategy
             logger.info(
                     "Resolved domain name '" + domainName + "' to address(es): " + addresses
             );
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             logger.severe(
                     "Unable to resolve domain name " + domainName
             );

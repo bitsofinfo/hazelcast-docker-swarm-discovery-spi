@@ -9,6 +9,7 @@ import com.spotify.docker.client.messages.swarm.Service;
 public interface ServiceFilter {
     /**
      * Apply criteria and return true if this service meets the criteria.
+     *
      * @param service Service returned from criteria-based /services request
      * @return true if this Service meets additional criteria necessary for consideration
      */
@@ -17,6 +18,7 @@ public interface ServiceFilter {
     /**
      * Apply criteria and return false if this service meets the criteria.
      * This method exists so that tests for rejection can be expressed without inline negation.
+     *
      * @param service Service returned from criteria-based /services request
      * @return true if this Service does not meet additional criteria necessary for consideration
      */
