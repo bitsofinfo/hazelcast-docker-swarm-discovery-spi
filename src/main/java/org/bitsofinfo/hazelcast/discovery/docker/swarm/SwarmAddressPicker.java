@@ -1,11 +1,11 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.net.URI;
-import java.nio.channels.ServerSocketChannel;
-
 import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
+
+import java.net.URI;
+import java.nio.channels.ServerSocketChannel;
 
 /**
  * Custom AddressPicker that works for hazelcast instances running in swarm service instances
@@ -33,7 +33,7 @@ import com.hazelcast.nio.Address;
  * @see <a href="https://github.com/hazelcast/hazelcast/issues/10801">Hazelcast GitHub Issue #10801</a>
  */
 public class SwarmAddressPicker implements AddressPicker {
-	
+
     public static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
     public static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
     public static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
@@ -47,37 +47,37 @@ public class SwarmAddressPicker implements AddressPicker {
      * Constructor
      */
 
-    
+
     public SwarmAddressPicker(final ILogger iLogger) {
         final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
         final String dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
         final String dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
         final Integer hazelcastPeerPort = Integer.valueOf(System.getProperty(PROP_HAZELCAST_PEER_PORT));
-       
-       String swarmMgrUri = System.getProperty(PROP_SWARM_MGR_URI);
+
+        String swarmMgrUri = System.getProperty(PROP_SWARM_MGR_URI);
         if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
-        		swarmMgrUri = System.getenv("DOCKER_HOST");
+            swarmMgrUri = System.getenv("DOCKER_HOST");
         }
-        
+
         Boolean skipVerifySsl = false;
         if (System.getProperty(PROP_SKIP_VERIFY_SSL) != null) {
-        		skipVerifySsl = Boolean.valueOf(System.getProperty(PROP_SKIP_VERIFY_SSL));
+            skipVerifySsl = Boolean.valueOf(System.getProperty(PROP_SKIP_VERIFY_SSL));
         }
 
         initialize(iLogger, dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
     public SwarmAddressPicker(final ILogger iLogger, final String dockerNetworkNames, final String dockerServiceLabels,
-        final String dockerServiceNames, final Integer hazelcastPeerPort) {
+                              final String dockerServiceNames, final Integer hazelcastPeerPort) {
 
-    		String swarmMgrUri = System.getenv("DOCKER_HOST"); 
-    		Boolean skipVerifySsl = false;
-    		
+        String swarmMgrUri = System.getenv("DOCKER_HOST");
+        Boolean skipVerifySsl = false;
+
         initialize(iLogger, dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
     private void initialize(final ILogger iLogger, final String dockerNetworkNames, final String dockerServiceLabels,
-        final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
+                            final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
 
         final int port;
 
@@ -91,25 +91,25 @@ public class SwarmAddressPicker implements AddressPicker {
         try {
             URI swarmMgr = null;
             if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
-            		swarmMgr = new URI(System.getenv("DOCKER_HOST")); 
+                swarmMgr = new URI(System.getenv("DOCKER_HOST"));
             }
-            
+
             this.swarmDiscoveryUtil = new SwarmDiscoveryUtil(
-                this.getClass().getSimpleName(),
-                dockerNetworkNames,
-                dockerServiceLabels,
-                dockerServiceNames,
-                port,
-                true,
-                swarmMgr,
-                skipVerifySsl,
-                false,
-                false
+                    this.getClass().getSimpleName(),
+                    dockerNetworkNames,
+                    dockerServiceLabels,
+                    dockerServiceNames,
+                    port,
+                    true,
+                    swarmMgr,
+                    skipVerifySsl,
+                    false,
+                    false
             );
         } catch (final Exception e) {
             throw new RuntimeException(
-                "SwarmAddressPicker: Error constructing SwarmDiscoveryUtil: " + e.getMessage(),
-                e
+                    "SwarmAddressPicker: Error constructing SwarmDiscoveryUtil: " + e.getMessage(),
+                    e
             );
         }
     }

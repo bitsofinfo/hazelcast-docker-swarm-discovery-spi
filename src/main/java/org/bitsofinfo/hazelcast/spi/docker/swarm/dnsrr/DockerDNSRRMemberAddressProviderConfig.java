@@ -28,7 +28,7 @@ public class DockerDNSRRMemberAddressProviderConfig {
 
     /**
      * Property definition to load exposed port for hazelcast
-     * 
+     *
      * Note: This exists because MemberAddressProvider has no way to access
      *       the network configuration as of the time of writing this.
      */

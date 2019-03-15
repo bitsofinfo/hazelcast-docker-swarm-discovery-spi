@@ -14,6 +14,12 @@
 
 package org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr.discovery;
 
+import com.hazelcast.logging.ILogger;
+import com.hazelcast.nio.Address;
+import com.hazelcast.spi.discovery.AbstractDiscoveryStrategy;
+import com.hazelcast.spi.discovery.DiscoveryNode;
+import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -21,12 +27,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-
-import com.hazelcast.logging.ILogger;
-import com.hazelcast.nio.Address;
-import com.hazelcast.spi.discovery.AbstractDiscoveryStrategy;
-import com.hazelcast.spi.discovery.DiscoveryNode;
-import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
 
 /**
  * Hazelcast discovery strategy to be used with docker endpoint_mode: dnsrr
@@ -37,15 +37,15 @@ import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
  *
  */
 public class DockerDNSRRDiscoveryStrategy
-    extends AbstractDiscoveryStrategy
+        extends AbstractDiscoveryStrategy
 {
     private ILogger logger;
 
     public DockerDNSRRDiscoveryStrategy(
-        ILogger logger,
-        //The Comparable raw type is defined by AbstractDiscoveryStrategy as
-        //the value for the properties element; passing through here
-        @SuppressWarnings("rawtypes") Map<String, Comparable> properties
+            ILogger logger,
+            //The Comparable raw type is defined by AbstractDiscoveryStrategy as
+            //the value for the properties element; passing through here
+            @SuppressWarnings("rawtypes") Map<String, Comparable> properties
     ) {
         super(logger, properties);
         this.logger = logger;
@@ -54,24 +54,24 @@ public class DockerDNSRRDiscoveryStrategy
     @Override
     public Iterable<DiscoveryNode> discoverNodes() {
         LinkedList<DiscoveryNode> discoveryNodes =
-            new LinkedList<DiscoveryNode>();
+                new LinkedList<DiscoveryNode>();
 
         //Pull properties
         String servicesCsv = getOrDefault(
-            DockerDNSRRDiscoveryConfiguration.SERVICESCSV,
-            ""
+                DockerDNSRRDiscoveryConfiguration.SERVICESCSV,
+                ""
         );
 
         //If there are no services configured, no point in doing anything.
         if(
-            servicesCsv == null ||
-            servicesCsv.trim().isEmpty()
+                servicesCsv == null ||
+                        servicesCsv.trim().isEmpty()
         ) {
             return discoveryNodes;
         }
 
         Set<InetAddress> serviceNameResolutions =
-            new HashSet<InetAddress>();
+                new HashSet<InetAddress>();
         String[] serviceHostnameAndPort;
         Integer port = 5701;
 
@@ -83,33 +83,33 @@ public class DockerDNSRRDiscoveryStrategy
 
                 //Validate hostname exists
                 if (
-                    serviceHostnameAndPort[0] == null ||
-                    serviceHostnameAndPort[0].trim().isEmpty()
+                        serviceHostnameAndPort[0] == null ||
+                                serviceHostnameAndPort[0].trim().isEmpty()
                 ) {
                     logger.info(
-                        "Unable to resolve service hostname " +
-                            serviceHostnameAndPort[0] +
-                            " Skipping service entry."
+                            "Unable to resolve service hostname " +
+                                    serviceHostnameAndPort[0] +
+                                    " Skipping service entry."
                     );
                     continue;
                 }
                 //Validate port exists; assume default port if it doesn't
                 if (
-                    serviceHostnameAndPort.length <= 1 ||
-                    serviceHostnameAndPort[1] == null ||
-                    serviceHostnameAndPort[1].trim().isEmpty()
+                        serviceHostnameAndPort.length <= 1 ||
+                                serviceHostnameAndPort[1] == null ||
+                                serviceHostnameAndPort[1].trim().isEmpty()
                 ) {
                     port = 5701;
                 } else {
                     try {
                         port = Integer.valueOf(
-                            serviceHostnameAndPort[1]
+                                serviceHostnameAndPort[1]
                         );
                     } catch(NumberFormatException nfe) {
                         logger.info(
-                            "Unable to parse port " +
-                                serviceHostnameAndPort[1] +
-                                " Skipping service entry."
+                                "Unable to parse port " +
+                                        serviceHostnameAndPort[1] +
+                                        " Skipping service entry."
                         );
                         continue;
                     }
@@ -117,19 +117,19 @@ public class DockerDNSRRDiscoveryStrategy
 
                 //Resolve service hostname to a set of IP addresses, if any
                 serviceNameResolutions =
-                    resolveDomainNames(
-                        serviceHostnameAndPort[0]
-                    );
+                        resolveDomainNames(
+                                serviceHostnameAndPort[0]
+                        );
 
                 //Add all IP addresses for service hostname with the given port.
                 for(InetAddress resolution: serviceNameResolutions) {
                     discoveryNodes.add(
-                        new SimpleDiscoveryNode(
-                            new Address(
-                                resolution,
-                                port
+                            new SimpleDiscoveryNode(
+                                    new Address(
+                                            resolution,
+                                            port
+                                    )
                             )
-                        )
                     );
                 }
             }
@@ -146,15 +146,15 @@ public class DockerDNSRRDiscoveryStrategy
             inetAddresses = InetAddress.getAllByName(domainName);
 
             addresses.addAll(
-                Arrays.asList(inetAddresses)
+                    Arrays.asList(inetAddresses)
             );
 
             logger.info(
-                "Resolved domain name '" + domainName + "' to address(es): " + addresses
+                    "Resolved domain name '" + domainName + "' to address(es): " + addresses
             );
         } catch(UnknownHostException e) {
             logger.severe(
-                "Unable to resolve domain name " + domainName
+                    "Unable to resolve domain name " + domainName
             );
         }
 

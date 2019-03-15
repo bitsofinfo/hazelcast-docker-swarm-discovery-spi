@@ -1,29 +1,12 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.URI;
-import java.nio.channels.ServerSocketChannel;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
-
-
 import com.hazelcast.core.HazelcastException;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.Address;
 import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DefaultDockerClient.Builder;
+import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListNetworksParam;
 import com.spotify.docker.client.messages.Network;
 import com.spotify.docker.client.messages.swarm.EndpointVirtualIp;
@@ -37,13 +20,28 @@ import org.bitsofinfo.hazelcast.discovery.docker.swarm.filter.NameBasedServiceFi
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.filter.NullServiceFilter;
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.filter.ServiceFilter;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
 import java.net.SocketException;
+import java.net.URI;
+import java.nio.channels.ServerSocketChannel;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * SwarmDiscoveryUtil is the workhorse of this discovery SPI implementation
- * 
- * 
- * 
+ *
+ *
+ *
  * @author bitsofinfo
  *
  */
@@ -445,7 +443,7 @@ public class SwarmDiscoveryUtil {
 	/**
 	 * Discover containers on the relevant networks that match the given
 	 * service criteria and service filter
-	 * 
+	 *
 	 * @param docker
 	 * @param relevantNetIds2Networks
 	 * @param criteria to be passed as a parameter to the /services request
@@ -453,10 +451,10 @@ public class SwarmDiscoveryUtil {
 	 * @return set of DiscoveredContainer instances
 	 * @throws Exception
 	 */
-	private Set<DiscoveredContainer> discoverContainersViaCriteria(DockerClient docker, 
-			Map<String,Network> relevantNetIds2Networks, 
-			Service.Criteria criteria,
-			ServiceFilter serviceFilter) throws Exception {
+	private Set<DiscoveredContainer> discoverContainersViaCriteria(DockerClient docker,
+																   Map<String,Network> relevantNetIds2Networks,
+																   Service.Criteria criteria,
+																   ServiceFilter serviceFilter) throws Exception {
 
 		Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
 
