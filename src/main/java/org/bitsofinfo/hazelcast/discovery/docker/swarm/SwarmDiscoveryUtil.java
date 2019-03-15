@@ -41,9 +41,9 @@ import java.net.SocketException;
 
 /**
  * SwarmDiscoveryUtil is the workhorse of this discovery SPI implementation
- * 
- * 
- * 
+ *
+ *
+ *
  * @author bitsofinfo
  *
  */
@@ -445,7 +445,7 @@ public class SwarmDiscoveryUtil {
 	/**
 	 * Discover containers on the relevant networks that match the given
 	 * service criteria and service filter
-	 * 
+	 *
 	 * @param docker
 	 * @param relevantNetIds2Networks
 	 * @param criteria to be passed as a parameter to the /services request
@@ -453,10 +453,10 @@ public class SwarmDiscoveryUtil {
 	 * @return set of DiscoveredContainer instances
 	 * @throws Exception
 	 */
-	private Set<DiscoveredContainer> discoverContainersViaCriteria(DockerClient docker, 
-			Map<String,Network> relevantNetIds2Networks, 
-			Service.Criteria criteria,
-			ServiceFilter serviceFilter) throws Exception {
+	private Set<DiscoveredContainer> discoverContainersViaCriteria(DockerClient docker,
+																   Map<String,Network> relevantNetIds2Networks,
+																   Service.Criteria criteria,
+																   ServiceFilter serviceFilter) throws Exception {
 
 		Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
 

@@ -30,7 +30,7 @@ import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
  *
  */
 public class DockerDNSRRDiscoveryStrategyFactory
-    implements DiscoveryStrategyFactory
+        implements DiscoveryStrategyFactory
 {
     @Override
     public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {
@@ -39,16 +39,16 @@ public class DockerDNSRRDiscoveryStrategyFactory
 
     @Override
     public DiscoveryStrategy newDiscoveryStrategy(
-        DiscoveryNode discoveryNode,
-        ILogger logger,
-        //Implementing DiscoveryStrategyFactory method with a raw type
-        @SuppressWarnings("rawtypes") Map<String, Comparable> properties
+            DiscoveryNode discoveryNode,
+            ILogger logger,
+            //Implementing DiscoveryStrategyFactory method with a raw type
+            @SuppressWarnings("rawtypes") Map<String, Comparable> properties
     ) {
         return
-            new DockerDNSRRDiscoveryStrategy(
-                logger,
-                properties
-            );
+                new DockerDNSRRDiscoveryStrategy(
+                        logger,
+                        properties
+                );
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.LogEvent;
 
 public class SystemPrintLogger implements ILogger {
-	
+
 	private DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	@Override

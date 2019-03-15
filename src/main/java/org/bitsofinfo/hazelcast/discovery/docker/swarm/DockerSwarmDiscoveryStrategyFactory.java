@@ -14,14 +14,14 @@ public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFac
 
 	private static final Collection<PropertyDefinition> PROPERTIES =
 			Arrays.asList(new PropertyDefinition[]{
-						DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_LABELS,
-						DockerSwarmDiscoveryConfiguration.DOCKER_NETWORK_NAMES,
-						DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_NAMES,
-						DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT,
-						DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI,
-						DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL,
-						DockerSwarmDiscoveryConfiguration.LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY
-					});
+					DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_LABELS,
+					DockerSwarmDiscoveryConfiguration.DOCKER_NETWORK_NAMES,
+					DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_NAMES,
+					DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT,
+					DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI,
+					DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL,
+					DockerSwarmDiscoveryConfiguration.LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY
+			});
 
 	public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {
 		// Returns the actual class type of the DiscoveryStrategy
@@ -37,7 +37,7 @@ public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFac
 												  ILogger logger,
 												  Map<String, Comparable> properties ) {
 
-		return new DockerSwarmDiscoveryStrategy( discoveryNode, logger, properties );                                      
-	}   
+		return new DockerSwarmDiscoveryStrategy( discoveryNode, logger, properties );
+	}
 
 }
