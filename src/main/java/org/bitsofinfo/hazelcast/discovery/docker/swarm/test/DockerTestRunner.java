@@ -33,7 +33,7 @@ public class DockerTestRunner {
                 }
             };
 
-            HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
+            HazelcastInstanceFactory
                     .newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", nodeContext);
 
 
@@ -42,7 +42,7 @@ public class DockerTestRunner {
             Config conf = new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml");
 
 
-            HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
+            HazelcastInstanceFactory
                     .newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", new DefaultNodeContext());
         } else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("dockerDNSRR")) {
             Config conf =
@@ -50,8 +50,7 @@ public class DockerTestRunner {
                             "hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml"
                     );
 
-            HazelcastInstance hazelcastInstance =
-                    HazelcastInstanceFactory.newHazelcastInstance(conf);
+            HazelcastInstanceFactory.newHazelcastInstance(conf);
         }
 
 

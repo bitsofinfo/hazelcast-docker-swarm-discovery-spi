@@ -68,10 +68,10 @@ public class DockerDNSRRDiscoveryStrategy
             return discoveryNodes;
         }
 
-        Set<InetAddress> serviceNameResolutions =
-                new HashSet<>();
+        // TODO robin - tighten scope of these variables
+        Set<InetAddress> serviceNameResolutions;
         String[] serviceHostnameAndPort;
-        Integer port = 5701;
+        Integer port;
 
         //Loop for every service defined in the CSV
         for (String service : servicesCsv.split(",")) {
