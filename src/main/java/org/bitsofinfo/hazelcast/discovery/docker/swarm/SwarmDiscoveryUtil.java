@@ -344,11 +344,12 @@ public class SwarmDiscoveryUtil {
             // Collect all relevant containers for services with services-names on the relevant networks
             for (String dockerServiceName : this.getDockerServiceNames()) {
                 logger.info("SwarmDiscoveryUtil[" + this.context + "] Invoking criteria-based container discovery for dockerServiceName=" + dockerServiceName);
+                ServiceFilter serviceFilter = strictDockerServiceNameComparison ? new NameBasedServiceFilter(dockerServiceName) : NullServiceFilter.getInstance();
                 discoveredContainers.addAll(
                         discoverContainersViaCriteria(docker,
                                 relevantNetIds2Networks,
                                 Criteria.builder().serviceName(dockerServiceName).build(),
-                                new NameBasedServiceFilter(dockerServiceName)));
+                                serviceFilter));
             }
 
 
@@ -472,7 +473,7 @@ public class SwarmDiscoveryUtil {
 
         for (Service service : services) {
 
-            if (strictDockerServiceNameComparison && serviceFilter.reject(service)) {
+            if (serviceFilter.reject(service)) {
                 logger.fine("Service with name " + service.spec().name() + " rejected by filter " + serviceFilter);
                 continue;
             }
