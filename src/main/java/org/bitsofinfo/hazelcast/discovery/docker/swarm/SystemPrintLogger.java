@@ -10,8 +10,6 @@ import java.util.logging.LogRecord;
 
 public class SystemPrintLogger implements ILogger {
 
-    private DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-
     @Override
     public void finest(String message) {
         System.out.println("FINEST " + message);
