@@ -157,7 +157,7 @@ public class SwarmDiscoveryUtil {
         }
 
         // invalid setup
-        if (dockerServiceLabels.size() == 0 && dockerServiceNames.size() == 0) {
+        if (dockerServiceLabels.isEmpty() && dockerServiceNames.isEmpty()) {
             String msg = "SwarmDiscoveryUtil[" + this.context + "]() You must specify at least one value for "
                     + "either 'docker-service-names' or 'docker-service-labels'";
             throw new Exception(msg);
@@ -312,7 +312,7 @@ public class SwarmDiscoveryUtil {
 
             docker = dockerBuilder.build();
 
-            StringBuffer sb = new StringBuffer("SwarmDiscoveryUtil[" + this.context + "].discoverNodes(): via DOCKER_HOST: " + docker.getHost() + "\n");
+            StringBuilder sb = new StringBuilder("SwarmDiscoveryUtil[" + this.context + "].discoverNodes(): via DOCKER_HOST: " + docker.getHost() + "\n");
             sb.append("docker-network-names = " + this.getRawDockerNetworkNames() + "\n");
             sb.append("docker-service-names = " + this.getRawDockerServiceNames() + "\n");
             sb.append("docker-service-labels = " + this.getRawDockerServiceLabels() + "\n");
@@ -337,7 +337,7 @@ public class SwarmDiscoveryUtil {
                 }
             }
 
-            if (relevantNetIds2Networks.size() == 0) {
+            if (relevantNetIds2Networks.isEmpty()) {
                 logger.warning("SwarmDiscoveryUtil[" + this.context + "] Did not find relevant docker network for: " + this.getDockerNetworkNames());
             }
 
@@ -365,7 +365,7 @@ public class SwarmDiscoveryUtil {
 
             // Optionally dump all available services names when configured criteria
             // yields zero containers
-            if (discoveredContainers.size() == 0 && logAllServiceNamesOnFailedDiscovery) {
+            if (discoveredContainers.isEmpty() && logAllServiceNamesOnFailedDiscovery) {
                 try {
                     List<Service> allServices = docker.listServices();
 
@@ -464,7 +464,7 @@ public class SwarmDiscoveryUtil {
             return discoveredContainers;
         }
 
-        if (services.size() == 0) {
+        if (services.isEmpty()) {
             logger.fine("SwarmDiscoveryUtil[" + this.context + "] No service match for given criteria, docker.listServices(criteria) returned 0");
             return discoveredContainers;
         }
