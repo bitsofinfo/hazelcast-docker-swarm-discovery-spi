@@ -42,9 +42,15 @@ public class DockerDNSRRMemberAddressProvider
     protected InetSocketAddress bindAddress = null;
     ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
 
+    /**
+     *
+     * @param properties
+     * @throws NumberFormatException if servicePort cannot be parsed
+     * @throws SocketException
+     * @throws UnknownHostException
+     */
     public DockerDNSRRMemberAddressProvider(Properties properties)
             throws
-            NumberFormatException,
             SocketException,
             UnknownHostException {
         this.properties = properties;
