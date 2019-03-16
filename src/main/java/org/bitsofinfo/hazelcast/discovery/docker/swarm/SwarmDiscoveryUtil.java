@@ -48,9 +48,9 @@ public class SwarmDiscoveryUtil {
     private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
     private static final int SOCKET_BACKLOG_LENGTH = 100;
 
-    private Set<String> dockerNetworkNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    private Map<String, String> dockerServiceLabels = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-    private Set<String> dockerServiceNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> dockerNetworkNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, String> dockerServiceLabels = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> dockerServiceNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     private String rawDockerNetworkNames = null;
     private String rawDockerServiceLabels = null;
@@ -172,7 +172,7 @@ public class SwarmDiscoveryUtil {
 
         Set<DiscoveredContainer> discoveredContainers = this.discoverContainers();
 
-        Map<String, DiscoveredContainer> ip2ContainerMap = new HashMap<String, DiscoveredContainer>();
+        Map<String, DiscoveredContainer> ip2ContainerMap = new HashMap<>();
         for (DiscoveredContainer dc : discoveredContainers) {
             ip2ContainerMap.put(dc.getIp(), dc);
         }
@@ -323,10 +323,10 @@ public class SwarmDiscoveryUtil {
             logger.info(sb.toString());
 
             // our discovered containers
-            Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
+            Set<DiscoveredContainer> discoveredContainers = new HashSet<>();
 
             // the relevant networks we are looking for
-            Map<String, Network> relevantNetIds2Networks = new TreeMap<String, Network>(String.CASE_INSENSITIVE_ORDER);
+            Map<String, Network> relevantNetIds2Networks = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
             // build list of relevant networkIds -> Network objects we care about
             for (String dockerNetworkName : this.getDockerNetworkNames()) {
@@ -453,7 +453,7 @@ public class SwarmDiscoveryUtil {
                                                                    Service.Criteria criteria,
                                                                    ServiceFilter serviceFilter) throws Exception {
 
-        Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
+        Set<DiscoveredContainer> discoveredContainers = new HashSet<>();
 
         // find all relevant services given the criteria....
         List<Service> services = docker.listServices(criteria);

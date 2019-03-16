@@ -123,7 +123,7 @@ public class DockerDNSRRMemberAddressProvider
 
     private Set<InetAddress> resolveServiceName(String serviceName)
             throws UnknownHostException {
-        Set<InetAddress> addresses = new HashSet<InetAddress>();
+        Set<InetAddress> addresses = new HashSet<>();
 
         try {
             InetAddress[] inetAddresses;
