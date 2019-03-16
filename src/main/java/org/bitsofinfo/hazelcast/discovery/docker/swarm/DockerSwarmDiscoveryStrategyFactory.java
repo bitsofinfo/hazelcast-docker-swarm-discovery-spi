@@ -13,15 +13,14 @@ import java.util.Map;
 public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
 
     private static final Collection<PropertyDefinition> PROPERTIES =
-            Arrays.asList(new PropertyDefinition[]{
-                    DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_LABELS,
+            Arrays.asList(DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_LABELS,
                     DockerSwarmDiscoveryConfiguration.DOCKER_NETWORK_NAMES,
                     DockerSwarmDiscoveryConfiguration.DOCKER_SERVICE_NAMES,
                     DockerSwarmDiscoveryConfiguration.HAZELCAST_PEER_PORT,
                     DockerSwarmDiscoveryConfiguration.SWARM_MGR_URI,
                     DockerSwarmDiscoveryConfiguration.SKIP_VERIFY_SSL,
-                    DockerSwarmDiscoveryConfiguration.LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY
-            });
+                    DockerSwarmDiscoveryConfiguration.LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY,
+                    DockerSwarmDiscoveryConfiguration.STRICT_DOCKER_SERVICE_NAME_COMPARISON);
 
     public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {
         // Returns the actual class type of the DiscoveryStrategy

@@ -39,10 +39,5 @@ public class DockerDNSRRDiscoveryConfiguration {
     /**
      * Full list of all properties referenced by this configuration
      */
-    public static final Collection<PropertyDefinition> PROPERTIES =
-            Arrays.asList(
-                    new PropertyDefinition[]{
-                            SERVICESCSV
-                    }
-            );
+    public static final Collection<PropertyDefinition> PROPERTIES = Arrays.asList(SERVICESCSV);
 }
