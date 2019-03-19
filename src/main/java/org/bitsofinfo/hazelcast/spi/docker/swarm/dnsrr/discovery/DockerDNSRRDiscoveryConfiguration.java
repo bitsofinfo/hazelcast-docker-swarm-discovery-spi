@@ -27,6 +27,10 @@ import java.util.Collection;
  * @author Cardds
  */
 public class DockerDNSRRDiscoveryConfiguration {
+
+    private DockerDNSRRDiscoveryConfiguration() {
+    }
+
     /**
      * Property definition to load CSV of services
      */

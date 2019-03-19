@@ -52,7 +52,7 @@ public class DockerDNSRRDiscoveryStrategy
     @Override
     public Iterable<DiscoveryNode> discoverNodes() {
         LinkedList<DiscoveryNode> discoveryNodes =
-                new LinkedList<DiscoveryNode>();
+                new LinkedList<>();
 
         //Pull properties
         String servicesCsv = getOrDefault(
@@ -69,7 +69,7 @@ public class DockerDNSRRDiscoveryStrategy
         }
 
         Set<InetAddress> serviceNameResolutions =
-                new HashSet<InetAddress>();
+                new HashSet<>();
         String[] serviceHostnameAndPort;
         Integer port = 5701;
 
@@ -137,7 +137,7 @@ public class DockerDNSRRDiscoveryStrategy
     }
 
     private Set<InetAddress> resolveDomainNames(String domainName) {
-        Set<InetAddress> addresses = new HashSet<InetAddress>();
+        Set<InetAddress> addresses = new HashSet<>();
 
         try {
             InetAddress[] inetAddresses;

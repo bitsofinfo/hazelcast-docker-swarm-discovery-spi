@@ -20,6 +20,10 @@ package org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr;
  * @author Cardds
  */
 public class DockerDNSRRMemberAddressProviderConfig {
+
+    private DockerDNSRRMemberAddressProviderConfig() {
+    }
+
     /**
      * Property definition to load name of this docker service
      */

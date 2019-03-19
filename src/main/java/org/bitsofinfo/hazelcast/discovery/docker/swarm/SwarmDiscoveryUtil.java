@@ -48,9 +48,9 @@ public class SwarmDiscoveryUtil {
     private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
     private static final int SOCKET_BACKLOG_LENGTH = 100;
 
-    private Set<String> dockerNetworkNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    private Map<String, String> dockerServiceLabels = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-    private Set<String> dockerServiceNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> dockerNetworkNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, String> dockerServiceLabels = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> dockerServiceNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     private String rawDockerNetworkNames = null;
     private String rawDockerServiceLabels = null;
@@ -157,7 +157,7 @@ public class SwarmDiscoveryUtil {
         }
 
         // invalid setup
-        if (dockerServiceLabels.size() == 0 && dockerServiceNames.size() == 0) {
+        if (dockerServiceLabels.isEmpty() && dockerServiceNames.isEmpty()) {
             String msg = "SwarmDiscoveryUtil[" + this.context + "]() You must specify at least one value for "
                     + "either 'docker-service-names' or 'docker-service-labels'";
             throw new Exception(msg);
@@ -172,7 +172,7 @@ public class SwarmDiscoveryUtil {
 
         Set<DiscoveredContainer> discoveredContainers = this.discoverContainers();
 
-        Map<String, DiscoveredContainer> ip2ContainerMap = new HashMap<String, DiscoveredContainer>();
+        Map<String, DiscoveredContainer> ip2ContainerMap = new HashMap<>();
         for (DiscoveredContainer dc : discoveredContainers) {
             ip2ContainerMap.put(dc.getIp(), dc);
         }
@@ -312,7 +312,7 @@ public class SwarmDiscoveryUtil {
 
             docker = dockerBuilder.build();
 
-            StringBuffer sb = new StringBuffer("SwarmDiscoveryUtil[" + this.context + "].discoverNodes(): via DOCKER_HOST: " + docker.getHost() + "\n");
+            StringBuilder sb = new StringBuilder("SwarmDiscoveryUtil[" + this.context + "].discoverNodes(): via DOCKER_HOST: " + docker.getHost() + "\n");
             sb.append("docker-network-names = " + this.getRawDockerNetworkNames() + "\n");
             sb.append("docker-service-names = " + this.getRawDockerServiceNames() + "\n");
             sb.append("docker-service-labels = " + this.getRawDockerServiceLabels() + "\n");
@@ -323,10 +323,10 @@ public class SwarmDiscoveryUtil {
             logger.info(sb.toString());
 
             // our discovered containers
-            Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
+            Set<DiscoveredContainer> discoveredContainers = new HashSet<>();
 
             // the relevant networks we are looking for
-            Map<String, Network> relevantNetIds2Networks = new TreeMap<String, Network>(String.CASE_INSENSITIVE_ORDER);
+            Map<String, Network> relevantNetIds2Networks = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
             // build list of relevant networkIds -> Network objects we care about
             for (String dockerNetworkName : this.getDockerNetworkNames()) {
@@ -337,7 +337,7 @@ public class SwarmDiscoveryUtil {
                 }
             }
 
-            if (relevantNetIds2Networks.size() == 0) {
+            if (relevantNetIds2Networks.isEmpty()) {
                 logger.warning("SwarmDiscoveryUtil[" + this.context + "] Did not find relevant docker network for: " + this.getDockerNetworkNames());
             }
 
@@ -365,7 +365,7 @@ public class SwarmDiscoveryUtil {
 
             // Optionally dump all available services names when configured criteria
             // yields zero containers
-            if (discoveredContainers.size() == 0 && logAllServiceNamesOnFailedDiscovery) {
+            if (discoveredContainers.isEmpty() && logAllServiceNamesOnFailedDiscovery) {
                 try {
                     List<Service> allServices = docker.listServices();
 
@@ -454,7 +454,7 @@ public class SwarmDiscoveryUtil {
                                                                    Service.Criteria criteria,
                                                                    ServiceFilter serviceFilter) throws Exception {
 
-        Set<DiscoveredContainer> discoveredContainers = new HashSet<DiscoveredContainer>();
+        Set<DiscoveredContainer> discoveredContainers = new HashSet<>();
 
         // find all relevant services given the criteria....
         List<Service> services = docker.listServices(criteria);
@@ -464,7 +464,7 @@ public class SwarmDiscoveryUtil {
             return discoveredContainers;
         }
 
-        if (services.size() == 0) {
+        if (services.isEmpty()) {
             logger.fine("SwarmDiscoveryUtil[" + this.context + "] No service match for given criteria, docker.listServices(criteria) returned 0");
             return discoveredContainers;
         }

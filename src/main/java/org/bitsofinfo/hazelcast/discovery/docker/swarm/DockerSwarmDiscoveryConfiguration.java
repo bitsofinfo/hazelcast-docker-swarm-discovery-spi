@@ -11,6 +11,9 @@ import com.hazelcast.config.properties.SimplePropertyDefinition;
  */
 public class DockerSwarmDiscoveryConfiguration {
 
+    private DockerSwarmDiscoveryConfiguration() {
+    }
+
     // comma delimited list of networks to look for services on
     public static final PropertyDefinition DOCKER_NETWORK_NAMES =
             new SimplePropertyDefinition("docker-network-names", PropertyTypeConverter.STRING);

@@ -75,7 +75,7 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
     @Override
     public Iterable<DiscoveryNode> discoverNodes() {
 
-        List<DiscoveryNode> toReturn = new ArrayList<DiscoveryNode>();
+        List<DiscoveryNode> toReturn = new ArrayList<>();
 
         try {
 
