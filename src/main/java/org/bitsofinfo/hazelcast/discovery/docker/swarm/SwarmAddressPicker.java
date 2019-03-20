@@ -48,7 +48,7 @@ public class SwarmAddressPicker implements AddressPicker {
      */
 
 
-    public SwarmAddressPicker(final ILogger iLogger) {
+    public SwarmAddressPicker() {
         final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
         final String dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);
         final String dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
@@ -64,19 +64,19 @@ public class SwarmAddressPicker implements AddressPicker {
             skipVerifySsl = Boolean.valueOf(System.getProperty(PROP_SKIP_VERIFY_SSL));
         }
 
-        initialize(iLogger, dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
-    public SwarmAddressPicker(final ILogger iLogger, final String dockerNetworkNames, final String dockerServiceLabels,
+    public SwarmAddressPicker(final String dockerNetworkNames, final String dockerServiceLabels,
                               final String dockerServiceNames, final Integer hazelcastPeerPort) {
 
         String swarmMgrUri = System.getenv("DOCKER_HOST");
         Boolean skipVerifySsl = false;
 
-        initialize(iLogger, dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
-    private void initialize(final ILogger iLogger, final String dockerNetworkNames, final String dockerServiceLabels,
+    private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
                             final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
 
         final int port;

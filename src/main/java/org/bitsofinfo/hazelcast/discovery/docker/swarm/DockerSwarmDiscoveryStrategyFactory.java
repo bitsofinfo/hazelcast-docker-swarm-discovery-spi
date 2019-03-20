@@ -36,7 +36,7 @@ public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFac
                                                   ILogger logger,
                                                   Map<String, Comparable> properties) {
 
-        return new DockerSwarmDiscoveryStrategy(discoveryNode, logger, properties);
+        return new DockerSwarmDiscoveryStrategy(logger, properties);
     }
 
 }

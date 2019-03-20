@@ -82,28 +82,6 @@ public class SwarmDiscoveryUtil {
                               String rawDockerServiceNames,
                               Integer hazelcastPeerPort,
                               boolean bindSocketChannel,
-                              boolean logAllServiceNamesOnFailedDiscovery,
-                              boolean strictDockerServiceNameComparison) throws Exception {
-
-        this(context,
-                rawDockerNetworkNames,
-                rawDockerServiceLabels,
-                rawDockerServiceNames,
-                hazelcastPeerPort,
-                bindSocketChannel,
-                new URI(System.getenv("DOCKER_HOST")),
-                false,
-                logAllServiceNamesOnFailedDiscovery,
-                strictDockerServiceNameComparison);
-
-    }
-
-    public SwarmDiscoveryUtil(String context,
-                              String rawDockerNetworkNames,
-                              String rawDockerServiceLabels,
-                              String rawDockerServiceNames,
-                              Integer hazelcastPeerPort,
-                              boolean bindSocketChannel,
                               URI swarmMgrUri,
                               boolean skipVerifySsl,
                               boolean logAllServiceNamesOnFailedDiscovery,

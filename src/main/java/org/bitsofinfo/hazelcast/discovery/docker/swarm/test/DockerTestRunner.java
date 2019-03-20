@@ -28,7 +28,7 @@ public class DockerTestRunner {
             NodeContext nodeContext = new DefaultNodeContext() {
                 @Override
                 public AddressPicker createAddressPicker(Node node) {
-                    return new SwarmAddressPicker(new SystemPrintLogger());
+                    return new SwarmAddressPicker();
                 }
             };
 
