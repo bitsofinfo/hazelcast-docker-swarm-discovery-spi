@@ -1,7 +1,6 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
 import com.hazelcast.instance.AddressPicker;
-import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
 
 import java.net.URI;
@@ -35,10 +34,15 @@ import java.nio.channels.ServerSocketChannel;
 public class SwarmAddressPicker implements AddressPicker {
 
     public static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
+
     public static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
+
     public static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
+
     public static final String PROP_HAZELCAST_PEER_PORT = "hazelcastPeerPort";
+
     public static final String PROP_SWARM_MGR_URI = "swarmMgrUri";
+
     public static final String PROP_SKIP_VERIFY_SSL = "skipVerifySsl";
 
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;

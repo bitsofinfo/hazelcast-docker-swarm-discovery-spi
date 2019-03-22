@@ -16,8 +16,11 @@ import com.spotify.docker.client.messages.swarm.Task;
 public class DiscoveredContainer {
 
     private Network network;
+
     private Service service;
+
     private Task task;
+
     private NetworkAttachment relevantNetworkAttachment;
 
     public DiscoveredContainer(Network network, Service service, Task task, NetworkAttachment relevantNetworkAttachment) {

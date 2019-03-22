@@ -39,11 +39,12 @@ import java.util.Set;
 public class DockerDNSRRMemberAddressProvider
         implements MemberAddressProvider {
     protected Properties properties;
+
     protected InetSocketAddress bindAddress = null;
+
     ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
 
     /**
-     *
      * @param properties
      * @throws NumberFormatException if servicePort cannot be parsed
      * @throws SocketException

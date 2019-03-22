@@ -28,9 +28,6 @@ import java.util.Collection;
  */
 public class DockerDNSRRDiscoveryConfiguration {
 
-    private DockerDNSRRDiscoveryConfiguration() {
-    }
-
     /**
      * Property definition to load CSV of services
      */
@@ -44,4 +41,7 @@ public class DockerDNSRRDiscoveryConfiguration {
      * Full list of all properties referenced by this configuration
      */
     public static final Collection<PropertyDefinition> PROPERTIES = Arrays.asList(SERVICESCSV);
+
+    private DockerDNSRRDiscoveryConfiguration() {
+    }
 }

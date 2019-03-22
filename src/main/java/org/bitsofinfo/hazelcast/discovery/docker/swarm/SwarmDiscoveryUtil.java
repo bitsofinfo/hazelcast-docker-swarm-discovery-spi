@@ -46,28 +46,37 @@ public class SwarmDiscoveryUtil {
 
     // from: https://github.com/hazelcast/hazelcast/blob/210475c806328c6655ea551f6fc59ef8220b601d/hazelcast/src/main/java/com/hazelcast/instance/DefaultAddressPicker.java
     private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
+
     private static final int SOCKET_BACKLOG_LENGTH = 100;
 
     private Set<String> dockerNetworkNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
     private Map<String, String> dockerServiceLabels = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
     private Set<String> dockerServiceNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     private String rawDockerNetworkNames = null;
+
     private String rawDockerServiceLabels = null;
+
     private String rawDockerServiceNames = null;
 
     private Integer hazelcastPeerPort = 5701;
 
     private DiscoveredContainer myContainer = null;
+
     private Address myAddress = null;
 
     private boolean bindSocketChannel = true;
+
     private ServerSocketChannel serverSocketChannel = null;
 
     private URI swarmMgrUri = null;
+
     private boolean skipVerifySsl = false;
 
     private boolean logAllServiceNamesOnFailedDiscovery = false;
+
     private boolean strictDockerServiceNameComparison = false;
 
     // Since SwarmDiscoveryUtil is used by several components
