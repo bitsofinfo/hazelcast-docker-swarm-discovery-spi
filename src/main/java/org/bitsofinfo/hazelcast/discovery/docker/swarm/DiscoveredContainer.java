@@ -23,6 +23,7 @@ public class DiscoveredContainer {
 
     private NetworkAttachment relevantNetworkAttachment;
 
+
     public DiscoveredContainer(Network network, Service service, Task task, NetworkAttachment relevantNetworkAttachment) {
         this.network = network;
         this.service = service;
@@ -30,39 +31,48 @@ public class DiscoveredContainer {
         this.relevantNetworkAttachment = relevantNetworkAttachment;
     }
 
+
     public String getIp() {
         // return the first address, should only be one"x.x.x.x/mask"
         return relevantNetworkAttachment.addresses().iterator().next().split("/")[0];
     }
 
+
     public String getNetworkName() {
         return network.name();
     }
+
 
     public String getNetworkId() {
         return network.id();
     }
 
+
     public String getServiceName() {
         return service.spec().name();
     }
+
 
     public String getServiceId() {
         return service.id();
     }
 
+
     public String getContainerId() {
         return task.status().containerStatus().containerId();
     }
+
 
     public String getContainerImage() {
         return task.spec().containerSpec().image();
     }
 
+
     @Override
     public int hashCode() {
         return this.getIp().hashCode();
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -72,6 +82,7 @@ public class DiscoveredContainer {
 
         return false;
     }
+
 
     @Override
     public String toString() {

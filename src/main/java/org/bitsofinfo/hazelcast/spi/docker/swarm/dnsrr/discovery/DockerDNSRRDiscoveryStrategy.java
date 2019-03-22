@@ -39,6 +39,7 @@ public class DockerDNSRRDiscoveryStrategy
         extends AbstractDiscoveryStrategy {
     private ILogger logger;
 
+
     public DockerDNSRRDiscoveryStrategy(
             ILogger logger,
             //The Comparable raw type is defined by AbstractDiscoveryStrategy as
@@ -48,6 +49,7 @@ public class DockerDNSRRDiscoveryStrategy
         super(logger, properties);
         this.logger = logger;
     }
+
 
     @Override
     public Iterable<DiscoveryNode> discoverNodes() {
@@ -135,6 +137,7 @@ public class DockerDNSRRDiscoveryStrategy
 
         return discoveryNodes;
     }
+
 
     private Set<InetAddress> resolveDomainNames(String domainName) {
         Set<InetAddress> addresses = new HashSet<>();

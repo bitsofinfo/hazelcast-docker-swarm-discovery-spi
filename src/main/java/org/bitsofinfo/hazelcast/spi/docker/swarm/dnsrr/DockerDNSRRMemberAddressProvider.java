@@ -44,6 +44,7 @@ public class DockerDNSRRMemberAddressProvider
 
     ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
 
+
     /**
      * @param properties
      * @throws NumberFormatException if servicePort cannot be parsed
@@ -128,6 +129,7 @@ public class DockerDNSRRMemberAddressProvider
         }
     }
 
+
     private Set<InetAddress> resolveServiceName(String serviceName)
             throws UnknownHostException {
         Set<InetAddress> addresses = new HashSet<>();
@@ -154,10 +156,12 @@ public class DockerDNSRRMemberAddressProvider
         return addresses;
     }
 
+
     @Override
     public InetSocketAddress getBindAddress() {
         return bindAddress;
     }
+
 
     @Override
     public InetSocketAddress getPublicAddress() {

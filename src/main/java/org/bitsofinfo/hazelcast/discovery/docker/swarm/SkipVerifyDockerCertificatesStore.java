@@ -14,6 +14,7 @@ public class SkipVerifyDockerCertificatesStore implements DockerCertificatesStor
         return SSLContexts.createDefault();
     }
 
+
     @Override
     public HostnameVerifier hostnameVerifier() {
         return NoopHostnameVerifier.INSTANCE;

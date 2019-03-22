@@ -45,6 +45,7 @@ public class DockerSwarmDiscoveryConfiguration {
     public static final PropertyDefinition STRICT_DOCKER_SERVICE_NAME_COMPARISON =
             new SimplePropertyDefinition("strict-docker-service-name-comparison", true, PropertyTypeConverter.BOOLEAN);
 
+
     private DockerSwarmDiscoveryConfiguration() {
     }
 

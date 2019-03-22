@@ -47,6 +47,7 @@ public class SwarmAddressPicker implements AddressPicker {
 
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
 
+
     /**
      * Constructor
      */
@@ -71,6 +72,7 @@ public class SwarmAddressPicker implements AddressPicker {
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
 
+
     public SwarmAddressPicker(final String dockerNetworkNames, final String dockerServiceLabels,
                               final String dockerServiceNames, final Integer hazelcastPeerPort) {
 
@@ -79,6 +81,7 @@ public class SwarmAddressPicker implements AddressPicker {
 
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort, swarmMgrUri, skipVerifySsl);
     }
+
 
     private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
                             final String dockerServiceNames, final Integer hazelcastPeerPort, final String swarmMgrUri, final Boolean skipVerifySsl) {
@@ -118,20 +121,24 @@ public class SwarmAddressPicker implements AddressPicker {
         }
     }
 
+
     @Override
     public void pickAddress() throws Exception {
         // nothing to do, done in SwarmDiscoveryUtil above
     }
+
 
     @Override
     public Address getBindAddress() {
         return this.swarmDiscoveryUtil.getMyAddress();
     }
 
+
     @Override
     public Address getPublicAddress() {
         return this.swarmDiscoveryUtil.getMyAddress();
     }
+
 
     @Override
     public ServerSocketChannel getServerSocketChannel() {
