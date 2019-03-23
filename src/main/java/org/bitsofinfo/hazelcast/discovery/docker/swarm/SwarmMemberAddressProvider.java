@@ -39,21 +39,13 @@ import java.util.Properties;
 public class SwarmMemberAddressProvider implements MemberAddressProvider {
 
     public static final String PROP_SWARM_MGR_URI = "swarmMgrUri";
-
     public static final String PROP_SKIP_VERIFY_SSL = "skipVerifySsl";
-
     public static final String PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY = "logAllServiceNamesOnFailedDiscovery";
-
     public static final String PROP_STRICT_DOCKER_SERVICE_NAME_COMPARISON = "strictDockerServiceNameComparison";
-
     private static final String PROP_DOCKER_NETWORK_NAMES = "dockerNetworkNames";
-
     private static final String PROP_DOCKER_SERVICE_LABELS = "dockerServiceLabels";
-
     private static final String PROP_DOCKER_SERVICE_NAMES = "dockerServiceNames";
-
     private static final String PROP_HAZELCAST_PEER_PORT = "hazelcastPeerPort";
-
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
 
     private ILogger logger = Logger.getLogger(SwarmMemberAddressProvider.class);

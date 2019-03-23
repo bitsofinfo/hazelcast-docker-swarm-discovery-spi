@@ -11,6 +11,9 @@ import com.hazelcast.config.properties.SimplePropertyDefinition;
  */
 public class DockerSwarmDiscoveryConfiguration {
 
+    private DockerSwarmDiscoveryConfiguration() {
+    }
+
     // comma delimited list of networks to look for services on
     public static final PropertyDefinition DOCKER_NETWORK_NAMES =
             new SimplePropertyDefinition("docker-network-names", PropertyTypeConverter.STRING);
@@ -44,8 +47,5 @@ public class DockerSwarmDiscoveryConfiguration {
     // Strict service name "equals" check
     public static final PropertyDefinition STRICT_DOCKER_SERVICE_NAME_COMPARISON =
             new SimplePropertyDefinition("strict-docker-service-name-comparison", true, PropertyTypeConverter.BOOLEAN);
-
-    private DockerSwarmDiscoveryConfiguration() {
-    }
 
 }
