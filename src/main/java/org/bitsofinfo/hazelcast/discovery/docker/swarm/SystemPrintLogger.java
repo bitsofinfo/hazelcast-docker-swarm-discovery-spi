@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+@SuppressWarnings("squid:S106")
 public class SystemPrintLogger implements ILogger {
 
     @Override
