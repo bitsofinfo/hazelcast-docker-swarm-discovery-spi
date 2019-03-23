@@ -12,13 +12,11 @@ public class NullServiceFilter extends AbstractServiceFilter {
      */
     private static final ServiceFilter instance = new NullServiceFilter();
 
-
     /**
      * private no-arg constructor to preclude unwarranted instantiation
      */
     private NullServiceFilter() {
     }
-
 
     /**
      * @return static singleton instance
@@ -27,7 +25,6 @@ public class NullServiceFilter extends AbstractServiceFilter {
         return instance;
     }
 
-
     /**
      * @see ServiceFilter#accept(Service)
      */
@@ -35,7 +32,6 @@ public class NullServiceFilter extends AbstractServiceFilter {
     public boolean accept(Service service) {
         return true;
     }
-
 
     /**
      * @see Object#toString()

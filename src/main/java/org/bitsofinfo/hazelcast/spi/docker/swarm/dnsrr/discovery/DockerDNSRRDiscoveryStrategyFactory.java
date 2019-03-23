@@ -35,7 +35,6 @@ public class DockerDNSRRDiscoveryStrategyFactory
         return DockerDNSRRDiscoveryStrategy.class;
     }
 
-
     @Override
     public DiscoveryStrategy newDiscoveryStrategy(
             DiscoveryNode discoveryNode,
@@ -49,7 +48,6 @@ public class DockerDNSRRDiscoveryStrategyFactory
                         properties
                 );
     }
-
 
     @Override
     public Collection<PropertyDefinition> getConfigurationProperties() {

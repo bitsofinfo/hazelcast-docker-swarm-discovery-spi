@@ -85,7 +85,6 @@ public class SwarmDiscoveryUtil {
 
     private ILogger logger = Logger.getLogger(SwarmDiscoveryUtil.class);
 
-
     public SwarmDiscoveryUtil(String context,
                               String rawDockerNetworkNames,
                               String rawDockerServiceLabels,
@@ -281,7 +280,6 @@ public class SwarmDiscoveryUtil {
         this.hazelcastPeerPort = hazelcastPeerPort;
     }
 
-
     public Set<DiscoveredContainer> discoverContainers() throws Exception {
 
         try {
@@ -382,7 +380,6 @@ public class SwarmDiscoveryUtil {
         }
     }
 
-
     /**
      * Test the {@link NetworkAttachment} against the local {@link NetworkInterface}s.
      * This returns true if the {@link NetworkAttachment} contains an address that is
@@ -411,7 +408,6 @@ public class SwarmDiscoveryUtil {
         return false;
     }
 
-
     /**
      * Discover containers on the relevant networks that match the given
      * service criteria, using additionally a NullServiceFilter
@@ -428,7 +424,6 @@ public class SwarmDiscoveryUtil {
         // no ServiceFilter provided, so use one with no constraints
         return discoverContainersViaCriteria(docker, relevantNetIds2Networks, criteria, NullServiceFilter.getInstance());
     }
-
 
     /**
      * Discover containers on the relevant networks that match the given

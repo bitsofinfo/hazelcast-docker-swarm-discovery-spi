@@ -42,7 +42,6 @@ public class DockerDNSRRDiscoveryConfiguration {
      */
     public static final Collection<PropertyDefinition> PROPERTIES = Arrays.asList(SERVICESCSV);
 
-
     private DockerDNSRRDiscoveryConfiguration() {
     }
 }

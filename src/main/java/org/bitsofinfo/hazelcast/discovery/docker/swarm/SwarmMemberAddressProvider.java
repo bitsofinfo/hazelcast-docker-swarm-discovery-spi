@@ -58,7 +58,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
 
     private ILogger logger = Logger.getLogger(SwarmMemberAddressProvider.class);
 
-
     /**
      * Constructor
      */
@@ -104,7 +103,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort,
                 swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
-
 
     /**
      * If you do not provide any properties, the class may have either a
@@ -190,7 +188,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
                 swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
 
-
     public SwarmMemberAddressProvider(final String dockerNetworkNames,
                                       final String dockerServiceLabels,
                                       final String dockerServiceNames,
@@ -204,7 +201,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames,
                 swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
-
 
     private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
                             final String dockerServiceNames, final Integer hazelcastPeerPort,
@@ -313,7 +309,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         }
     }
 
-
     @Override
     public InetSocketAddress getBindAddress() {
         Address addr = this.swarmDiscoveryUtil.getMyAddress();
@@ -326,7 +321,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
 
         return new InetSocketAddress(addr.getHost(), addr.getPort());
     }
-
 
     @Override
     public InetSocketAddress getPublicAddress() {

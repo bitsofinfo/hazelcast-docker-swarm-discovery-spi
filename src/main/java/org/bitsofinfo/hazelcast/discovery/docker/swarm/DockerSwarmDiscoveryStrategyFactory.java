@@ -22,18 +22,15 @@ public class DockerSwarmDiscoveryStrategyFactory implements DiscoveryStrategyFac
                     DockerSwarmDiscoveryConfiguration.LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY,
                     DockerSwarmDiscoveryConfiguration.STRICT_DOCKER_SERVICE_NAME_COMPARISON);
 
-
     public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {
         // Returns the actual class type of the DiscoveryStrategy
         // implementation, to match it against the configuration
         return DockerSwarmDiscoveryStrategy.class;
     }
 
-
     public Collection<PropertyDefinition> getConfigurationProperties() {
         return PROPERTIES;
     }
-
 
     public DiscoveryStrategy newDiscoveryStrategy(DiscoveryNode discoveryNode,
                                                   ILogger logger,

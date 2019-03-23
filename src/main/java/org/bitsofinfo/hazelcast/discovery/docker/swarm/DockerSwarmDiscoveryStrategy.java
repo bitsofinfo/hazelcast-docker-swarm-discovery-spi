@@ -25,7 +25,6 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private SwarmDiscoveryUtil swarmDiscoveryUtil = null;
 
-
     /**
      * Constructor
      *
@@ -71,7 +70,6 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
         }
 
     }
-
 
     @Override
     public Iterable<DiscoveryNode> discoverNodes() {

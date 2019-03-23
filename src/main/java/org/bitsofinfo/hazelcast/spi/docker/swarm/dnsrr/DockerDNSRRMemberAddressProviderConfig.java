@@ -34,7 +34,6 @@ public class DockerDNSRRMemberAddressProviderConfig {
      */
     public static final String SERVICEPORT = "servicePort";
 
-
     private DockerDNSRRMemberAddressProviderConfig() {
     }
 }
