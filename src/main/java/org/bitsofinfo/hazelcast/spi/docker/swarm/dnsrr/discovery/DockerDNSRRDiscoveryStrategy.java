@@ -70,13 +70,13 @@ public class DockerDNSRRDiscoveryStrategy
             return discoveryNodes;
         }
 
-        Set<InetAddress> serviceNameResolutions;
-        String[] serviceHostnameAndPort;
-        Integer port;
-
         //Loop for every service defined in the CSV
         for (String service : servicesCsv.split(",")) {
             if (!service.trim().isEmpty()) {
+
+                Set<InetAddress> serviceNameResolutions;
+                String[] serviceHostnameAndPort;
+                Integer port;
 
                 //CSV should be composed of hostname:port
                 serviceHostnameAndPort = service.split(":");
