@@ -68,7 +68,6 @@ public class DockerDNSRRDiscoveryStrategy
             return discoveryNodes;
         }
 
-        // TODO robin - tighten scope of these variables
         Set<InetAddress> serviceNameResolutions;
         String[] serviceHostnameAndPort;
         Integer port;
