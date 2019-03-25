@@ -57,19 +57,14 @@ public class SwarmDiscoveryUtil {
     private final String rawDockerServiceNames;
 
     private final Integer hazelcastPeerPort;
-
-    private DiscoveredContainer myContainer = null;
-    private Address myAddress = null;
-
     private final boolean bindSocketChannel;
-    private ServerSocketChannel serverSocketChannel = null;
-
     private final URI swarmMgrUri;
     private final boolean skipVerifySsl;
-
     private final boolean logAllServiceNamesOnFailedDiscovery;
     private final boolean strictDockerServiceNameComparison;
-
+    private DiscoveredContainer myContainer = null;
+    private Address myAddress = null;
+    private ServerSocketChannel serverSocketChannel = null;
     // Since SwarmDiscoveryUtil is used by several components
     // the context lets us distinguish instances in logs
     private String context = null;
@@ -130,7 +125,7 @@ public class SwarmDiscoveryUtil {
     }
 
     private Set<String> parseCommaSeparatedTokens(String tokens) {
-        Set<String> result  = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        Set<String> result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         if (tokens != null && !tokens.trim().isEmpty()) {
             for (String token : tokens.split(",")) {
                 if (!token.trim().isEmpty()) {
@@ -205,7 +200,6 @@ public class SwarmDiscoveryUtil {
     public Map<String, String> getDockerServiceLabels() {
         return dockerServiceLabels;
     }
-
 
 
     public Set<String> getDockerServiceNames() {
@@ -496,6 +490,3 @@ public class SwarmDiscoveryUtil {
     }
 
 }
-
-
-
