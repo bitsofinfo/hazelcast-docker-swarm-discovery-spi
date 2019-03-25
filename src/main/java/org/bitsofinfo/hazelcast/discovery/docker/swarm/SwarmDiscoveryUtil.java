@@ -48,9 +48,9 @@ public class SwarmDiscoveryUtil {
     private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
     private static final int SOCKET_BACKLOG_LENGTH = 100;
 
-    private final Set<String> dockerNetworkNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, String> dockerServiceLabels = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Set<String> dockerServiceNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private final Set<String> dockerNetworkNames;
+    private final Map<String, String> dockerServiceLabels;
+    private final Set<String> dockerServiceNames;
 
     private final String rawDockerNetworkNames;
     private final String rawDockerServiceLabels;
@@ -98,43 +98,47 @@ public class SwarmDiscoveryUtil {
         this.rawDockerServiceNames = rawDockerServiceNames;
         this.hazelcastPeerPort = hazelcastPeerPort;
 
-        if (rawDockerNetworkNames != null && !rawDockerNetworkNames.trim().isEmpty()) {
-            for (String rawElement : rawDockerNetworkNames.split(",")) {
-                if (!rawElement.trim().isEmpty()) {
-                    dockerNetworkNames.add(rawElement.trim());
-                }
-            }
-        } else {
+        dockerNetworkNames = parseCommaSeparatedTokens(rawDockerNetworkNames);
+        dockerServiceNames = parseCommaSeparatedTokens(rawDockerServiceNames);
+        dockerServiceLabels = parseCommaSeparatedProperties(rawDockerServiceLabels);
+
+        if (dockerNetworkNames.isEmpty()) {
             String msg = "SwarmDiscoveryUtil[" + this.context + "]() You must specify at least one value for 'docker-network-names'";
             throw new Exception(msg);
         }
 
-        if (rawDockerServiceLabels != null && !rawDockerServiceLabels.trim().isEmpty()) {
-            for (String rawElement : rawDockerServiceLabels.split(",")) {
-                if (!rawElement.trim().isEmpty() && rawElement.indexOf('=') != -1) {
-                    String[] labelVal = rawElement.split("=");
-                    dockerServiceLabels.put(labelVal[0].trim(), labelVal[1].trim());
-                }
-            }
-        }
-
-        if (rawDockerServiceNames != null && !rawDockerServiceNames.trim().isEmpty()) {
-            for (String rawElement : rawDockerServiceNames.split(",")) {
-                if (!rawElement.trim().isEmpty()) {
-                    dockerServiceNames.add(rawElement.trim());
-                }
-            }
-        }
-
-        // invalid setup
         if (dockerServiceLabels.isEmpty() && dockerServiceNames.isEmpty()) {
             String msg = "SwarmDiscoveryUtil[" + this.context + "]() You must specify at least one value for "
                     + "either 'docker-service-names' or 'docker-service-labels'";
             throw new Exception(msg);
         }
 
-        // discover self
         discoverSelf();
+    }
+
+    private Map<String, String> parseCommaSeparatedProperties(String tokens) {
+        Map<String, String> propertyMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        if (tokens != null && !tokens.trim().isEmpty()) {
+            for (String token : tokens.split(",")) {
+                if (!token.trim().isEmpty() && token.indexOf('=') != -1) {
+                    String[] labelVal = token.split("=");
+                    propertyMap.put(labelVal[0].trim(), labelVal[1].trim());
+                }
+            }
+        }
+        return propertyMap;
+    }
+
+    private Set<String> parseCommaSeparatedTokens(String tokens) {
+        Set<String> result  = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        if (tokens != null && !tokens.trim().isEmpty()) {
+            for (String token : tokens.split(",")) {
+                if (!token.trim().isEmpty()) {
+                    result.add(token.trim());
+                }
+            }
+        }
+        return result;
     }
 
 
@@ -209,11 +213,9 @@ public class SwarmDiscoveryUtil {
     }
 
 
-
     public String getRawDockerNetworkNames() {
         return rawDockerNetworkNames;
     }
-
 
 
     public String getRawDockerServiceLabels() {
@@ -221,11 +223,9 @@ public class SwarmDiscoveryUtil {
     }
 
 
-
     public String getRawDockerServiceNames() {
         return rawDockerServiceNames;
     }
-
 
 
     public Integer getHazelcastPeerPort() {
