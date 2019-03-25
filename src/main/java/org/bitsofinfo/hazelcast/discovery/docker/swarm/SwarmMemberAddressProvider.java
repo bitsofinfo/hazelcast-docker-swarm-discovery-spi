@@ -80,8 +80,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
             strictDockerServiceNameComparison = Boolean.valueOf(System.getProperty(PROP_STRICT_DOCKER_SERVICE_NAME_COMPARISON));
         }
 
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort,
-                swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames,
+                swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
 
 
@@ -92,8 +92,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         String swarmMgrUri = System.getenv("DOCKER_HOST");
         Boolean skipVerifySsl = false;
 
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort,
-                swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames,
+                swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
 
     /**
@@ -174,8 +174,8 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
             strictDockerServiceNameComparison = Boolean.valueOf(rawStrictDockerServiceNameComparison.toString());
         }
 
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames, hazelcastPeerPort,
-                swarmMgrUri, skipVerifySsl, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
+        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames,
+                swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
 
     public SwarmMemberAddressProvider(final String dockerNetworkNames,
@@ -191,16 +191,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames,
                 swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
     }
-
-    private void initialize(final String dockerNetworkNames, final String dockerServiceLabels,
-                            final String dockerServiceNames, final Integer hazelcastPeerPort,
-                            final String swarmMgrUri, final Boolean skipVerifySsl, final Boolean logAllServiceNamesOnFailedDiscovery,
-                            final Boolean strictDockerServiceNameComparison) {
-
-        initialize(dockerNetworkNames, dockerServiceLabels, dockerServiceNames,
-                swarmMgrUri, skipVerifySsl, hazelcastPeerPort, logAllServiceNamesOnFailedDiscovery, strictDockerServiceNameComparison);
-    }
-
 
     private void initialize(final String dockerNetworkNames,
                             final String dockerServiceLabels,
