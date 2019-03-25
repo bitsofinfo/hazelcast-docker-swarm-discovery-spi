@@ -8,7 +8,6 @@ import com.hazelcast.instance.HazelcastInstanceFactory;
 import com.hazelcast.instance.Node;
 import com.hazelcast.instance.NodeContext;
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
-import org.bitsofinfo.hazelcast.discovery.docker.swarm.SystemPrintLogger;
 
 /**
  * Simple class for manually spawning hz instances and watching what happens

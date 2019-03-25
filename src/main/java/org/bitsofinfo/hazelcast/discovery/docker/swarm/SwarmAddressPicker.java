@@ -1,7 +1,6 @@
 package org.bitsofinfo.hazelcast.discovery.docker.swarm;
 
 import com.hazelcast.instance.AddressPicker;
-import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
 
 import java.net.URI;

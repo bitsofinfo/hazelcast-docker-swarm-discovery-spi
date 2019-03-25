@@ -43,7 +43,6 @@ public class DockerDNSRRMemberAddressProvider
     ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
 
     /**
-     *
      * @param properties
      * @throws NumberFormatException if servicePort cannot be parsed
      * @throws SocketException
