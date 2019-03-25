@@ -48,27 +48,27 @@ public class SwarmDiscoveryUtil {
     private static final int SOCKET_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(1);
     private static final int SOCKET_BACKLOG_LENGTH = 100;
 
-    private Set<String> dockerNetworkNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    private Map<String, String> dockerServiceLabels = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private Set<String> dockerServiceNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private final Set<String> dockerNetworkNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, String> dockerServiceLabels = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Set<String> dockerServiceNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
-    private String rawDockerNetworkNames = null;
-    private String rawDockerServiceLabels = null;
-    private String rawDockerServiceNames = null;
+    private final String rawDockerNetworkNames;
+    private final String rawDockerServiceLabels;
+    private final String rawDockerServiceNames;
 
-    private Integer hazelcastPeerPort = 5701;
+    private final Integer hazelcastPeerPort;
 
     private DiscoveredContainer myContainer = null;
     private Address myAddress = null;
 
-    private boolean bindSocketChannel = true;
+    private final boolean bindSocketChannel;
     private ServerSocketChannel serverSocketChannel = null;
 
-    private URI swarmMgrUri = null;
-    private boolean skipVerifySsl = false;
+    private final URI swarmMgrUri;
+    private final boolean skipVerifySsl;
 
-    private boolean logAllServiceNamesOnFailedDiscovery = false;
-    private boolean strictDockerServiceNameComparison = false;
+    private final boolean logAllServiceNamesOnFailedDiscovery;
+    private final boolean strictDockerServiceNameComparison;
 
     // Since SwarmDiscoveryUtil is used by several components
     // the context lets us distinguish instances in logs
@@ -92,14 +92,6 @@ public class SwarmDiscoveryUtil {
         this.skipVerifySsl = skipVerifySsl;
         this.logAllServiceNamesOnFailedDiscovery = logAllServiceNamesOnFailedDiscovery;
         this.strictDockerServiceNameComparison = strictDockerServiceNameComparison;
-
-
-        if (this.swarmMgrUri == null) {
-            if (System.getenv("DOCKER_HOST") != null && System.getenv("DOCKER_HOST").trim().isEmpty()) {
-                this.swarmMgrUri = new URI(System.getenv("DOCKER_HOST"));
-            }
-        }
-
         this.bindSocketChannel = bindSocketChannel;
         this.rawDockerNetworkNames = rawDockerNetworkNames;
         this.rawDockerServiceLabels = rawDockerServiceLabels;
@@ -206,19 +198,10 @@ public class SwarmDiscoveryUtil {
     }
 
 
-    public void setDockerNetworkNames(Set<String> dockerNetworkNames) {
-        this.dockerNetworkNames = dockerNetworkNames;
-    }
-
-
     public Map<String, String> getDockerServiceLabels() {
         return dockerServiceLabels;
     }
 
-
-    public void setDockerServiceLabels(Map<String, String> dockerServiceLabels) {
-        this.dockerServiceLabels = dockerServiceLabels;
-    }
 
 
     public Set<String> getDockerServiceNames() {
@@ -226,19 +209,11 @@ public class SwarmDiscoveryUtil {
     }
 
 
-    public void setDockerServiceNames(Set<String> dockerServiceNames) {
-        this.dockerServiceNames = dockerServiceNames;
-    }
-
 
     public String getRawDockerNetworkNames() {
         return rawDockerNetworkNames;
     }
 
-
-    public void setRawDockerNetworkNames(String rawDockerNetworkNames) {
-        this.rawDockerNetworkNames = rawDockerNetworkNames;
-    }
 
 
     public String getRawDockerServiceLabels() {
@@ -246,29 +221,17 @@ public class SwarmDiscoveryUtil {
     }
 
 
-    public void setRawDockerServiceLabels(String rawDockerServiceLabels) {
-        this.rawDockerServiceLabels = rawDockerServiceLabels;
-    }
-
 
     public String getRawDockerServiceNames() {
         return rawDockerServiceNames;
     }
 
 
-    public void setRawDockerServiceNames(String rawDockerServiceNames) {
-        this.rawDockerServiceNames = rawDockerServiceNames;
-    }
-
 
     public Integer getHazelcastPeerPort() {
         return hazelcastPeerPort;
     }
 
-
-    public void setHazelcastPeerPort(Integer hazelcastPeerPort) {
-        this.hazelcastPeerPort = hazelcastPeerPort;
-    }
 
     public Set<DiscoveredContainer> discoverContainers() throws Exception {
 
