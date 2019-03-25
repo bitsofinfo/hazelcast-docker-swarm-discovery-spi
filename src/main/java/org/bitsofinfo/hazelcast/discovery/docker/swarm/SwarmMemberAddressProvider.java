@@ -123,7 +123,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
             dockerServiceNames = System.getProperty(PROP_DOCKER_SERVICE_NAMES);
         }
 
-
         Object rawHazelcastPeerPort = properties.get(PROP_HAZELCAST_PEER_PORT);
         if (rawHazelcastPeerPort == null || rawHazelcastPeerPort.toString().trim().isEmpty()) {
             rawHazelcastPeerPort = System.getProperty(PROP_HAZELCAST_PEER_PORT);
@@ -138,7 +137,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
             hazelcastPeerPort = (Integer) rawHazelcastPeerPort;
         }
 
-
         String swarmMgrUri = (String) properties.get(PROP_SWARM_MGR_URI);
         if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
             swarmMgrUri = System.getProperty(PROP_SWARM_MGR_URI);
@@ -146,7 +144,6 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         if (swarmMgrUri == null || swarmMgrUri.trim().isEmpty()) {
             swarmMgrUri = System.getenv("DOCKER_HOST");
         }
-
 
         Object rawSkipVerifySsl = properties.get(PROP_SKIP_VERIFY_SSL);
         if (rawSkipVerifySsl == null || rawSkipVerifySsl.toString().trim().isEmpty()) {
@@ -157,11 +154,11 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
             skipVerifySsl = Boolean.valueOf(rawSkipVerifySsl.toString());
         }
 
-
         Object rawLogAllServiceNamesOnFailedDiscovery = properties.get(PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY);
         if (rawLogAllServiceNamesOnFailedDiscovery == null || rawLogAllServiceNamesOnFailedDiscovery.toString().trim().isEmpty()) {
             rawLogAllServiceNamesOnFailedDiscovery = System.getProperty(PROP_LOG_ALL_SERVICE_NAMES_ON_FAILED_DISCOVERY);
         }
+
         Boolean logAllServiceNamesOnFailedDiscovery = false;
         if (rawLogAllServiceNamesOnFailedDiscovery != null) {
             logAllServiceNamesOnFailedDiscovery = Boolean.valueOf(rawLogAllServiceNamesOnFailedDiscovery.toString());
@@ -171,6 +168,7 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
         if (rawStrictDockerServiceNameComparison == null || rawStrictDockerServiceNameComparison.toString().trim().isEmpty()) {
             rawStrictDockerServiceNameComparison = System.getProperty(PROP_STRICT_DOCKER_SERVICE_NAME_COMPARISON);
         }
+
         Boolean strictDockerServiceNameComparison = false;
         if (rawStrictDockerServiceNameComparison != null) {
             strictDockerServiceNameComparison = Boolean.valueOf(rawStrictDockerServiceNameComparison.toString());

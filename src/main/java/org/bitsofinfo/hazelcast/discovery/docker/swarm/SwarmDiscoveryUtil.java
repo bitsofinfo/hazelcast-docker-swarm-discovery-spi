@@ -179,7 +179,6 @@ public class SwarmDiscoveryUtil {
                         serverSocket.setReuseAddress(true);
                         serverSocket.setSoTimeout(SOCKET_TIMEOUT_MILLIS);
 
-
                         try {
                             InetSocketAddress inetSocketAddress = new InetSocketAddress(this.myAddress.getHost(), this.getHazelcastPeerPort());
                             logger.info("SwarmDiscoveryUtil[" + this.context + "] Trying to bind inet socket address: " + inetSocketAddress);
@@ -521,16 +520,13 @@ public class SwarmDiscoveryUtil {
         return discoveredContainers;
     }
 
-
     public DiscoveredContainer getMyContainer() {
         return myContainer;
     }
 
-
     public Address getMyAddress() {
         return myAddress;
     }
-
 
     public ServerSocketChannel getServerSocketChannel() {
         return serverSocketChannel;

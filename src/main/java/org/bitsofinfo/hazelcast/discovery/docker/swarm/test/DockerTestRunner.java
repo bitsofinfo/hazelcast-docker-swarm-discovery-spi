@@ -31,26 +31,18 @@ public class DockerTestRunner {
                 }
             };
 
-            HazelcastInstanceFactory
-                    .newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", nodeContext);
-
+            HazelcastInstanceFactory.newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", nodeContext);
 
         } else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("member-address-provider")) {
 
             Config conf = new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml");
+            HazelcastInstanceFactory.newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", new DefaultNodeContext());
 
-
-            HazelcastInstanceFactory
-                    .newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", new DefaultNodeContext());
         } else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("dockerDNSRR")) {
-            Config conf =
-                    new ClasspathXmlConfig(
-                            "hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml"
-                    );
 
+            Config conf = new ClasspathXmlConfig("hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml");
             HazelcastInstanceFactory.newHazelcastInstance(conf);
         }
-
 
         Thread.sleep(400000);
 

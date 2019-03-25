@@ -32,10 +32,7 @@ public class DockerDNSRRDiscoveryConfiguration {
      * Property definition to load CSV of services
      */
     public static final PropertyDefinition SERVICESCSV =
-            new SimplePropertyDefinition(
-                    "peerServicesCsv",
-                    PropertyTypeConverter.STRING
-            );
+            new SimplePropertyDefinition("peerServicesCsv", PropertyTypeConverter.STRING);
     /**
      * Full list of all properties referenced by this configuration
      */

@@ -42,11 +42,7 @@ public class DockerDNSRRDiscoveryStrategyFactory
             //Implementing DiscoveryStrategyFactory method with a raw type
             @SuppressWarnings("rawtypes") Map<String, Comparable> properties
     ) {
-        return
-                new DockerDNSRRDiscoveryStrategy(
-                        logger,
-                        properties
-                );
+        return new DockerDNSRRDiscoveryStrategy(logger, properties);
     }
 
     @Override

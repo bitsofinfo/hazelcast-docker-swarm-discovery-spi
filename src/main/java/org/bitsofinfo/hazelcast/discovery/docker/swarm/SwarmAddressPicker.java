@@ -45,8 +45,6 @@ public class SwarmAddressPicker implements AddressPicker {
     /**
      * Constructor
      */
-
-
     public SwarmAddressPicker() {
         final String dockerNetworkNames = System.getProperty(PROP_DOCKER_NETWORK_NAMES);
         final String dockerServiceLabels = System.getProperty(PROP_DOCKER_SERVICE_LABELS);

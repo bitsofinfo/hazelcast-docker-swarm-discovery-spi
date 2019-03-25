@@ -36,8 +36,7 @@ import java.util.Set;
  *
  * @author Cardds
  */
-public class DockerDNSRRMemberAddressProvider
-        implements MemberAddressProvider {
+public class DockerDNSRRMemberAddressProvider implements MemberAddressProvider {
     protected Properties properties;
     protected InetSocketAddress bindAddress = null;
     ILogger logger = Logger.getLogger(DockerDNSRRMemberAddressProvider.class);
@@ -48,42 +47,24 @@ public class DockerDNSRRMemberAddressProvider
      * @throws SocketException
      * @throws UnknownHostException
      */
-    public DockerDNSRRMemberAddressProvider(Properties properties)
-            throws
-            SocketException,
-            UnknownHostException {
+    public DockerDNSRRMemberAddressProvider(Properties properties) throws SocketException, UnknownHostException {
         this.properties = properties;
 
         if (properties != null) {
-            String serviceName = properties.getProperty(
-                    DockerDNSRRMemberAddressProviderConfig.SERVICENAME
-            );
-            String portString = properties.getProperty(
-                    DockerDNSRRMemberAddressProviderConfig.SERVICEPORT
-            );
+            String serviceName = properties.getProperty(DockerDNSRRMemberAddressProviderConfig.SERVICENAME);
+            String portString = properties.getProperty(DockerDNSRRMemberAddressProviderConfig.SERVICEPORT);
             Integer port = 5701;
 
-            if (
-                    portString != null &&
-                            !"".equals(
-                                    portString.trim()
-                            )
-            ) {
+            if (portString != null && !"".equals(portString.trim())) {
                 try {
                     port = Integer.valueOf(portString);
                 } catch (NumberFormatException nfe) {
-                    logger.severe(
-                            "Unable to parse " +
-                                    DockerDNSRRMemberAddressProviderConfig.SERVICEPORT +
-                                    " with value " +
-                                    portString
-                    );
+                    logger.severe("Unable to parse " + DockerDNSRRMemberAddressProviderConfig.SERVICEPORT + " with value " + portString);
                     throw nfe;
                 }
             }
 
-            Set<InetAddress> potentialInetAddresses =
-                    resolveServiceName(serviceName);
+            Set<InetAddress> potentialInetAddresses = resolveServiceName(serviceName);
 
             Enumeration<NetworkInterface> networkInterfaces;
             Enumeration<InetAddress> networkInterfaceAddresses;
@@ -92,12 +73,8 @@ public class DockerDNSRRMemberAddressProvider
             try {
                 networkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-                while (
-                        networkInterfaces.hasMoreElements() &&
-                                bindAddress == null
-                ) {
-                    networkInterfaceAddresses =
-                            networkInterfaces.nextElement().getInetAddresses();
+                while (networkInterfaces.hasMoreElements() && bindAddress == null) {
+                    networkInterfaceAddresses = networkInterfaces.nextElement().getInetAddresses();
 
                     while (networkInterfaceAddresses.hasMoreElements()) {
                         address = networkInterfaceAddresses.nextElement();
@@ -105,47 +82,32 @@ public class DockerDNSRRMemberAddressProvider
                             logger.info("Checking address " + address.toString());
                         }
 
-                        if (
-                                potentialInetAddresses.contains(address)
-                        ) {
-                            bindAddress = new InetSocketAddress(
-                                    address,
-                                    port
-                            );
+                        if (potentialInetAddresses.contains(address)) {
+                            bindAddress = new InetSocketAddress(address, port);
                             break;
                         }
                     }
                 }
             } catch (SocketException e) {
-                logger.severe(
-                        "Unable to bind socket: " + e.toString()
-                );
+                logger.severe("Unable to bind socket: " + e.toString());
                 throw e;
             }
 
         }
     }
 
-    private Set<InetAddress> resolveServiceName(String serviceName)
-            throws UnknownHostException {
+    private Set<InetAddress> resolveServiceName(String serviceName) throws UnknownHostException {
         Set<InetAddress> addresses = new HashSet<>();
 
         try {
             InetAddress[] inetAddresses;
             inetAddresses = InetAddress.getAllByName(serviceName);
 
-            addresses.addAll(
-                    Arrays.asList(inetAddresses)
-            );
+            addresses.addAll(Arrays.asList(inetAddresses));
 
-            logger.info(
-                    "Resolved domain name '" + serviceName +
-                            "' to address(es): " + addresses
-            );
+            logger.info("Resolved domain name '" + serviceName + "' to address(es): " + addresses);
         } catch (UnknownHostException e) {
-            logger.severe(
-                    "Unable to resolve service name " + serviceName
-            );
+            logger.severe("Unable to resolve service name " + serviceName);
             throw e;
         }
 
