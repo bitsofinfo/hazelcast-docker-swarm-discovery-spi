@@ -8,6 +8,7 @@ import com.hazelcast.spi.MemberAddressProvider;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  * Custom MemberAddressProvider that works for hazelcast instances running in swarm service instances
@@ -294,6 +295,7 @@ public class SwarmMemberAddressProvider implements MemberAddressProvider {
                     strictDockerServiceNameComparison
             );
         } catch (final Exception e) {
+            logger.log(Level.SEVERE, "SwarmAddressPicker: Error constructing SwarmDiscoveryUtil", e);
             throw new RuntimeException(
                     "SwarmAddressPicker: Error constructing SwarmDiscoveryUtil: " + e.getMessage(),
                     e
