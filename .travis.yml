@@ -126,4 +126,4 @@ script:
   - docker service rm hazelcast-docker-swarm-dnsrr-discovery-spi-service
 
 jdk:
-  - oraclejdk8
+  - oraclejdk9
