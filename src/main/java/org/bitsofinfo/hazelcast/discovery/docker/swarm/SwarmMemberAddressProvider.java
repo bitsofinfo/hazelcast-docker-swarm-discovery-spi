@@ -31,11 +31,12 @@ import java.util.logging.Level;
  * Another way to initiate this class is to pass above properties when creating a new {@link SwarmMemberAddressProvider}
  * instance. This eliminates the need to pass properties in both hazelcast.xml (for setting up discovery) and with
  * JVM properties.
+ * 
+ * https://github.com/hazelcast/hazelcast/issues/10801
+ * https://github.com/hazelcast/hazelcast/blob/44045949b683b958e4e245040b65f947f143a9ef/hazelcast/src/main/resources/hazelcast-full-example.xml#L408
+ * https://github.com/hazelcast/hazelcast/pull/11548
  *
  * @author bitsofinfo
- * @see https://github.com/hazelcast/hazelcast/issues/10801
- * @see https://github.com/hazelcast/hazelcast/blob/44045949b683b958e4e245040b65f947f143a9ef/hazelcast/src/main/resources/hazelcast-full-example.xml#L408
- * @see https://github.com/hazelcast/hazelcast/pull/11548
  */
 public class SwarmMemberAddressProvider implements MemberAddressProvider {
 

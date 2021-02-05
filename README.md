@@ -24,11 +24,15 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 
 This is release candidate code, tested against Hazelcast 3.6-EA+ through 3.9.x Stable releases. See **Releases** below for compatible jars. For use only on Docker 1.12+ "swarm mode" environments.
 
+**IMPORTANT: TAG: 1.0-RC14-20210205**: All tags prior to this might not end up in maven central. However this tag is a re-publish of 1.0-RC14 to be made available in Maven Central due to the sunset of Bintray/JCenter in 2021
+
 ## <a id="releases"></a>Releases
 
 ### For Hazelcast 3.9+ only (see below for <= 3.8)
 
 * MASTER - in progress, this README refers to what is in the master tag. **Switch to relevant RELEASE tag above to see that version's README**
+
+* **1.0-RC14-20210205**: Same as `1.0-RC14` but made compliant for Maven Central due to JCenter/Bintray closure. 
 
 * [1.0-RC14](https://github.com/bitsofinfo/hazelcast-docker-swarm-discovery-spi/releases/tag/1.0-RC14) Additional configurable properties (`strict-docker-service-name-comparison / strictDockerServiceNameComparison`) to optionally add a strict "equals" check against names of services returned from docker; docker itself returns services based on a "startsWith" check.
 
@@ -74,12 +78,12 @@ To use this discovery strategy in your Maven or Gradle project use the dependenc
 
 ```
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
   // <!-- Use 1.0.RC3 for Hazelcast < 3.8.x -->
-  compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC14'
+  compile 'org.bitsofinfo:hazelcast-docker-swarm-discovery-spi:1.0-RC14-20210205'
 }
 ```
 
@@ -90,20 +94,9 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-docker-swarm-discovery-spi</artifactId>
-        <version>1.0-RC14</version> <!--  Use 1.0.RC3 for Hazelcast < 3.8.x -->
+        <version>1.0-RC14-20210205</version> 
     </dependency>
 </dependencies>
-
-<repositories>
-    <repository>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-        <id>central</id>
-        <name>bintray</name>
-        <url>http://jcenter.bintray.com</url>
-    </repository>
-</repositories>
 ```
 
 ## <a id="features"></a>Features
