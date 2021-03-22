@@ -2,14 +2,12 @@ package org.bitsofinfo.hazelcast.discovery.docker.swarm.test;
 
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.instance.AddressPicker;
 import com.hazelcast.instance.DefaultNodeContext;
 import com.hazelcast.instance.HazelcastInstanceFactory;
 import com.hazelcast.instance.Node;
 import com.hazelcast.instance.NodeContext;
 import org.bitsofinfo.hazelcast.discovery.docker.swarm.SwarmAddressPicker;
-import org.bitsofinfo.hazelcast.discovery.docker.swarm.SystemPrintLogger;
 
 /**
  * Simple class for manually spawning hz instances and watching what happens
@@ -29,31 +27,22 @@ public class DockerTestRunner {
             NodeContext nodeContext = new DefaultNodeContext() {
                 @Override
                 public AddressPicker createAddressPicker(Node node) {
-                    return new SwarmAddressPicker(new SystemPrintLogger());
+                    return new SwarmAddressPicker();
                 }
             };
 
-            HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
-                    .newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", nodeContext);
-
+            HazelcastInstanceFactory.newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", nodeContext);
 
         } else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("member-address-provider")) {
 
             Config conf = new ClasspathXmlConfig("hazelcast-docker-swarm-discovery-spi-example-member-address-provider.xml");
+            HazelcastInstanceFactory.newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", new DefaultNodeContext());
 
-
-            HazelcastInstance hazelcastInstance = HazelcastInstanceFactory
-                    .newHazelcastInstance(conf, "hazelcast-docker-swarm-discovery-spi-example", new DefaultNodeContext());
         } else if (System.getProperty("swarm-bind-method").equalsIgnoreCase("dockerDNSRR")) {
-            Config conf =
-                    new ClasspathXmlConfig(
-                            "hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml"
-                    );
 
-            HazelcastInstance hazelcastInstance =
-                    HazelcastInstanceFactory.newHazelcastInstance(conf);
+            Config conf = new ClasspathXmlConfig("hazelcast-docker-swarm-dnsrr-discovery-spi-example.xml");
+            HazelcastInstanceFactory.newHazelcastInstance(conf);
         }
-
 
         Thread.sleep(400000);
 

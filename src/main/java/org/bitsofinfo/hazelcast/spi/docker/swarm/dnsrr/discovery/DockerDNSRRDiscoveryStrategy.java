@@ -55,23 +55,16 @@ public class DockerDNSRRDiscoveryStrategy
                 new LinkedList<>();
 
         //Pull properties
-        String servicesCsv = getOrDefault(
-                DockerDNSRRDiscoveryConfiguration.SERVICESCSV,
-                ""
-        );
+        String servicesCsv = getOrDefault(DockerDNSRRDiscoveryConfiguration.SERVICESCSV, "");
 
         //If there are no services configured, no point in doing anything.
-        if (
-                servicesCsv == null ||
-                        servicesCsv.trim().isEmpty()
-        ) {
+        if (servicesCsv == null || servicesCsv.trim().isEmpty()) {
             return discoveryNodes;
         }
 
-        Set<InetAddress> serviceNameResolutions =
-                new HashSet<>();
+        Set<InetAddress> serviceNameResolutions;
         String[] serviceHostnameAndPort;
-        Integer port = 5701;
+        Integer port;
 
         //Loop for every service defined in the CSV
         for (String service : servicesCsv.split(",")) {
@@ -80,53 +73,30 @@ public class DockerDNSRRDiscoveryStrategy
                 serviceHostnameAndPort = service.split(":");
 
                 //Validate hostname exists
-                if (
-                        serviceHostnameAndPort[0] == null ||
-                                serviceHostnameAndPort[0].trim().isEmpty()
-                ) {
-                    logger.info(
-                            "Unable to resolve service hostname " +
-                                    serviceHostnameAndPort[0] +
-                                    " Skipping service entry."
-                    );
+                if (serviceHostnameAndPort[0] == null || serviceHostnameAndPort[0].trim().isEmpty()) {
+                    logger.info("Unable to resolve service hostname " + serviceHostnameAndPort[0] + " Skipping service entry.");
                     continue;
                 }
                 //Validate port exists; assume default port if it doesn't
-                if (
-                        serviceHostnameAndPort.length <= 1 ||
-                                serviceHostnameAndPort[1] == null ||
-                                serviceHostnameAndPort[1].trim().isEmpty()
-                ) {
+                if (serviceHostnameAndPort.length <= 1 || serviceHostnameAndPort[1] == null || serviceHostnameAndPort[1].trim().isEmpty()) {
                     port = 5701;
                 } else {
                     try {
-                        port = Integer.valueOf(
-                                serviceHostnameAndPort[1]
-                        );
+                        port = Integer.valueOf(serviceHostnameAndPort[1]);
                     } catch (NumberFormatException nfe) {
-                        logger.info(
-                                "Unable to parse port " +
-                                        serviceHostnameAndPort[1] +
-                                        " Skipping service entry."
-                        );
+                        logger.info("Unable to parse port " + serviceHostnameAndPort[1] + " Skipping service entry.");
                         continue;
                     }
                 }
 
                 //Resolve service hostname to a set of IP addresses, if any
-                serviceNameResolutions =
-                        resolveDomainNames(
-                                serviceHostnameAndPort[0]
-                        );
+                serviceNameResolutions = resolveDomainNames(serviceHostnameAndPort[0]);
 
                 //Add all IP addresses for service hostname with the given port.
                 for (InetAddress resolution : serviceNameResolutions) {
                     discoveryNodes.add(
                             new SimpleDiscoveryNode(
-                                    new Address(
-                                            resolution,
-                                            port
-                                    )
+                                    new Address(resolution, port)
                             )
                     );
                 }
@@ -143,17 +113,11 @@ public class DockerDNSRRDiscoveryStrategy
             InetAddress[] inetAddresses;
             inetAddresses = InetAddress.getAllByName(domainName);
 
-            addresses.addAll(
-                    Arrays.asList(inetAddresses)
-            );
+            addresses.addAll(Arrays.asList(inetAddresses));
 
-            logger.info(
-                    "Resolved domain name '" + domainName + "' to address(es): " + addresses
-            );
+            logger.info("Resolved domain name '" + domainName + "' to address(es): " + addresses);
         } catch (UnknownHostException e) {
-            logger.severe(
-                    "Unable to resolve domain name " + domainName
-            );
+            logger.severe("Unable to resolve domain name " + domainName);
         }
 
         return addresses;

@@ -28,11 +28,10 @@ public class DockerSwarmDiscoveryStrategy extends AbstractDiscoveryStrategy {
     /**
      * Constructor
      *
-     * @param localDiscoveryNode
      * @param logger
      * @param properties
      */
-    public DockerSwarmDiscoveryStrategy(DiscoveryNode localDiscoveryNode, ILogger logger, Map<String, Comparable> properties) {
+    public DockerSwarmDiscoveryStrategy(ILogger logger, Map<String, Comparable> properties) {
 
         super(logger, properties);
 

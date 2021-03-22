@@ -21,14 +21,10 @@ package org.bitsofinfo.hazelcast.spi.docker.swarm.dnsrr;
  */
 public class DockerDNSRRMemberAddressProviderConfig {
 
-    private DockerDNSRRMemberAddressProviderConfig() {
-    }
-
     /**
      * Property definition to load name of this docker service
      */
     public static final String SERVICENAME = "serviceName";
-
     /**
      * Property definition to load exposed port for hazelcast
      * <p>
@@ -36,4 +32,7 @@ public class DockerDNSRRMemberAddressProviderConfig {
      * the network configuration as of the time of writing this.
      */
     public static final String SERVICEPORT = "servicePort";
+
+    private DockerDNSRRMemberAddressProviderConfig() {
+    }
 }
